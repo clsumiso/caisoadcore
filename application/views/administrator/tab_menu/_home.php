@@ -24,7 +24,7 @@
                     <h3>Enroll Per COLLEGE</h3>
                     <div class="row">
                         <div class="col-sm-12 col-md-4 col-lg-4">
-                            <b>Filter Semester:</b>
+                            <b>Semester</b>
                             <select class="form-control" onchange="enrollPerCollege(this.value)">
                                 <?php echo $semester; ?>
                             </select>
@@ -38,9 +38,21 @@
                     <h3>Enroll Per COURSE</h3>
                     <div class="row">
                         <div class="col-sm-12 col-md-4 col-lg-4">
-                            <b>Filter Semester:</b>
+                            <b>Semester</b>
                             <select class="form-control" onchange="enrollPerCollege(this.value)">
                                 <?php echo $semester; ?>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-4">
+                            <b>College</b>
+                            <select class="form-control" onchange="enrollPerCourse(this.value)">
+
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-4">
+                            <b>Course</b>
+                            <select class="form-control" onchange="enrollPerCourse(this.value)">
+
                             </select>
                         </div>
                     </div>
