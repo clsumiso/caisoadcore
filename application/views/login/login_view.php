@@ -1,7 +1,7 @@
 <body class="login-page" style="background-color: #008937;">
 	<div class="login-box">
 	    <div class="logo">
-	        <a href="javascript:void(0);" style="color: #fff;"><b>O</b>ffice of <b>Ad</b>missions</a>
+	        <a href="javascript:void(0);" style="color: #fff;"><b>CAIS</b></a>
 	        <small style="color: #fff;">Central Luzon State University</small>
 	    </div>
 	    <div class="card">

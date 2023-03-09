@@ -44,6 +44,7 @@
                                 <ul class="nav nav-tabs" role="tablist" style="font-size: 18px;">
                                     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
                                     <li role="presentation"><a href="#schedule" aria-controls="schedule" role="tab" data-toggle="tab">Class Schedule</a></li>
+                                    <li role="presentation"><a href="#classMonitoring" aria-controls="classMonitoring" role="tab" data-toggle="tab">Class Monitoring</a></li>
                                 </ul>
 
                                 <div class="tab-content">
@@ -51,6 +52,8 @@
                                     <?php $this->load->view('administrator/tab_menu/_home.php'); ?>
 
                                     <?php $this->load->view('administrator/tab_menu/_schedule.php'); ?>
+
+                                    <?php $this->load->view('administrator/tab_menu/_section_monitoring.php'); ?>
                                     
                                 </div>
                             </div>

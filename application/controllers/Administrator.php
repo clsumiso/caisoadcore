@@ -99,6 +99,18 @@ class Administrator extends CI_Controller {
 		echo json_encode($data);
    	}
 
+	public function sectionMonitoringList()
+	{
+
+		// POST data
+		$postData = $this->input->post();
+
+		// Get data
+		$data = $this->administrator->getClassMonitoring($postData);
+
+		echo json_encode($data);
+	}
+
    	public function enrollPerCollegeChart()
    	{	
 		$semester = $_POST['sem'];
