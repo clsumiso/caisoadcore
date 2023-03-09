@@ -22,8 +22,29 @@ class Administrator_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function getCollege()
+	{
+		$this->db->select('college_id, college_name');
+        $this->db->from('tbl_college');
+		$this->db->where('college_id < 11');
+        $query = $this->db->get();
+
+		return $query->result();
+	}
+
+	public function getCourse($college)
+	{
+		$this->db->select('course_id, course_name, course_desc');
+        $this->db->from('tbl_course');
+		$this->db->where('college_id', $college);
+		$this->db->where_in('course_type', array('BS', 'B', 'C', 'D', 'MS', 'PhD'));
+        $query = $this->db->get();
+
+		return $query->result();
+	}
+
 	// Get DataTable data
-   function getSchedule($postData=null){
+   	function getSchedule($postData=null){
 
 		$response = array();
 
@@ -121,11 +142,10 @@ class Administrator_model extends CI_Model {
 		);
 
 		return $response; 
-   }
+   	}
 
-   public function getOfficiallyEnroll($semester, $course = array())
-   {
-
+   	public function getEnrollPerCollege($semester, $course = array())
+   	{
 		if($semester == 3)
         {
             $this->db->select('tbl_registration.user_id, tbl_profile.course_id, tbl_college.college_id, tbl_college.college_name');
@@ -135,6 +155,10 @@ class Administrator_model extends CI_Model {
 			$this->db->join('tbl_college', 'tbl_course.college_id = tbl_college.college_id', 'inner');
 			$this->db->where('tbl_registration.semester_id', $semester);
 			$this->db->where('tbl_registration.status', 2);
+			if (count($course) > 0) 
+			{
+				$this->db->where_in('tbl_profile.course_id', $course);
+			}
 			$this->db->group_by('tbl_registration.user_id', array('tbl_registration.user_id'));
 			$query = $this->db->get();
         }else
@@ -145,12 +169,15 @@ class Administrator_model extends CI_Model {
 			$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
 			$this->db->join('tbl_college', 'tbl_course.college_id = tbl_college.college_id', 'inner');
 			$this->db->where('tbl_enrollment.semester_id', $semester);
+			if (count($course) > 0) 
+			{
+				$this->db->where_in('tbl_profile.course_id', $course);
+			}
 			$query = $this->db->get();
 		}
 
 		return $query->result();
-   }
-
+   	}
 }
 
 /* End of file Administrator_model.php */

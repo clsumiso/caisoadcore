@@ -65,3 +65,27 @@ function saveSchedule()
 {
    console.log($('#day1 option:selected').val());
 }
+
+function getCourse(college = 0)
+{
+   $.ajax({
+      url: window.location.origin + "/office-of-admissions/administrator/getCourse",
+      type: "POST",
+      data: { college: college },
+      dataType: "json",
+      success: function(response)
+      {
+         // console.log(response.course);
+         $('#course').html(response.course);
+         $('#course').selectpicker('refresh');
+      },
+      complete: function () 
+      {
+         
+      },
+      error: function (jqXHR, textStatus, errorThrown) 
+      {
+         swal("Something went wrong!!!", "No data, please try again", "error");
+      }
+   });
+}

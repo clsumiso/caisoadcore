@@ -8,6 +8,7 @@ class Administrator extends CI_Controller {
         $this->load->library('computation');
 		$this->load->helper('date');
 		$this->load->model('administrator_model', 'administrator');
+		$this->load->helper('directory');
 		if (!isset($_SESSION['uid'])) 
         {
         	redirect('/');
@@ -26,7 +27,8 @@ class Administrator extends CI_Controller {
 			'user_type'	=>	strtoupper($_SESSION['utype']),
 			'email'		=>	$_SESSION['e_id'],
 			'get_time'	=>	$this->get_time(),
-            'semester'  =>  $this->get_semester()
+            'semester'  =>  $this->semesterList(),
+            'college'  =>  $this->collegeList()
 		);
 		$this->load->view('administrator/_header', $data);
 	    $this->load->view('administrator/_css', $data);
@@ -42,7 +44,7 @@ class Administrator extends CI_Controller {
 		return mdate($datestring, $time);
 	}
 
-	public function get_semester()
+	public function semesterList()
     {
         $semesterData = $this->administrator->getSemester();
         $htmlData = '<option value="-1" selected>--- SELECT SEMESTER ---</option>';
@@ -55,6 +57,36 @@ class Administrator extends CI_Controller {
         return $htmlData;
     }
 
+	public function collegeList()
+    {
+        $collegeData = $this->administrator->getCollege();
+        $htmlData = '<option value="-1" selected>--- SELECT COLLEGE ---</option>';
+
+        foreach ($collegeData as $college) 
+        {
+            $htmlData .= '<option value="'.$college->college_id.'">'.$college->college_name.'</option>';
+        }
+
+        return $htmlData;
+    }
+
+	public function getCourse()
+	{
+		$college = $_POST['college'];
+        $htmlData = '<option value="-1" selected>--- SELECT COURSE ---</option>';
+
+		$courseData = $this->administrator->getCourse($college);
+		foreach ($courseData as $course) 
+        {
+			if (!in_array($course->course_id, array(0, 144, 145)))
+			{
+				$htmlData .= '<option value="'.$course->course_id.'">'.$course->course_desc.'</option>';
+			}
+        }
+
+		echo json_encode(array("course"	=>	$htmlData));
+	}
+
     public function scheduleList()
     {
 
@@ -65,17 +97,18 @@ class Administrator extends CI_Controller {
 		$data = $this->administrator->getSchedule($postData);
 
 		echo json_encode($data);
-   }
+   	}
 
-   public function enrollPerCollegeChart()
-   {
+   	public function enrollPerCollegeChart()
+   	{	
 		$semester = $_POST['sem'];
 		$course = array();
 		$output = array();
 		$college = array('CAG', 'CASS', 'CBAA', 'CED', 'CEN', 'CF', 'CHSI', 'COS', 'CVSM');
 		$collegeValue = array();
+		$pictureArr = array();
 		$cag = $cass = $cbaa = $ced = $cen = $cf = $chsi = $cos = $cvsm = 0;
-		$chartData = $this->administrator->getOfficiallyEnroll($semester, $course);
+		$chartData = $this->administrator->getEnrollPerCollege($semester, $course);
 
 		foreach ($chartData as $chart) 
 		{
@@ -93,23 +126,32 @@ class Administrator extends CI_Controller {
 		for ($i=0; $i < count($college); $i++) 
 		{ 
 			$data = array(
-				'college'	=>	$college[$i],
-				'value'		=>	($college[$i] == "CAG" ? $cag : 
-									($college[$i] == "CASS" ? $cass : 
-										($college[$i] == "CBAA" ? $cbaa : 
-											($college[$i] == "CED" ? $ced :
-												($college[$i] == "CEN" ? $cen : 
-													($college[$i] == "CF" ? $cf : 
-														($college[$i] == "CHSI" ? $chsi : 
-															($college[$i] == "COS" ? $cos : 
-																($college[$i] == "CVSM" ? $cvsm : 0)))))))))
+				'college'			=>	$college[$i],
+				'value'				=>	($college[$i] == "CAG" ? $cag : 
+												($college[$i] == "CASS" ? $cass : 
+													($college[$i] == "CBAA" ? $cbaa : 
+														($college[$i] == "CED" ? $ced :
+															($college[$i] == "CEN" ? $cen : 
+																($college[$i] == "CF" ? $cf : 
+																	($college[$i] == "CHSI" ? $chsi : 
+																		($college[$i] == "COS" ? $cos : 
+																			($college[$i] == "CVSM" ? $cvsm : 0))))))))),
+				'pictureSettings'	=>	array("src"	=>	base_url("assets/images/college-logo/").$college[$i].".jpg")
 			);
 
 			array_push($output, $data);
 		}
 		
 		echo json_encode($output);
-   }
+   	}
+
+	public function getEnrollPerCourse()
+	{
+		$college = $_POST['college'];
+
+		// Get data
+        $data = $this->administrator->getEnrollPerCourse($course);
+	}
 
 }
 

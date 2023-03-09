@@ -37,22 +37,21 @@
                     </div>
                     <h3>Enroll Per COURSE</h3>
                     <div class="row">
-                        <div class="col-sm-12 col-md-4 col-lg-4">
+                        <div class="col-sm-12 col-md-4 col-lg-3">
                             <b>Semester</b>
-                            <select class="form-control" onchange="enrollPerCollege(this.value)">
+                            <select class="form-control" onchange="enrollPerCourse()">
                                 <?php echo $semester; ?>
                             </select>
                         </div>
-                        <div class="col-sm-12 col-md-4 col-lg-4">
+                        <div class="col-sm-12 col-md-3 col-lg-3">
                             <b>College</b>
-                            <select class="form-control" onchange="enrollPerCourse(this.value)">
-
+                            <select class="form-control" onchange="getCourse(this.value)">
+                                <?php echo $college; ?>
                             </select>
                         </div>
-                        <div class="col-sm-12 col-md-4 col-lg-4">
+                        <div class="col-sm-12 col-md-3 col-lg-3">
                             <b>Course</b>
-                            <select class="form-control" onchange="enrollPerCourse(this.value)">
-
+                            <select class="form-control" onchange="enrollPerCourse()" id="course">
                             </select>
                         </div>
                     </div>
