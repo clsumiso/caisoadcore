@@ -39,25 +39,28 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-4 col-lg-3">
                             <b>Semester</b>
-                            <select class="form-control" onchange="enrollPerCourse()">
+                            <select class="form-control" onchange="enrollPerCourse()" id="enrollPerSemFilter">
                                 <?php echo $semester; ?>
                             </select>
                         </div>
                         <div class="col-sm-12 col-md-3 col-lg-3">
                             <b>College</b>
-                            <select class="form-control" onchange="getCourse(this.value)">
+                            <select class="form-control" onchange="enrollPerCourse()" id="enrollPerSemCollegeFilter">
                                 <?php echo $college; ?>
                             </select>
                         </div>
-                        <div class="col-sm-12 col-md-3 col-lg-3">
+                        <!-- <div class="col-sm-12 col-md-3 col-lg-3">
                             <b>Course</b>
                             <select class="form-control" onchange="enrollPerCourse()" id="course">
                             </select>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="row">
                         <div class="col-sm-12 col-md-6 col-lg-6">
                             <div id="enrollPerCourse" class="dashboardChart"></div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div id="enrollPerCoursePie" class="dashboardChart"></div>
                         </div>
                     </div>
                 </div>

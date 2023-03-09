@@ -145,12 +145,56 @@ class Administrator extends CI_Controller {
 		echo json_encode($output);
    	}
 
-	public function getEnrollPerCourse()
+	public function enrollPerCourse()
 	{
+		$semester = $_POST['sem'];
 		$college = $_POST['college'];
+		$courseArr = array();
+		$courseNameArr = array();
+		$output = array();
+		$chartTmp = array();
+		$chartTmpIndex = 0;
 
 		// Get data
-        $data = $this->administrator->getEnrollPerCourse($course);
+		$courseData = $this->administrator->getCourse($college);
+
+		foreach ($courseData as $course) 
+		{
+			if (!in_array($course->course_id, array(0, 144, 145)))
+			{
+				array_push($courseArr, $course->course_id);
+
+				//Set defult values for chart data VALUE
+				array_push($chartTmp, 0);
+				// Set Course Name
+				array_push($courseNameArr, $course->course_name);
+			}
+		}
+
+		$chartData = $this->administrator->getEnrollPerCollege($semester, $courseArr);
+		foreach ($chartData as $chart) 
+		{
+			for ($i = 0; $i < count($courseArr); $i++)
+			{
+				if ($courseArr[$i] == $chart->course_id)
+				{
+					$chartTmp[$i] += 1;
+					break;
+				}
+			}
+		}
+
+		for ($i = 0; $i < count($courseArr); $i++)
+		{
+			$data = array(
+				'course'			=>	$courseNameArr[$i],
+				'value'				=>	$chartTmp[$i]
+			);
+
+			array_push($output, $data);
+		}
+
+		echo json_encode($output);
 	}
 
 }

@@ -38,6 +38,7 @@ class Administrator_model extends CI_Model {
         $this->db->from('tbl_course');
 		$this->db->where('college_id', $college);
 		$this->db->where_in('course_type', array('BS', 'B', 'C', 'D', 'MS', 'PhD'));
+		$this->db->order_by('course_name', 'desc');
         $query = $this->db->get();
 
 		return $query->result();
