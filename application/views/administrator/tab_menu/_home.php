@@ -21,7 +21,7 @@
                     <!-- <h2>Dashboard</h2> -->
                 </div>
                 <div class="post-content" style="padding: 10px;">
-                    <h3>Enroll Per COLLEGE</h3>
+                    <h3>Total Enrollment per COLLEGE</h3>
                     <div class="row">
                         <div class="col-sm-12 col-md-4 col-lg-4">
                             <b>Semester</b>
@@ -35,7 +35,7 @@
                             <div id="enrollPerCollege" class="dashboardChart"></div>
                         </div>
                     </div>
-                    <h3>Enroll Per COURSE</h3>
+                    <h3>Total Enrollment per COURSE</h3>
                     <div class="row">
                         <div class="col-sm-12 col-md-4 col-lg-3">
                             <b>Semester</b>
