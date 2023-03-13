@@ -1,5 +1,5 @@
 
-$(document).ready(function(){
+
 
    let scheduleData = $('#scheduleTable').DataTable({
       'dom': 'lBfrtip',
@@ -200,11 +200,12 @@ $(document).ready(function(){
     // ********************************************************************************************************************************
     let accountingData = $('#accountingTable').DataTable({
         'dom': 'lBfrtip',
+        'saveState': true,
         'buttons': [
         {
             extend: 'excelHtml5',
             exportOptions: {
-                columns: [2,3,4,5,6,7]
+                columns: [2,3,4,5,6,7,8,9,10]
             },
             filename: 'CLSU Accounting',
             "action": newexportaction
@@ -216,7 +217,7 @@ $(document).ready(function(){
             messageTop: 'Accounting Copy',
             title: 'OFFICE OF ADMISSIONS',
             exportOptions: {
-                columns: [2,3,4,5,6,7]
+                columns: [2,3,4,5,6,7,8,9,10]
             },
             "action": newexportaction
         },
@@ -225,7 +226,7 @@ $(document).ready(function(){
             messageTop: 'Accounting Copy',
             title: 'OFFICE OF ADMISSIONS',
             exportOptions: {
-                columns: [2,3,4,5,6,7]
+                columns: [2,3,4,5,6,7,8,9,10]
             },
             "action": newexportaction,
             customize: function(win)
@@ -262,7 +263,7 @@ $(document).ready(function(){
         'serverSide': true,
         'serverMethod': 'post',
         columnDefs: [
-            { orderable: false, targets: [0, 1] }
+            { orderable: false, targets: [0, 1, 9, 10] }
         ],
         //'searching': false, // Remove default Search Control
         'ajax': 
@@ -279,12 +280,12 @@ $(document).ready(function(){
             { data: "action" },
             { data: "user_id" },
             { data: "semester_name" },
+            { data: "lname" },
             { data: "fname" },
             { data: "mname" },
-            { data: "lname" },
             { data: "course_name" },
             { data: "section" }, 
-            { data: "OR" },
+            { data: "trasaction_id" },
             { data: "amount" }
         ]
     });
@@ -340,7 +341,7 @@ $(document).ready(function(){
       // Requery the server with the new one-time export settings
       dt.ajax.reload();
    }
-});
+
 
 function updateSchedule(schedid, semester) 
 {
@@ -351,7 +352,7 @@ function updateSchedule(schedid, semester)
    }, 
    'show');
 
-   $('.modal-title').text('Class Scehdule (' + $('#semester option:selected').text() + ")");
+   $('.modal-title').text('Class Schedule (' + $('#semester option:selected').text() + ")");
 }
 
 function saveSchedule()
@@ -439,15 +440,17 @@ function assessPayment(studentID, semester)
     });
 }
 
-function savePayment() 
+function savePayment(action) 
 {
-    if ($('[name="ORnumber"]').val() == '' && $('[name="amount"]').val() != '') 
+    let txtORNumber = action == "insert" ? $('[name="ORnumber"]').val() : $('[name="orNumberUpdate"]').val();
+    let txtAmount = action == "insert" ? $('[name="amount"]').val() : $('[name="amountUpdate"]').val();
+    if (txtORNumber == '' && txtAmount != '') 
     {
         swal("Required Field!!!", "OR NUMBER IS REQUIRED!!!", "warning");
-    }else if ($('[name="ORnumber"]').val() != '' && $('[name="amount"]').val() == '')
+    }else if (txtORNumber != '' && txtAmount == '')
     {
         swal("Required Field!!!", "AMOUNT IS REQUIRED!!!", "warning");
-    }else if ($('[name="ORnumber"]').val() == '' && $('[name="amount"]').val() == '')
+    }else if (txtORNumber == '' && txtAmount == '')
     {
         swal("Required Field!!!", "OR NUMBER AND AMOUNT ARE REQUIRED!!!", "warning");
     }else
@@ -474,10 +477,13 @@ function savePayment()
                     dataType: 'JSON',
                     data: 
                     { 
-                        studentID: $('[name="idNumber"]').val(), 
-                        semester: $('[name="semesterID"]').val(),
-                        orNumber: $('[name="ORnumber"]').val(),
-                        amount: $('[name="amount"]').val()
+                        paymentID: action == "update" ? $('[name="paymentID"]').val() : "", 
+                        studentID: action == "insert" ? $('[name="idNumber"]').val() : $('[name="studID"]').val(), 
+                        semester: action == "insert" ? $('[name="semesterID"]').val() : $('[name="semesterPay"]').val(),
+                        transID: action == "update" ? $('[name="transID"]').val() : "",
+                        orNumber: action == "insert" ? $('[name="ORnumber"]').val() : $('[name="orNumberUpdate"]').val(),
+                        amount: action == "insert" ? $('[name="amount"]').val() : $('[name="amountUpdate"]').val(),
+                        action: action
                     },
                     beforeSend: function ()
                     {
@@ -494,8 +500,10 @@ function savePayment()
 
                             // $('[name="ORnumber"]').val("");
                             // $('[name="amount"]').val("");
-                            studentEnrollment();
+                            accountingData.draw();
                             $('#assessmentModal').modal('hide');
+                            $('[name="orNumberUpdate"]').val();
+                            $('[name="amountUpdate"]').val();
                         }
                     },
                     complete: function () 
@@ -530,7 +538,19 @@ function savePayment()
     }
 }
 
-function updateOR(paymentID, row) 
+function updateOR(paymentID, transID, studid, semester, amount) 
 {
-    // body...
+    $('#updatePaymentModal').modal(
+    {
+        backdrop: 'static', 
+        position: 'center',
+        keyboard: false
+    }, 
+    'show');
+    $('[name="studID"]').val(studid);
+    $('[name="paymentID"]').val(paymentID);
+    $('[name="transID"]').val(transID);
+    $('[name="orNumberUpdate"]').val(transID);
+    $('[name="semesterPay"]').val(semester);
+    $('[name="amountUpdate"]').val(amount);
 }

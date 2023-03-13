@@ -1,4 +1,3 @@
-<!-- Large Size -->
 <div class="modal fade" id="assessmentModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -16,112 +15,6 @@
                         
                     </tbody>
                 </table>
-                <!-- <b>TUITION FEE</b>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">1. TUITION FEE</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p>Tuition Fee Here</p>
-                    </div>
-                </div>
-                <b>MISCELLANEOUS AND OTHER SCHOOL FEES</b>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">1. ADMISSION FEES</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p>ADMISSION FEES HERE</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">2. ATHLETIC FEES</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p>ATHLETIC FEES HERE</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">3. COMPUTER FEE</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p>COMPUTER FEE HERE</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">4. DEVELOPMENT FEES</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p>DEVELOPMENT FEES HERE</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">5. ENTRANCE FEE</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p>ENTRANCE FEE HERE</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">6. GUIDANCE FEES</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p>GUIDANCE FEES</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">7. LABORATORY FEES</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p>LABORATORY FEES HERE</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">8. LIBRARY FEE</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p>LIBRARY FEE</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">9. MEDICAL AND DENTAL FEES</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p>MEDICAL AND DENTAL FEES</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">10. REGISTRATION FEE</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p>REGISTRATION FEE</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">11. SCHOOL ID</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p>SCHOOL ID</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-3 col-lg-3">
-                        <b style="padding-left: 10px;">TOTAL</b>
-                    </div>
-                    <div class="col-sm-6 col-md-3 col-lg-6">
-                        <p class="col-teal" style="font-weight: bolder;">TOTAL HERE</p>
-                    </div>
-                </div> -->
                 <div class="row">
                     <div class="col-sm-6 col-md-2 col-lg-2">
                         <b>NAME</b>
@@ -158,7 +51,44 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-link waves-effect" onclick="savePayment()">SAVE</button>
+                <button type="button" class="btn btn-link waves-effect" onclick="savePayment('insert')">SAVE</button>
+                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="updatePaymentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="updatePaymentModalLabel">Assessment Form</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6 col-md-2 col-lg-2">
+                        <b>O.R NUMBER</b>
+                    </div>
+                    <div class="col-sm-6 col-md-10 col-lg-10">
+                        <input class="form-control" type="hidden" name="studID" readonly>
+                        <input class="form-control" type="hidden" name="paymentID" readonly>
+                        <input class="form-control" type="hidden" name="semesterPay" readonly>
+                        <input class="form-control" type="hidden" name="transID" readonly>
+                        <input class="form-control" type="text" name="orNumberUpdate" placeholder="O.R NUMBER HERE">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-md-2 col-lg-2">
+                        <b>AMOUNT</b>
+                    </div>
+                    <div class="col-sm-6 col-md-3 col-lg-6">
+                        <input class="form-control" type="number" min="0" name="amountUpdate" placeholder="AMOUNT HERE">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link waves-effect" onclick="savePayment('update')">SAVE</button>
                 <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
             </div>
         </div>

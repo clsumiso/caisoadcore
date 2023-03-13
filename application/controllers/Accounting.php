@@ -730,26 +730,70 @@ class Accounting extends CI_Controller {
     public function savePayment()
     {
         $studentID  =   $_POST['studentID'];
+        $paymentID  =   $_POST['paymentID'];
+        $transID  =   $_POST['transID'];
         $semester   =   $_POST['semester'];
+        $action   =   $_POST['action'];
         $orNumber   =   strtoupper($_POST['orNumber']);
         $amount     =   floatval($_POST['amount']);
+        $err = false;
         $msg = array();
 
-        $data = array(
-            "transaction_id"    =>  $orNumber,
-            "semester_id"       =>  $semester,
-            "user_id"           =>  $studentID,
-            "amount"            =>  $amount,
-            "date_of_payment"   =>  date("Y-m-d H:i:s")
-        );
-
-        if ($this->accounting->save('tbl_payment', $data)) 
+        if ($action == "insert")
         {
-            $msg = array(
-                "sys_msg"   =>  "success",
-                "msg"       =>  "SUCCESSFULLY SAVED!!!",
-                "icon"      =>  "success"
+            $data = array(
+                "transaction_id"    =>  $orNumber,
+                "semester_id"       =>  $semester,
+                "user_id"           =>  $studentID,
+                "amount"            =>  $amount,
+                "date_of_payment"   =>  date("Y-m-d H:i:s")
             );
+        }else
+        {
+            $data = array(
+                "transaction_id"    =>  $orNumber,
+                "amount"            =>  $amount,
+                "date_of_payment"   =>  date("Y-m-d H:i:s")
+            );
+
+            $condition = array(
+                "transaction_id"    => $transID,
+                "payment_id"        => $paymentID,
+                "semester_id"       => $semester,
+                "user_id"           => $studentID
+            );
+        }
+
+        if ($action == "insert")
+        {
+            $query = $this->accounting->save('tbl_payment', $data);
+        }else
+        {
+            if ($transID == "" || $paymentID == "" || $semester == "" || $studentID == "")
+            {
+                $err = true;
+            }else
+            {
+                $query = $this->accounting->update($data, $condition, array('tbl_payment'));
+            }
+        }
+
+        if($err == false){
+            if ($query) 
+            {
+                $msg = array(
+                    "sys_msg"   =>  "success",
+                    "msg"       =>  "SUCCESSFULLY SAVED!!!",
+                    "icon"      =>  "success"
+                );
+            }else
+            {
+                $msg = array(
+                    "sys_msg"   =>  "failed",
+                    "msg"       =>  "SAVE FAILED!!!",
+                    "icon"      =>  "error"
+                );
+            }
         }else
         {
             $msg = array(

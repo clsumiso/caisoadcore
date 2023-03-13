@@ -258,7 +258,13 @@ class Administrator_model extends CI_Model {
 		$start = $postData['start'];
 		$rowperpage = $postData['length']; // Rows display per page
 		$columnIndex = $postData['order'][0]['column']; // Column index
-		$columnName = $postData['columns'][$columnIndex + 2]['data']; // Column name
+		if (!in_array($columnIndex, array(0,1)))
+		{
+			$columnName = $postData['columns'][$columnIndex]['data']; // Column name
+		}else
+		{
+			$columnName = "";
+		}
 		$columnSortOrder = $postData['order'][0]['dir']; // asc or desc
 		$searchValue = $postData['search']['value']; // Search value
 
@@ -271,7 +277,7 @@ class Administrator_model extends CI_Model {
 
 		if($searchValue != '')
 		{
-			$search_arr[] = " (tbl_enrollment.user_id like '%".$searchValue."%' OR tbl_profile.fname like '%".$searchValue."%' OR tbl_profile.mname like'%".$searchValue."%'  OR tbl_profile.lname like'%".$searchValue."%' ) ";
+			$search_arr[] = " (tbl_enrollment.user_id like '%".$searchValue."%' OR tbl_profile.fname like '%".$searchValue."%' OR tbl_profile.mname like'%".$searchValue."%' OR tbl_profile.lname like'%".$searchValue."%' ) ";
 		}
 
 		if($searchSemester != '')
@@ -305,7 +311,7 @@ class Administrator_model extends CI_Model {
 
 		## Fetch records
 
-		$this->db->select('tbl_enrollment.user_id, tbl_enrollment.section, tbl_semester.semester_id, tbl_semester.semester_name, tbl_semester.semester_year, tbl_profile.lname, tbl_profile.fname, tbl_profile.mname, tbl_course.course_name');
+		$this->db->select('tbl_enrollment.user_id, tbl_semester.semester_name, tbl_profile.lname, tbl_profile.fname, tbl_profile.mname, tbl_course.course_name, tbl_enrollment.section, tbl_semester.semester_id, tbl_semester.semester_year');
 
 		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
 		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
@@ -324,7 +330,7 @@ class Administrator_model extends CI_Model {
 		{
 			$data[] = array( 
 				"numRows"			=>	($ctr++),
-				"action"			=>	'<button class="btn btn-lg btn-flat btn-warning waves-effect" onclick="assessPayment(\''.$record->user_id.'\', \''.$record->semester_id.'\')">ASSESS</button>',
+				"action"			=>	'<button class="btn btn-sm btn-flat btn-primary waves-effect" onclick="assessPayment(\''.$record->user_id.'\', \''.$record->semester_id.'\')"><i class="material-icons">account_box</i>Assess Fees</button>',
 				"user_id"			=>	$record->user_id,
 				"semester_name"		=>	$record->semester_name." ".$record->semester_year,
 				"fname"				=>	$record->fname,
@@ -332,7 +338,7 @@ class Administrator_model extends CI_Model {
 				"lname"				=>	$record->lname,
 				"course_name"		=>	$record->course_name,
 				"section"			=>	$record->section,
-				"OR"				=>	"",
+				"trasaction_id"		=>	$this->getOR($record->user_id, $searchSemester),
 				"amount"			=>	$this->getAmountPaid($record->user_id, $record->semester_id)
 			); 
 		}
@@ -382,6 +388,23 @@ class Administrator_model extends CI_Model {
 		}
 
 		return $total;
+	}
+
+	public function getOR($user_id = null, $semester = 0)
+	{
+		$this->db->select('payment_id, transaction_id, amount');
+		$this->db->where('user_id', $user_id);
+		$this->db->where('semester_id', $semester);
+		$records = $this->db->get('tbl_payment')->result();
+
+		$htmlData = '';
+
+		foreach ($records as $record) 
+		{
+			$htmlData .= '<a class="col-teal font-bold" href="javascript:void(0)" onclick="updateOR(\''.$record->payment_id.'\', \''.$record->transaction_id.'\', \''.$user_id.'\', \''.$semester.'\', \''.$record->amount.'\')">'.$record->transaction_id.'</a> |';
+		}
+
+		return $htmlData;
 	}
 	/**
 	 * End of Accounting Get Data Functions
