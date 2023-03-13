@@ -13,5 +13,9 @@
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/css/util.css'); ?>">
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/css/main.css?sid='.rand()); ?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/css/preloader1.css?sid='.rand()); ?>">
 <!--===============================================================================================-->
+    
+    <!-- Sweetalert Css -->
+    <link href="<?php echo base_url('assets/plugins/sweetalert/sweetalert.css'); ?>" rel="stylesheet" />
 </head>

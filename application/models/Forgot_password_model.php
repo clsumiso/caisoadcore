@@ -11,7 +11,7 @@ class Forgot_password_model extends CI_Model {
 
 	public function check_email($email='')
 	{
-		$query = $this->db->query("SELECT tbl_profile.*, tbl_users.user_type FROM tbl_profile INNER JOIN tbl_users ON tbl_profile.user_id = tbl_users.user_id WHERE tbl_profile.email = '$email'");
+		$query = $this->db->query("SELECT tbl_users.user_id FROM tbl_profile INNER JOIN tbl_users ON tbl_profile.user_id = tbl_users.user_id WHERE tbl_profile.email = '$email'");
 
 		return $query->result();
 	}
