@@ -96,8 +96,8 @@ $(document).ready(function(){
    $('#semester').change(function(){
       scheduleData.draw();
    });
-// ********************************************************************************************************************************
-   let classMonitoringData = $('#sectionMonitoringTable').DataTable({
+   // ********************************************************************************************************************************
+    let classMonitoringData = $('#sectionMonitoringTable').DataTable({
         'dom': 'lBfrtip',
         'buttons': [
         {
@@ -129,18 +129,18 @@ $(document).ready(function(){
             "action": newexportaction,
             customize: function(win)
             {
-    
+
                 var last = null;
                 var current = null;
                 var bod = [];
-    
+
                 var css = '@page { size: landscape; }',
                     head = win.document.head || win.document.getElementsByTagName('head')[0],
                     style = win.document.createElement('style');
-    
+
                 style.type = 'text/css';
                 style.media = 'print';
-    
+
                 if (style.styleSheet)
                 {
                     style.styleSheet.cssText = css;
@@ -149,7 +149,7 @@ $(document).ready(function(){
                 {
                     style.appendChild(win.document.createTextNode(css));
                 }
-    
+
                 head.appendChild(style);
             },
             pageSize: 'LEGAL'
@@ -194,9 +194,108 @@ $(document).ready(function(){
         classMonitoringData.draw();
     });
 
-   $('#scheduleCount').change(function(){
+    $('#scheduleCount').change(function(){
         //   console.log($('#scheduleCount option:selected').val());
-   });
+    });
+    // ********************************************************************************************************************************
+    let accountingData = $('#accountingTable').DataTable({
+        'dom': 'lBfrtip',
+        'buttons': [
+        {
+            extend: 'excelHtml5',
+            exportOptions: {
+                columns: [2,3,4,5,6,7]
+            },
+            filename: 'CLSU Accounting',
+            "action": newexportaction
+        },
+        {
+            extend: 'pdfHtml5',
+            orientation: 'landscape',
+            pageSize: 'LEGAL',
+            messageTop: 'Accounting Copy',
+            title: 'OFFICE OF ADMISSIONS',
+            exportOptions: {
+                columns: [2,3,4,5,6,7]
+            },
+            "action": newexportaction
+        },
+        {
+            extend: 'print',
+            messageTop: 'Accounting Copy',
+            title: 'OFFICE OF ADMISSIONS',
+            exportOptions: {
+                columns: [2,3,4,5,6,7]
+            },
+            "action": newexportaction,
+            customize: function(win)
+            {
+    
+                var last = null;
+                var current = null;
+                var bod = [];
+    
+                var css = '@page { size: landscape; }',
+                    head = win.document.head || win.document.getElementsByTagName('head')[0],
+                    style = win.document.createElement('style');
+    
+                style.type = 'text/css';
+                style.media = 'print';
+    
+                if (style.styleSheet)
+                {
+                    style.styleSheet.cssText = css;
+                }
+                else
+                {
+                    style.appendChild(win.document.createTextNode(css));
+                }
+    
+                head.appendChild(style);
+            },
+            pageSize: 'LEGAL'
+        }
+        ],
+        'responsive': true,
+        'autoWidth': false,
+        'processing': true,
+        'serverSide': true,
+        'serverMethod': 'post',
+        columnDefs: [
+            { orderable: false, targets: [0, 1] }
+        ],
+        //'searching': false, // Remove default Search Control
+        'ajax': 
+        {
+        'url': window.location.origin + "/office-of-admissions/administrator/accountingList",
+        'data': function(data)
+        {
+            data.semester = $('#semesterAccounting option:selected').val();
+        }
+        },
+        'columns': 
+        [
+            { data: "numRows" },
+            { data: "action" },
+            { data: "user_id" },
+            { data: "semester_name" },
+            { data: "fname" },
+            { data: "mname" },
+            { data: "lname" },
+            { data: "course_name" },
+            { data: "section" }, 
+            { data: "OR" },
+            { data: "amount" }
+        ]
+    });
+
+    $('#semesterAccounting').change(function(){
+        accountingData.draw();
+    });
+
+    $('#scheduleCount').change(function(){
+        //   console.log($('#scheduleCount option:selected').val());
+    });
 
    let arrDay = ["M_", "T_", "W_", "TH_", "F_", "S_"]; 
 
@@ -282,4 +381,156 @@ function getCourse(college = 0)
          swal("Something went wrong!!!", "No data, please try again", "error");
       }
    });
+}
+
+function assessPayment(studentID, semester) 
+{
+    $.ajax({
+        url: window.location.origin + "/office-of-admissions/accounting/accountingComponents",
+        type:"POST",
+        dataType: 'JSON',
+        data: { studentID: studentID, semester: semester },
+        beforeSend: function ()
+        {
+            $('#status-loading').html('<span class="loader"></span>');
+        },
+        success: function(data)
+        {
+            $('#fees').html(data.htmlData);
+            $('[name="fullname"]').val(data.fullname);
+        },
+        complete: function () 
+        {
+            $('#assessmentModal').modal(
+            {
+                backdrop: 'static', 
+                keyboard: false
+            }, 
+            'show');
+            $('.modal-title').text("ASSESSMENT FORM " + "(" + studentID + ")");
+            $('[name="idNumber"]').val(studentID);
+            $('[name="semesterID"]').val(semester);
+            $('[name="ORnumber"]').val(''),
+            $('[name="amount"]').val('')
+            $('#status-loading').html('');
+        },
+        error: function (jqXHR, textStatus, errorThrown) 
+        {
+            swal({
+                title: 'Session Expired, please re-login',
+                text: '',
+                type: "info",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: "LOGIN",
+                cancelButtonText: "CANCEL",
+                showCancelButton: true,
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                closeOnConfirm: false
+            }, function (isConfirm) 
+            {
+                if (isConfirm) 
+                {
+                    window.open(window.location.origin + "/office-of-admissions/", "_SELF");
+                }
+            });
+        }
+    });
+}
+
+function savePayment() 
+{
+    if ($('[name="ORnumber"]').val() == '' && $('[name="amount"]').val() != '') 
+    {
+        swal("Required Field!!!", "OR NUMBER IS REQUIRED!!!", "warning");
+    }else if ($('[name="ORnumber"]').val() != '' && $('[name="amount"]').val() == '')
+    {
+        swal("Required Field!!!", "AMOUNT IS REQUIRED!!!", "warning");
+    }else if ($('[name="ORnumber"]').val() == '' && $('[name="amount"]').val() == '')
+    {
+        swal("Required Field!!!", "OR NUMBER AND AMOUNT ARE REQUIRED!!!", "warning");
+    }else
+    {
+        swal({
+            title: 'Are you sure?',
+            text: '',
+            type: "info",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonText: "SAVE",
+            cancelButtonText: "CANCEL",
+            showCancelButton: true,
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            closeOnConfirm: false
+        }, function (isConfirm) 
+        {
+            if (isConfirm) 
+            {
+                $.ajax({
+                    url: window.location.origin + "/office-of-admissions/accounting/savePayment",
+                    type:"POST",
+                    dataType: 'JSON',
+                    data: 
+                    { 
+                        studentID: $('[name="idNumber"]').val(), 
+                        semester: $('[name="semesterID"]').val(),
+                        orNumber: $('[name="ORnumber"]').val(),
+                        amount: $('[name="amount"]').val()
+                    },
+                    beforeSend: function ()
+                    {
+                        $('#status-loading').html('<span class="loader"></span>');
+                    },
+                    success: function(data)
+                    {
+                        swal("OFFICE OF ADMISSIONS", data.msg, data.icon);
+                        if (data.sys_msg == "success") 
+                        {
+                            // $('#studentEnrollment').DataTable().cell(($('[name="dataRow"]').val()), 8).data($('[name="ORnumber"]').val());
+                            // $('#studentEnrollment').DataTable().cell(($('[name="dataRow"]').val()), 9).data($('[name="amount"]').val());
+                            // $('#studentEnrollment').DataTable().draw(false);
+
+                            // $('[name="ORnumber"]').val("");
+                            // $('[name="amount"]').val("");
+                            studentEnrollment();
+                            $('#assessmentModal').modal('hide');
+                        }
+                    },
+                    complete: function () 
+                    {
+                        $('#status-loading').html('');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) 
+                    {
+                        swal({
+                            title: 'Session Expired, please re-login',
+                            text: '',
+                            type: "info",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            confirmButtonText: "LOGIN",
+                            cancelButtonText: "CANCEL",
+                            showCancelButton: true,
+                            allowEscapeKey: false,
+                            allowOutsideClick: false,
+                            closeOnConfirm: false
+                        }, function (isConfirm) 
+                        {
+                            if (isConfirm) 
+                            {
+                                window.open(window.location.origin + "/office-of-admissions/", "_SELF");
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+}
+
+function updateOR(paymentID, row) 
+{
+    // body...
 }

@@ -111,6 +111,7 @@ class Administrator extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	/*Analytics*/
    	public function enrollPerCollegeChart()
    	{	
 		$semester = $_POST['sem'];
@@ -208,6 +209,25 @@ class Administrator extends CI_Controller {
 
 		echo json_encode($output);
 	}
+	/*end of analytics*/
+
+	/*
+    * Accounting Module Functions
+    *
+    *
+    */
+	public function accountingList()
+	{
+		// POST data
+		$postData = $this->input->post();
+
+		// Get data
+		$data = $this->administrator->getAccounting($postData);
+
+		echo json_encode($data);
+	}
+
+	/*End of accounting module*/
 
 }
 
