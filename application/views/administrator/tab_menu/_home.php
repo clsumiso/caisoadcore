@@ -23,7 +23,7 @@
                 <div class="post-content" style="padding: 10px;">
                     <h3>Total Enrollment per COLLEGE</h3>
                     <div class="row">
-                        <div class="col-sm-12 col-md-4 col-lg-4">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
                             <b>Semester</b>
                             <select class="form-control" onchange="enrollPerCollege(this.value)">
                                 <?php echo $semester; ?>
@@ -31,7 +31,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
                             <div id="enrollPerCollege" class="dashboardChart"></div>
                         </div>
                     </div>

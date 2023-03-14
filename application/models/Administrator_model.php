@@ -55,7 +55,13 @@ class Administrator_model extends CI_Model {
 		$start = $postData['start'];
 		$rowperpage = $postData['length']; // Rows display per page
 		$columnIndex = $postData['order'][0]['column']; // Column index
-		$columnName = $postData['columns'][$columnIndex + 2]['data']; // Column name
+		if (!in_array($columnIndex, array(0,1)))
+		{
+			$columnName = $postData['columns'][$columnIndex]['data']; // Column name
+		}else
+		{
+			$columnName = "";
+		}
 		$columnSortOrder = $postData['order'][0]['dir']; // asc or desc
 		$searchValue = $postData['search']['value']; // Search value
 
@@ -157,7 +163,13 @@ class Administrator_model extends CI_Model {
 		$start = $postData['start'];
 		$rowperpage = $postData['length']; // Rows display per page
 		$columnIndex = $postData['order'][0]['column']; // Column index
-		$columnName = $postData['columns'][$columnIndex + 2]['data']; // Column name
+		if (!in_array($columnIndex, array(0,11)))
+		{
+			$columnName = $postData['columns'][$columnIndex]['data']; // Column name
+		}else
+		{
+			$columnName = "";
+		}
 		$columnSortOrder = $postData['order'][0]['dir']; // asc or desc
 		$searchValue = $postData['search']['value']; // Search value
 

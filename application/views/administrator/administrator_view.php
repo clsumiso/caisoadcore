@@ -56,6 +56,8 @@
 
                                     <?php $this->load->view('administrator/tab_menu/_schedule.php'); ?>
 
+                                    <?php $this->load->view('administrator/tab_menu/_grade.php'); ?>
+
                                     <?php $this->load->view('administrator/tab_menu/_section_monitoring.php'); ?>
 
                                     <?php $this->load->view('administrator/tab_menu/_accounting.php'); ?>
