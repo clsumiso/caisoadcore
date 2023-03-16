@@ -290,9 +290,101 @@ let accountingData = $('#accountingTable').DataTable({
 $('#semesterAccounting').change(function(){
     accountingData.draw();
 });
+// ********************************************************************************************************************************
+let gradeData = $('#gradeTable').DataTable({
+    'dom': 'lBfrtip',
+    'saveState': true,
+    'buttons': [
+    {
+        extend: 'excelHtml5',
+        exportOptions: {
+            columns: [2,3,4,5,6,7,8]
+        },
+        filename: 'CLSU | Office of Admissions',
+        "action": newexportaction
+    },
+    {
+        extend: 'pdfHtml5',
+        orientation: 'landscape',
+        pageSize: 'LEGAL',
+        messageTop: 'Office of Admissions Copy',
+        title: 'OFFICE OF ADMISSIONS',
+        exportOptions: {
+            columns: [2,3,4,5,6,7,8]
+        },
+        "action": newexportaction
+    },
+    {
+        extend: 'print',
+        messageTop: 'Office of Admissions Copy',
+        title: 'OFFICE OF ADMISSIONS',
+        exportOptions: {
+            columns: [2,3,4,5,6,7,8]
+        },
+        "action": newexportaction,
+        customize: function(win)
+        {
 
-$('#scheduleCount').change(function(){
-    //   console.log($('#scheduleCount option:selected').val());
+            var last = null;
+            var current = null;
+            var bod = [];
+
+            var css = '@page { size: landscape; }',
+                head = win.document.head || win.document.getElementsByTagName('head')[0],
+                style = win.document.createElement('style');
+
+            style.type = 'text/css';
+            style.media = 'print';
+
+            if (style.styleSheet)
+            {
+                style.styleSheet.cssText = css;
+            }
+            else
+            {
+                style.appendChild(win.document.createTextNode(css));
+            }
+
+            head.appendChild(style);
+        },
+        pageSize: 'LEGAL'
+    }
+    ],
+    'responsive': true,
+    'autoWidth': false,
+    'processing': true,
+    'serverSide': true,
+    'serverMethod': 'post',
+    columnDefs: [
+        { orderable: false, targets: [0, 1, 8] }
+    ],
+    //'searching': false, // Remove default Search Control
+    'ajax': 
+    {
+    'url': window.location.origin + "/office-of-admissions/administrator/gradeList",
+    'data': function(data)
+    {
+        data.semester = $('#semesterGrades option:selected').val();
+        data.course = $('#gradeCourse option:selected').val();
+    }
+    },
+    'columns': 
+    [
+        { data: "numRows" },
+        { data: "action" },
+        { data: "user_id" },
+        { data: "semester_name" },
+        { data: "lname" },
+        { data: "fname" },
+        { data: "mname" },
+        { data: "course_name" },
+        { data: "section" }, 
+        { data: "view_grades" }
+    ]
+});
+
+$('#gradeCourse').change(function(){
+    gradeData.draw();
 });
 
 let arrDay = ["M_", "T_", "W_", "TH_", "F_", "S_"]; 
@@ -367,8 +459,8 @@ function getCourse(college = 0)
       success: function(response)
       {
          // console.log(response.course);
-         $('#course').html(response.course);
-         $('#course').selectpicker('refresh');
+         $('#gradeCourse').html(response.course);
+         $('#gradeCourse').selectpicker('refresh');
       },
       complete: function () 
       {

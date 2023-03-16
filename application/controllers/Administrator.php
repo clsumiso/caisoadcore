@@ -111,6 +111,17 @@ class Administrator extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	public function gradeList()
+	{
+		// POST data
+		$postData = $this->input->post();
+
+		// Get data
+		$data = $this->administrator->getGrades($postData);
+
+		echo json_encode($data);
+	}
+
 	/*Analytics*/
    	public function enrollPerCollegeChart()
    	{	

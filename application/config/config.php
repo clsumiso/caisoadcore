@@ -25,7 +25,7 @@ date_default_timezone_set('Asia/Manila');
 |
 */
 // $config['base_url'] = 'https://oad.clsu2.edu.ph/office-of-admissions/';
-$config['base_url'] = 'http://localhost/office-of-admissions/';
+$config['base_url'] = 'http://192.168.88.137/office-of-admissions/';
 
 /*
 |--------------------------------------------------------------------------

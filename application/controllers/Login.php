@@ -366,7 +366,7 @@ class Login extends CI_Controller
               $response = array(
                 'sys_msg'   =>  "FAILED",
                 'redirect'  =>  "0",
-                'msg'       =>  'Login failed, please try again2!!!'
+                'msg'       =>  'Login failed, please try again!!!'
               );
           }
         }else
