@@ -298,7 +298,7 @@ let gradeData = $('#gradeTable').DataTable({
     {
         extend: 'excelHtml5',
         exportOptions: {
-            columns: [2,3,4,5,6,7,8]
+            columns: [2,3,4,5,6,7]
         },
         filename: 'CLSU | Office of Admissions',
         "action": newexportaction
@@ -310,7 +310,7 @@ let gradeData = $('#gradeTable').DataTable({
         messageTop: 'Office of Admissions Copy',
         title: 'OFFICE OF ADMISSIONS',
         exportOptions: {
-            columns: [2,3,4,5,6,7,8]
+            columns: [2,3,4,5,6,7]
         },
         "action": newexportaction
     },
@@ -356,7 +356,7 @@ let gradeData = $('#gradeTable').DataTable({
     'serverSide': true,
     'serverMethod': 'post',
     columnDefs: [
-        { orderable: false, targets: [0, 1, 8] }
+        { orderable: false, targets: [0, 1] }
     ],
     //'searching': false, // Remove default Search Control
     'ajax': 
@@ -378,11 +378,16 @@ let gradeData = $('#gradeTable').DataTable({
         { data: "fname" },
         { data: "mname" },
         { data: "course_name" },
-        { data: "section" }, 
-        { data: "view_grades" }
+        { data: "section" }
     ]
 });
 
+$('#semesterGrades').change(function(){
+    gradeData.draw();
+});
+$('#gradeCollegeFilter').change(function(){
+    getCourse($('#gradeCollegeFilter option:selected').val(), gradeData)
+});
 $('#gradeCourse').change(function(){
     gradeData.draw();
 });
@@ -449,7 +454,7 @@ function saveSchedule()
    console.log($('#day1 option:selected').val());
 }
 
-function getCourse(college = 0)
+function getCourse(college = 0, drawData = null)
 {
    $.ajax({
       url: window.location.origin + "/office-of-admissions/administrator/getCourse",
@@ -458,13 +463,19 @@ function getCourse(college = 0)
       dataType: "json",
       success: function(response)
       {
-         // console.log(response.course);
-         $('#gradeCourse').html(response.course);
-         $('#gradeCourse').selectpicker('refresh');
+        // console.log(response.course);
+        $('#gradeCourse').html(response.course);
+        $('#gradeCourse').selectpicker('refresh');
+        
+        if(drawData !== null)
+        {
+            drawData.draw();
+        }
+
       },
       complete: function () 
       {
-         
+
       },
       error: function (jqXHR, textStatus, errorThrown) 
       {
@@ -642,4 +653,14 @@ function updateOR(paymentID, transID, studid, semester, amount)
     $('[name="orNumberUpdate"]').val(transID);
     $('[name="semesterPay"]').val(semester);
     $('[name="amountUpdate"]').val(amount);
+}
+
+function gradeDetails(studentID, semesterID)
+{
+    $('#gradeModal').modal(
+    {
+        backdrop: 'static', 
+        keyboard: false
+    }, 
+    'show');
 }

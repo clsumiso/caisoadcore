@@ -413,7 +413,9 @@ class Administrator_model extends CI_Model {
 		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
 		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
 		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
-		$this->db->where('tbl_enrollment.semester_id', $searchSemester);
+		// $this->db->where('tbl_enrollment.semester_id', $searchSemester);
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
 		$records = $this->db->get('tbl_enrollment')->result();
 		$totalRecords = $records[0]->allcount;
 
@@ -448,15 +450,16 @@ class Administrator_model extends CI_Model {
 		{
 			$data[] = array( 
 				"numRows"			=>	($ctr++),
-				"action"			=>	'<button class="btn btn-sm btn-flat btn-danger waves-effect" onclick="assessPayment(\''.$record->user_id.'\', \''.$record->semester_id.'\')"><i class="material-icons">account_box</i>Rectify</button>',
+				"action"			=>	'<button type="button" class="btn bg-green waves-effect" onclick="gradeDetails(\''.$record->user_id.'\', \''.$record->semester_id.'\')">
+											<i class="material-icons">assignment</i> view grades
+										</button>',
 				"user_id"			=>	$record->user_id,
 				"semester_name"		=>	$record->semester_name." ".$record->semester_year,
 				"fname"				=>	$record->fname,
 				"mname"				=>	$record->mname,
 				"lname"				=>	$record->lname,
 				"course_name"		=>	$record->course_name,
-				"section"			=>	$record->section,
-				"view_grades"		=>	'<button class="btn btn-success">view grades</button>',
+				"section"			=>	$record->section
 			); 
 		}
 

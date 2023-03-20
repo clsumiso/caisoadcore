@@ -34,7 +34,7 @@
                                 <?php echo $college; ?>
                             </select>
                         </div>
-                        <div class="col-sm-12 col-md-3 col-lg-3">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
                             <b>Course</b>
                             <select class="form-control" onchange="" id="gradeCourse">
                                 <option value="-1" selected></option>
@@ -59,7 +59,6 @@
                             <th>Middlename</th>
                             <th>Course/Program</th>
                             <th>Section</th>
-                            <th>Grades</th>
                         </tr>
                       </thead>
 
@@ -73,4 +72,4 @@
     </div>
 </div>
 
-<?php $this->load->view('administrator/modal/_accounting_modal'); ?>
+<?php $this->load->view('administrator/modal/_grade_modal'); ?>
