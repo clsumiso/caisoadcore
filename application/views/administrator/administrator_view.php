@@ -24,7 +24,7 @@
     <nav class="navbar">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="javascript:void(0);">OFFICE OF ADMISSIONS</a>
+                <a class="navbar-brand" href="javascript:void(0);">OFFICE OF ADMISSIONS (Comprehensive Academic Information System)</a>
             </div>
         </div>
     </nav>
@@ -44,6 +44,10 @@
                                 <ul class="nav nav-tabs" role="tablist" style="font-size: 18px;">
                                     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
                                     <li role="presentation"><a href="#schedule" aria-controls="schedule" role="tab" data-toggle="tab">Class Schedule</a></li>
+                                    <li role="presentation"><a href="#classMonitoring" aria-controls="classMonitoring" role="tab" data-toggle="tab">Class Monitoring</a></li>
+                                    <li role="presentation" class="bg-danger"><a href="#grades" aria-controls="grades" role="tab" data-toggle="tab">GRADES</a></li>
+                                    <li role="presentation" class="bg-danger"><a href="#accounting" aria-controls="accounting" role="tab" data-toggle="tab">ACCOUNTING</a></li>
+                                    <li role="presentation" class="bg-danger"><a href="#encoder" aria-controls="encoder" role="tab" data-toggle="tab">ENCODER</a></li>
                                 </ul>
 
                                 <div class="tab-content">
@@ -51,6 +55,12 @@
                                     <?php $this->load->view('administrator/tab_menu/_home.php'); ?>
 
                                     <?php $this->load->view('administrator/tab_menu/_schedule.php'); ?>
+
+                                    <?php $this->load->view('administrator/tab_menu/_grade.php'); ?>
+
+                                    <?php $this->load->view('administrator/tab_menu/_section_monitoring.php'); ?>
+
+                                    <?php $this->load->view('administrator/tab_menu/_accounting.php'); ?>
                                     
                                 </div>
                             </div>

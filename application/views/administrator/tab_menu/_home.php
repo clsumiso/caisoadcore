@@ -21,44 +21,46 @@
                     <!-- <h2>Dashboard</h2> -->
                 </div>
                 <div class="post-content" style="padding: 10px;">
-                    <h3>Enroll Per COLLEGE</h3>
+                    <h3>Total Enrollment per COLLEGE</h3>
                     <div class="row">
-                        <div class="col-sm-12 col-md-4 col-lg-4">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
                             <b>Semester</b>
                             <select class="form-control" onchange="enrollPerCollege(this.value)">
                                 <?php echo $semester; ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div id="enrollPerCollege" class="dashboardChart"></div>
-                        </div>
-                    </div>
-                    <h3>Enroll Per COURSE</h3>
-                    <div class="row">
-                        <div class="col-sm-12 col-md-4 col-lg-4">
-                            <b>Semester</b>
-                            <select class="form-control" onchange="enrollPerCollege(this.value)">
-                                <?php echo $semester; ?>
-                            </select>
-                        </div>
-                        <div class="col-sm-12 col-md-4 col-lg-4">
-                            <b>College</b>
-                            <select class="form-control" onchange="enrollPerCourse(this.value)">
-
-                            </select>
-                        </div>
-                        <div class="col-sm-12 col-md-4 col-lg-4">
-                            <b>Course</b>
-                            <select class="form-control" onchange="enrollPerCourse(this.value)">
-
                             </select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div id="enrollPerCollege" class="dashboardChart"></div>
+                        </div>
+                    </div>
+                    <h3>Total Enrollment per COURSE</h3>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4 col-lg-3">
+                            <b>Semester</b>
+                            <select class="form-control" onchange="enrollPerCourse()" id="enrollPerSemFilter">
+                                <?php echo $semester; ?>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3">
+                            <b>College</b>
+                            <select class="form-control" onchange="enrollPerCourse()" id="enrollPerSemCollegeFilter">
+                                <?php echo $college; ?>
+                            </select>
+                        </div>
+                        <!-- <div class="col-sm-12 col-md-3 col-lg-3">
+                            <b>Course</b>
+                            <select class="form-control" onchange="enrollPerCourse()" id="course">
+                            </select>
+                        </div> -->
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
                             <div id="enrollPerCourse" class="dashboardChart"></div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div id="enrollPerCoursePie" class="dashboardChart"></div>
                         </div>
                     </div>
                 </div>

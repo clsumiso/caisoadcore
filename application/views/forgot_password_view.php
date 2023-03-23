@@ -1,205 +1,132 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>OAD | Forgot Password</title>
-    <!-- Favicon-->
-    <link rel="icon" href="<?php echo base_url('assets/images/logo.png'); ?>" type="image/x-icon">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
-
-    <!-- Bootstrap Core Css -->
-    <link href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.css'); ?>" rel="stylesheet">
-
-    <!-- Waves Effect Css -->
-    <link href="<?php echo base_url('assets/plugins/node-waves/waves.css'); ?>" rel="stylesheet" />
-
-    <!-- Animation Css -->
-    <link href="<?php echo base_url('assets/plugins/animate-css/animate.css'); ?>" rel="stylesheet" />
+	<title>CAIS</title>	
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--===============================================================================================-->	
+  <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+  <!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/vendor/bootstrap/css/bootstrap.min.css'); ?>">
+  <!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css'); ?>">
+  <!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/vendor/animate/animate.css'); ?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/vendor/css-hamburgers/hamburgers.min.css'); ?>">
+  <!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/vendor/select2/select2.min.css'); ?>">
+  <!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/css/util.css'); ?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/css/main.css?sid='.rand()); ?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/css/preloader1.css?sid='.rand()); ?>">
+  <!--===============================================================================================-->
     
-    <!-- Sweetalert Css -->
-    <link href="<?php echo base_url('assets/plugins/sweetalert/sweetalert.css'); ?>" rel="stylesheet" />
+  <!-- Sweetalert Css -->
+  <link href="<?php echo base_url('assets/plugins/sweetalert/sweetalert.css'); ?>" rel="stylesheet" />
 
-    <!-- Custom Css -->
-    <link href="<?php echo base_url('assets/css/style.css'); ?>" rel="stylesheet">
 </head>
-<!-- <body>
-  <div class="content mt-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12 contents">
-          <div class="row justify-content-center">
-            <div class="card" style="width: 30rem;">
-              <img class="card-img-top" src="<?php echo base_url('assets/images/OAD.png'); ?>" alt="Card image cap" style="height: 100%;">
-              <div class="card-body">
-                <p class="card-text"></p>
+<body>
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<img src="<?php echo base_url('assets/images/cais2.png'); ?>" style="width: 100%; padding-bottom: 50px;" alt="CAIS">
+				<div class="login100-pic js-tilt" data-tilt>
+					<img src="<?php echo base_url('assets/images/logo.png'); ?>" alt="IMG">
+				</div>
+				<form class="login100-form validate-form" action="" method="POST" id="vcode_form">
+					<span class="login100-form-title">
+						Forgot Password
+					</span>
+					<div class="row flex justify-content-center d-none" id="loginPreload">
+						<span class="loader"></span>
+					</div>
 
-                <form action="" method="POST" id="vcode_form">
-                  <div class="row mb-3">
-                    <div class="col-md-12">
-                      <input type="text" name="vcode" class="form-control form-control-lg" placeholder="VERIFICATION CODE">
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12 mb-2">
-                      <button type="button" name="btnLogin" id="btnLogin" onclick="check_vcode()" class="btn btn-lg text-white btn-block" style="background-color: #2979FF;">RESET PASSWORD</button>
-                    </div>
-                    <div class="col-md-12 mb-2">
-                      <a href="/admissions" class="btn btn-lg btn-success btn-block">LOGIN</a>
-                    </div>
-                  </div>
-                  <span class="d-block text-center my-4 text-muted">Copyright &copy; 2021. All rights reserve.</span>
+					<div class="alert alert-danger d-none" role="alert" id="systemAlert"></div>
+          <br>  
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="text" name="vcode" placeholder="VERIFICATION CODE">
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fas fa-code" aria-hidden="true"></i>
+						</span>
+					</div>
+					
+					<div class="container-login100-form-btn">
+						<button type="button" class="login100-form-btn bg-primary" onclick="check_vcode()">
+							Reset Password
+						</button>
+						<a href="/office-of-admissions" class="login100-form-btn bg-success mt-2">
+							Login
+            </a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
-                  <div class="social-login">
-                    <a href="#" class="facebook">
-                      <span class="icon-facebook mr-3"></span>
-                    </a>
-                    <a href="#" class="twitter">
-                      <span class="icon-twitter mr-3"></span>
-                    </a>
-                    <a href="#" class="google">
-                      <span class="icon-google mr-3"></span>
-                    </a>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
-<body class="fp-page">
-  <div class="fp-box">
-      <div class="logo">
-          <a href="javascript:void(0);">Admin<b>BSB</b></a>
-          <small>Admin BootStrap Based - Material Design</small>
-      </div>
-      <div class="card">
-          <div class="body">
-              <form action="" method="POST" id="vcode_form">
-                  <p class="card-text"></p>
-                  <div class="msg">
-                      Enter your email address that you used to register. We'll send you an email with your username and a
-                      link to reset your password.
-                  </div>
-                  <div class="input-group">
-                      <span class="input-group-addon">
-                          <i class="material-icons">email</i>
-                      </span>
-                      <div class="form-line">
-                          <input type="text" name="vcode" class="form-control" placeholder="Email" required autofocus>
-                      </div>
-                  </div>
-
-                  <button type="button" name="btnLogin" id="btnLogin" onclick="check_vcode()" class="btn btn-block btn-lg bg-pink waves-effect" type="submit">RESET MY PASSWORD</button>
-
-                  <div class="row m-t-20 m-b--5 align-center">
-                      <a href="/office-of-admissions">LOGIN</a>
-                  </div>
-              </form>
-          </div>
-      </div>
-  </div>
-  <!-- Jquery Core Js -->
-  <script src="<?php echo base_url('assets/plugins/jquery/jquery.min.js'); ?>"></script>
-
-  <!-- Bootstrap Core Js -->
-  <script src="<?php echo base_url('assets/plugins/bootstrap/js/bootstrap.js'); ?>"></script>
-
-  <!-- Waves Effect Plugin Js -->
-  <script src="<?php echo base_url('assets/plugins/node-waves/waves.js'); ?>"></script>
-
-  <!-- Validation Plugin Js -->
-  <script src="<?php echo base_url('assets/plugins/jquery-validation/jquery.validate.js'); ?>"></script>
-
+  <script src="https://www.google.com/recaptcha/api.js?render=6Ld99ZoeAAAAAESX8jnwpdvlFv0Gz93vcwQlGXrB"></script>
+  <!--===============================================================================================-->	
+  <script src="<?php echo base_url('assets/login_assets/vendor/jquery/jquery-3.2.1.min.js'); ?>"></script>
+  <!--===============================================================================================-->
+	<script src="<?php echo base_url('assets/login_assets/vendor/bootstrap/js/popper.js'); ?>"></script>
+	<script src="<?php echo base_url('assets/login_assets/vendor/bootstrap/js/bootstrap.min.js'); ?>"></script>
+  <!--===============================================================================================-->
+	<script src="<?php echo base_url('assets/login_assets/vendor/select2/select2.min.js'); ?>"></script>
+  <!--===============================================================================================-->
+	<script src="<?php echo base_url('assets/login_assets/vendor/tilt/tilt.jquery.min.js'); ?>"></script>
+    
   <!-- SweetAlert Plugin Js -->
   <script src="<?php echo base_url('assets/plugins/sweetalert/sweetalert.min.js'); ?>"></script>
-
-  <!-- Custom Js -->
-  <script src="<?php echo base_url('assets/js/admin.js'); ?>"></script>
-  <script src="<?php echo base_url('assets/js/pages/examples/forgot-password.js'); ?>"></script>
-  <script>
+	<script >
+		$('.js-tilt').tilt({
+			scale: 1.1
+		})
+	</script>
+  <!--===============================================================================================-->
+    
+  <!-- SweetAlert Plugin Js -->
+  <script src="<?php echo base_url('assets/plugins/sweetalert/sweetalert.min.js'); ?>"></script>
+	<script src="<?php echo base_url('assets/login_assets/js/main.js'); ?>"></script>
+  <script src="<?php echo base_url('assets/login/login.js?sid='.rand()); ?>"></script>
+  <script type="text/javascript">
     function send_verification() 
     {
+      $('#loginPreload').removeClass('d-none');
+      $('#systemAlert').addClass('d-none');
       $.ajax({
         url: window.location.origin + '/office-of-admissions/forgot_password/send_verification',
         type: 'POST',
         data:{ uid: 0 },
         dataType: 'TEXT',
+        beforeSend: function() {
+          $('#loginPreload').removeClass('d-none');
+          $('#systemAlert').addClass('d-none');
+        },
         success: function(data){
+          
+          $('#systemAlert').removeClass('d-none');
           if (data == 'failed') 
           {
-            // Swal.fire({
-            //   icon: 'warning',
-            //   title: 'INVALID EMAIL',
-            //   html: '<b style="color: red;">Sorry your email address is not registred in our system. Please send us email in enrollment.concerns@clsu2.edu.ph</b>',
-            //   allowOutsideClick: false,
-            //   confirmButtonText: 'BACK TO LOGIN',
-            //   showClass: {
-            //     popup: 'animate__animated animate__bounceIn'
-            //   },
-            //   hideClass: {
-            //     popup: 'animate__animated animate__bounceOut'
-            //   }
-            // }).then((result) => {
-            //   /* Read more about isConfirmed, isDenied below */
-            //   if (result.isConfirmed) {
-            //     window.location = window.location.origin + "/admissions/";
-            //   }
-            // })
-            swal({
-                title: "INVALID EMAIL",
-                text: "Sorry your email address is not registred in our system. Please send us email in enrollment.concerns@clsu2.edu.ph",
-                type: "info",
-                confirmButtonText: "OK",
-                closeOnConfirm: false
-            }, function (isConfirm) 
-            {
-                if (isConfirm) 
-                {
-                  // swal("Deleted!", "Your imaginary file has been deleted.", "success");
-                } 
-            });
-          }else {
-            $('.card-text').html('Didn\'t receive the verification code? <button class="btn btn-sm btn-primary" onclick="send_verification()">resend</button>')
-            // swal.fire(
-            //   'EMAIL SENT',
-            //   'You\'re verification code is sent into your email',
-            //   'success'
-            // )
-            swal("EMAIL SENT!", "You\'re verification code is sent into your email!", "success");
+            $('#systemAlert').text('Sorry <?php echo $email; ?> is not registred in our system.');
+          }else 
+          {
+            $('#systemAlert').html('Didn\'t receive the verification code? <button class="btn btn-sm btn-primary" onclick="send_verification()">resend</button>');
           }
+        },
+        complete: function () 
+        {
+          $('#loginPreload').addClass('d-none');
         }
       });
     }send_verification();
 
-    function check_vcode() {
-      if ($('[name=vcode]').val() == '') {
-        Swal.fire({
-          icon: 'warning',
-          title: 'VERIFICATION CODE IS REQUIRED',
-          html: '<b style="color: red;">Please enter verificarion code.</b>',
-          allowOutsideClick: false,
-          confirmButtonText: 'OKAY',
-          showClass: {
-            popup: 'animate__animated animate__bounceIn'
-          },
-          hideClass: {
-            popup: 'animate__animated animate__bounceOut'
-          }
-        }).then((result) => {
-          /* Read more about isConfirmed, isDenied below */
-          if (result.isConfirmed) {
-            
-          }
-        })
-        swal("Verification code is required!", "Please enter verificarion code.", "warning");
-      }else{
+    function check_vcode() 
+    {
+      if ($('[name=vcode]').val() == '') 
+      {
+        $('#systemAlert').text("Verification code is required!");
+      }else
+      {
         $.ajax({
           url: window.location.origin + '/office-of-admissions/forgot_password/reset_password',
           type: 'POST',
@@ -220,15 +147,15 @@
               {
                   if (isConfirm) 
                   {
-                    window.location = "https://oad.clsu2.edu.ph/user-login/";
+                    window.location = window.location.origin + "/office-of-admissions";
                   } 
               });
             }else if(data.sys_msg == '2')
             {
-              swal("Wrong verification code!", "Please try again", "error");
+              $('#systemAlert').text("Wrong verification code!");
             }else
             {
-              swal("Password reset failed!", "Please try again", "warning");
+              $('#systemAlert').text("Password reset failed!");
             }
           }
         });
