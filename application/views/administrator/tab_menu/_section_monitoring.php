@@ -18,7 +18,7 @@
         <div class="panel-body">
             <div class="post">
                 <div class="post-heading">
-                    <p>Schedule</p>
+                    <p>Class Monitoring</p>
                 </div>
                 <div class="post-content table-responsive" style="padding: 10px;">
                     <div class="row">

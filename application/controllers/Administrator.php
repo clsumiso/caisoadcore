@@ -9,10 +9,10 @@ class Administrator extends CI_Controller {
 		$this->load->helper('date');
 		$this->load->model('administrator_model', 'administrator');
 		$this->load->helper('directory');
-		if (!isset($_SESSION['uid'])) 
-        {
-        	redirect('/');
-        }
+		// if (!isset($_SESSION['uid'])) 
+        // {
+        // 	redirect('/');
+        // }
 	}
 
 	public function index()
@@ -239,6 +239,11 @@ class Administrator extends CI_Controller {
 	}
 
 	/*End of accounting module*/
+
+	public function test()
+	{
+		echo json_encode($this->administrator->getTestDatabase2());
+	}
 
 }
 

@@ -45,14 +45,17 @@
                                     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
                                     <li role="presentation"><a href="#schedule" aria-controls="schedule" role="tab" data-toggle="tab">Class Schedule</a></li>
                                     <li role="presentation"><a href="#classMonitoring" aria-controls="classMonitoring" role="tab" data-toggle="tab">Class Monitoring</a></li>
-                                    <li role="presentation" class="bg-danger"><a href="#grades" aria-controls="grades" role="tab" data-toggle="tab">GRADES</a></li>
+                                    <li role="presentation" class="bg-warning"><a href="#applicants" aria-controls="applicants" role="tab" data-toggle="tab">Applicants</a></li>
                                     <li role="presentation" class="bg-danger"><a href="#accounting" aria-controls="accounting" role="tab" data-toggle="tab">ACCOUNTING</a></li>
+                                    <li role="presentation" class="bg-danger"><a href="#grades" aria-controls="grades" role="tab" data-toggle="tab">GRADES</a></li>
                                     <li role="presentation" class="bg-danger"><a href="#encoder" aria-controls="encoder" role="tab" data-toggle="tab">ENCODER</a></li>
                                 </ul>
 
                                 <div class="tab-content">
 
                                     <?php $this->load->view('administrator/tab_menu/_home.php'); ?>
+
+                                    <?php $this->load->view('administrator/tab_menu/_applicants.php'); ?>
 
                                     <?php $this->load->view('administrator/tab_menu/_schedule.php'); ?>
 

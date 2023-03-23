@@ -1,4 +1,4 @@
-<div role="tabpanel" class="tab-pane fade in" id="accounting">
+<div role="tabpanel" class="tab-pane fade in" id="applicants">
     <div class="panel panel-default panel-post">
         <div class="panel-heading">
             <div class="media">
@@ -18,20 +18,37 @@
         <div class="panel-body">
             <div class="post">
                 <div class="post-heading">
-                    <p>Accounting</p>
+                    <p>Applicants</p>
                 </div>
                 <div class="post-content table-responsive" style="padding: 10px;">
                     <div class="row">
-                        <div class="col-sm-3">
+                        <div class="col-sm-12 col-md-3 col-lg-3"">
                             <b>Semester:</b>
-                            <select class="form-control" id="semesterAccounting">
+                            <select class="form-control" id="semesterGrades">
                                 <?php echo $semester; ?>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3">
+                            <b>College</b>
+                            <select class="form-control" onchange="getCourse(this.value)" id="gradeCollegeFilter">
+                                <?php echo $college; ?>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <b>Course</b>
+                            <select class="form-control" onchange="" id="gradeCourse">
+                                <option value="-1" selected></option>
                             </select>
                         </div>
                     </div>
                     <!-- Table -->
-                    <table id='accountingTable' class='table table-bordered table-striped table-hover js-basic-example nowrap dataTable'>
+                    <table id='gradeTable' class='table table-bordered table-striped table-hover js-basic-example nowrap dataTable'>
                       <thead>
+                        <!-- <tr>
+                            <th colspan="4"></th>
+                            <th colspan="3" class="text-center">NAME</th=-
+                            <th colspan="4"></th>
+                        </tr> -->
                         <tr>
                             <th>#</th>
                             <th>...</th>
@@ -42,8 +59,6 @@
                             <th>Middlename</th>
                             <th>Course/Program</th>
                             <th>Section</th>
-                            <th>O.R Number</th>
-                            <th>Amount</th>
                         </tr>
                       </thead>
 
@@ -57,4 +72,4 @@
     </div>
 </div>
 
-<?php $this->load->view('administrator/modal/_accounting_modal'); ?>
+<?php $this->load->view('administrator/modal/_grade_modal'); ?>
