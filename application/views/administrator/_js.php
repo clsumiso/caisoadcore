@@ -39,6 +39,7 @@
     <!-- Custom Js -->
     <script src="<?php echo base_url('node_modules/leaflet/dist/leaflet.js'); ?>"></script> 
     <script src="<?php echo base_url('node_modules/leaflet/dist/Leaflet.fullscreen.min.js'); ?>"></script>
+    <script src="<?php echo base_url('node_modules/leaflet.browser.print/dist/leaflet.browser.print.min.js'); ?>"></script>
     <script src="<?php echo base_url('assets/pages/administrator.js?sid='.rand()); ?>"></script>
     <!-- Resources --><!-- Resources -->
     <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
