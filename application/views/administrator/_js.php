@@ -37,6 +37,8 @@
     <script src="<?php echo base_url('node_modules/adminbsb-materialdesign/plugins/jquery-datatable/extensions/export/buttons.print.min.js'); ?>"></script>
 
     <!-- Custom Js -->
+    <script src="<?php echo base_url('node_modules/leaflet/dist/leaflet.js'); ?>"></script> 
+    <script src="<?php echo base_url('node_modules/leaflet/dist/Leaflet.fullscreen.min.js'); ?>"></script>
     <script src="<?php echo base_url('assets/pages/administrator.js?sid='.rand()); ?>"></script>
     <!-- Resources --><!-- Resources -->
     <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
@@ -48,6 +50,7 @@
     <!-- Custom Js -->
     <script src="<?php echo base_url('node_modules/adminbsb-materialdesign/js/admin.js'); ?>"></script>
     <script src="<?php echo base_url('node_modules/adminbsb-materialdesign/js/pages/examples/profile.js'); ?>"></script>
+
 
     <!-- Demo Js -->
     <script src="<?php echo base_url('node_modules/adminbsb-materialdesign/js/demo.js'); ?>"></script>

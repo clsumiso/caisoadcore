@@ -3,6 +3,7 @@
     "@amcharts/amcharts5": "^5.3.6",
     "@amcharts/amcharts5-fonts": "^5.0.1",
     "@amcharts/amcharts5-geodata": "^5.1.0",
-    "adminbsb-materialdesign": "^1.0.7"
+    "adminbsb-materialdesign": "^1.0.7",
+    "leaflet": "^1.9.3"
   }
 }

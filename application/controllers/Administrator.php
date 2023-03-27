@@ -240,6 +240,75 @@ class Administrator extends CI_Controller {
 
 	/*End of accounting module*/
 
+	/*
+    * Grades Module Functions
+    */
+	public function studentGradeList()
+	{
+		$userID = $_POST['studentID'];
+		$semesterID = $_POST['semesterID'];
+		$htmlData = "";
+		$ctr = 1;
+		$studentGradeListData = $this->administrator->getStudentGrade($userID, $semesterID);
+
+		foreach ($studentGradeListData as $studentGrade) 
+		{
+			$htmlData .= "<tr>";
+				$htmlData .= "<td>".($ctr++)."</td>";
+				$htmlData .= "<td>".$studentGrade->user_id."</td>";
+				$htmlData .= "<td>".$studentGrade->schedid."</td>";
+				$htmlData .= "<td>".$studentGrade->faculty_id."</td>";
+				$htmlData .= "<td>".$studentGrade->cat_no."</td>";
+				$htmlData .= "<td>";
+					$htmlData .= "
+						<select class='form-control' ".($studentGrade->status == "approved" ? 'disabled="true"' : '').">
+							<option value='-1' ".(strtoupper($studentGrade->grades) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
+							<option value='1.00' ".(strtoupper($studentGrade->grades) == "1.00" ? 'selected="true"' : "").">1.00</option>
+							<option value='1.25' ".(strtoupper($studentGrade->grades) == "1.25" ? 'selected="true"' : "").">1.25</option>
+							<option value='1.50' ".(strtoupper($studentGrade->grades) == "1.50" ? 'selected="true"' : "").">1.50</option>
+							<option value='1.75' ".(strtoupper($studentGrade->grades) == "1.75" ? 'selected="true"' : "").">1.75</option>
+							<option value='2.00' ".(strtoupper($studentGrade->grades) == "2.00" ? 'selected="true"' : "").">2.00</option>
+							<option value='2.25' ".(strtoupper($studentGrade->grades) == "2.25" ? 'selected="true"' : "").">2.25</option>
+							<option value='2.50' ".(strtoupper($studentGrade->grades) == "2.50" ? 'selected="true"' : "").">2.50</option>
+							<option value='2.75' ".(strtoupper($studentGrade->grades) == "2.75" ? 'selected="true"' : "").">2.75</option>
+							<option value='3.00' ".(strtoupper($studentGrade->grades) == "3.00" ? 'selected="true"' : "").">3.00</option>
+							<option value='5.00' ".(strtoupper($studentGrade->grades) == "5.00" ? 'selected="true"' : "").">5.00</option>
+							<option value='D' ".(strtoupper($studentGrade->grades) == "D" ? 'selected="true"' : "").">D</option>
+							<option value='NG' ".(strtoupper($studentGrade->grades) == "NG" ? 'selected="true"' : "").">NG</option>
+							<option value='INC' ".(strtoupper($studentGrade->grades) == "INC" ? 'selected="true"' : "").">INC</option>
+							<option value='IP' ".(strtoupper($studentGrade->grades) == "IP" ? 'selected="true"' : "").">IP</option>
+						</select>
+					";
+				$htmlData .= "</td>";
+				$htmlData .= "<td>";
+					$htmlData .= "
+						<select class='form-control' ".($studentGrade->status == "approved" ? 'disabled="true"' : '').">
+							<option value='-1' ".(strtoupper($studentGrade->reexam) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
+							<option value='1.00' ".(strtoupper($studentGrade->reexam) == "1.00" ? 'selected="true"' : "").">1.00</option>
+							<option value='1.25' ".(strtoupper($studentGrade->reexam) == "1.25" ? 'selected="true"' : "").">1.25</option>
+							<option value='1.50' ".(strtoupper($studentGrade->reexam) == "1.50" ? 'selected="true"' : "").">1.50</option>
+							<option value='1.75' ".(strtoupper($studentGrade->reexam) == "1.75" ? 'selected="true"' : "").">1.75</option>
+							<option value='2.00' ".(strtoupper($studentGrade->reexam) == "2.00" ? 'selected="true"' : "").">2.00</option>
+							<option value='2.25' ".(strtoupper($studentGrade->reexam) == "2.25" ? 'selected="true"' : "").">2.25</option>
+							<option value='2.50' ".(strtoupper($studentGrade->reexam) == "2.50" ? 'selected="true"' : "").">2.50</option>
+							<option value='2.75' ".(strtoupper($studentGrade->reexam) == "2.75" ? 'selected="true"' : "").">2.75</option>
+							<option value='3.00' ".(strtoupper($studentGrade->reexam) == "3.00" ? 'selected="true"' : "").">3.00</option>
+							<option value='5.00' ".(strtoupper($studentGrade->reexam) == "5.00" ? 'selected="true"' : "").">5.00</option>
+							<option value='D' ".(strtoupper($studentGrade->reexam) == "D" ? 'selected="true"' : "").">D</option>
+							<option value='NG' ".(strtoupper($studentGrade->reexam) == "NG" ? 'selected="true"' : "").">NG</option>
+							<option value='INC' ".(strtoupper($studentGrade->reexam) == "INC" ? 'selected="true"' : "").">INC</option>
+							<option value='IP' ".(strtoupper($studentGrade->reexam) == "IP" ? 'selected="true"' : "").">IP</option>
+						</select>
+					";
+				$htmlData .= "</td>";
+				$htmlData .= "<td>".$studentGrade->status."</td>";
+			$htmlData .= "</tr>";
+		}
+
+		echo json_encode(array("data"	=>	$htmlData));
+	}
+	/*End of grades module Functions*/
+
 	public function test()
 	{
 		echo json_encode($this->administrator->getTestDatabase2());

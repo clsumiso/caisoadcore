@@ -581,7 +581,6 @@ class Administrator_model extends CI_Model {
 
 		return $response; 
 	}
-
 	// End of DataTable data
 
 	public function getTotal($tableName, $semester, $status, $schedid = "")
@@ -681,15 +680,38 @@ class Administrator_model extends CI_Model {
      * End of Data Analytics Functions
      */
 
-	 public function getTestDatabase2()
-	 {
-		$this->load->database('applicantDB');
-		$this->db->select('*');
-		$this->db->from('tbl_profile');
+	public function getTestDatabase2()
+	{
+		$applicantDB = $this->load->database('applicantDB', TRUE);
+		$applicantDB->select('*');
+		$applicantDB->from('tbl_profile');
+		$query = $applicantDB->get();
+
+		return $query->result();
+	}
+
+	/**
+	* Grades Module Functions
+	*/
+
+	public function getStudentGrade($userID = "", $semesterID = 0, $cat_no = "")
+	{
+		$this->db->select('tbl_registration.user_id, tbl_registration.schedid, tbl_class_schedule.cat_no, tbl_grades.faculty_id, tbl_grades.grades, tbl_grades.reexam, tbl_grades.status');
+		$this->db->from('tbl_registration');
+		$this->db->join('tbl_class_schedule', 'tbl_registration.schedid = tbl_class_schedule.schedid', 'inner');
+		$this->db->join('tbl_grades', 'tbl_class_schedule.cat_no = tbl_grades.subject', 'inner');
+		$this->db->where('tbl_registration.user_id', $userID);
+		$this->db->where('tbl_grades.user_id', $userID);
+		$this->db->where('tbl_registration.semester_id', $semesterID);
+		$this->db->order_by('tbl_registration.schedid', 'ASC');
 		$query = $this->db->get();
 
 		return $query->result();
-	 }
+	}
+
+	/**
+    * End of Grades Module Functions
+    */
 }
 
 /* End of file Administrator_model.php */

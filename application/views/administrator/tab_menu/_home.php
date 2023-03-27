@@ -29,10 +29,19 @@
                                 <?php echo $semester; ?>
                             </select>
                         </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <b></b>
+                            <!-- <select class="form-control" onchange="enrollPerCollege(this.value)">
+                                <?php echo $semester; ?>
+                            </select> -->
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12 col-md-6 col-lg-6">
                             <div id="enrollPerCollege" class="dashboardChart"></div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div id="map" class="dashboardChart" style="z-index: 0;"></div>
                         </div>
                     </div>
                     <h3>Total Enrollment per COURSE</h3>

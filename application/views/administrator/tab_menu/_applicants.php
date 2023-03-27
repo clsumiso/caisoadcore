@@ -21,7 +21,7 @@
                     <p>Applicants</p>
                 </div>
                 <div class="post-content table-responsive" style="padding: 10px;">
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-sm-12 col-md-3 col-lg-3"">
                             <b>Semester:</b>
                             <select class="form-control" id="semesterGrades">
@@ -40,9 +40,9 @@
                                 <option value="-1" selected></option>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- Table -->
-                    <table id='gradeTable' class='table table-bordered table-striped table-hover js-basic-example nowrap dataTable'>
+                    <table id='applicantTable' class='table table-bordered table-striped table-hover js-basic-example nowrap dataTable'>
                       <thead>
                         <!-- <tr>
                             <th colspan="4"></th>
