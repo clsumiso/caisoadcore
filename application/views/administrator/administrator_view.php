@@ -2,6 +2,7 @@
     <!-- Page Loader -->
     <div class="page-loader-wrapper">
         <span class="loader"></span>
+        <!-- <span class="loader"></span> -->
         <!-- <div class="loader">
             <div class="preloader">
                 <div class="spinner-layer pl-red">

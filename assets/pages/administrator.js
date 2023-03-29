@@ -1,3 +1,4 @@
+
 let scheduleData = $('#scheduleTable').DataTable({
     'dom': 'lBfrtip',
     'buttons': [
@@ -449,9 +450,139 @@ function updateSchedule(schedid, semester)
    $('.modal-title').text('Class Schedule (' + $('#semester option:selected').text() + ")");
 }
 
-function saveSchedule()
+function save(action)
 {
-   console.log($('#day1 option:selected').val());
+    let modalInitialValue = $("[name='gradeData[]']").map(function(){
+                                return $(this).val();
+                            }).get();
+
+    // console.log(values);
+    // $('#loginPreload').removeClass('d-none');
+    swal({
+        title: 'Are you sure?',
+        text: '',
+        type: "info",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        confirmButtonText: "SAVE",
+        cancelButtonText: "CANCEL",
+        showCancelButton: true,
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        closeOnConfirm: false
+    }, function (isConfirm) 
+    {
+        if (isConfirm) 
+        {
+            // let newValues = [];
+            // let ctr = 1;
+            // let index = 0;
+            // let grade = reexam = cat_no = "";
+
+            // let modalNewValue = $("[name='gradeData[]']").map(function(){
+            //                         // new value for grade data
+            //                         return $(this).val();
+            //                     });
+
+            // for (let i = 0; i < modalInitialValue.get().length; i++)
+            // {
+            //     switch (ctr) {
+            //         case 2:
+            //             grade = modalInitialValue.get(i);
+            //             break;
+            //         case 3:
+            //             reexam = modalInitialValue.get(i);
+            //             break;
+            //     }
+
+            //     if (ctr == 3)
+            //     {
+            //         let newValCtr = 1;
+            //         let newGrade = newReexam ="";
+            //         for (let x = index; x <= i; x++)
+            //         {
+            //             switch (newValCtr)
+            //             {
+            //                 case 1:
+            //                     cat_no = modalNewValue.get(x);
+            //                     break;
+            //                 case 2:
+            //                     newGrade = modalNewValue.get(x);
+            //                     break;
+            //                 case 3:
+            //                     newReexam = modalNewValue.get(x);
+            //                     break;
+            //             }
+
+            //             if (newValCtr == 3)
+            //             {
+            //                 newValCtr = 0;
+            //             }
+            //             newValCtr++;
+            //         }
+
+            //         if (grade != newGrade || reexam != newReexam)
+            //         {
+            //             newValues.push(cat_no);
+            //             newValues.push(grade);
+            //             newValues.push(reexam);
+            //         }
+
+            //         index = i + 1;
+            //         ctr = 0;
+            //     }
+            //     // if (ctr == 3)
+            //     // {
+            //     //     newValues.push(grade);
+            //     //     newValues.push(reexam);
+            //     //     ctr = 0;
+            //     // }
+                
+            //     ctr++;
+            // }
+
+            // console.log(modalInitialValue.get());
+            // console.log(modalNewValue.get());
+
+            $.ajax({
+                url: window.location.origin + "/office-of-admissions/administrator/save",
+                type:"POST",
+                dataType: 'JSON',
+                data: 
+                { 
+                    gradeData:  modalInitialValue,
+                    semester:   $("#semesterGrades option:selected").val(),
+                    studentID:  $("#studentID").val()
+                },
+                beforeSend: function ()
+                {
+                    $('#savePreload').html('<span class="loader1"></span>');
+                },
+                success: function(data)
+                {
+                    // swal("OFFICE OF ADMISSIONS", data.msg, data.icon);
+                    console.log(data.gradeData);
+                    // if (data.sys_msg == "success") 
+                    // {
+                    //     accountingData.draw();
+                    //     $('#assessmentModal').modal('hide');
+                    //     $('[name="orNumberUpdate"]').val();
+                    //     $('[name="amountUpdate"]').val();
+                    // }
+                    
+                    $('#savePreload').html('');
+                },
+                complete: function () 
+                {
+                    // $('#savePreload').html('');
+                },
+                error: function (jqXHR, textStatus, errorThrown) 
+                {
+                    
+                }
+            });
+        }
+    });
 }
 
 function getCourse(college = 0, drawData = null)
@@ -665,6 +796,7 @@ function gradeDetails(studentID, semesterID)
         success: function (response)
         {
             $("#gradeList").html(response.data);
+            $("[name='studentID']").val(studentID);
             $('#gradeModal').modal(
             {
                 backdrop: 'static', 
@@ -686,23 +818,27 @@ function gradeDetails(studentID, semesterID)
 let map = "";
 function pwdMapLocation() {
   if ($('#map').length > 0) {
-    map = L.map('map').setView([15.735859, 120.934876], 17); //Center point
+    map = L.map('map', {
+            zoomSnap: 0.15 
+        }).setView([15.735859, 120.934876], 16); //Center point
         map.addControl(new L.Control.Fullscreen());
 
         map.on('fullscreenchange', function () {
             if (map.isFullscreen()) {
                 // console.log('entered fullscreen');
-                map.setView([15.735859, 120.934876], 17);
+                map.setView([15.735859, 120.934876], 16);
             } else {
                 // console.log('exited fullscreen');
-                map.setView([15.735859, 120.934876], 17);
+                map.setView([15.735859, 120.934876], 16);
             }
         });
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 18}).addTo(map);
+            maxZoom: 20}).addTo(map);
+
         L.control.browserPrint({position: 'topleft', title: 'Print ...'}).addTo(map);
+        
         // L.Control.Watermark = L.Control.extend({
         //     onAdd: function(map) {
         //         let img = L.DomUtil.create('img');
@@ -777,12 +913,13 @@ function pwdMapLocation() {
         let marker;
         let customPopup = "";
         let markerIcon = L.icon({
-            iconUrl: window.location.origin + '/office-of-admissions/assets/leaflet-color-markers-master/img/marker-icon-2x-red.png',
-            iconSize: [25, 35], // size of the icon
+            iconUrl: window.location.origin + '/office-of-admissions/assets/leaflet-color-markers-master/img/r.png',
+            iconSize: [20, 20], // size of the icon
             popupAnchor: [0,-15]
         });
         let customOptions = { 'minWidth': '350', 'keepInView': 'true' }
-        marker = L.marker([15.735859, 120.934876], {icon: markerIcon}).bindPopup(customPopup,customOptions).addTo(map);
+        // marker = L.marker([15.735859, 120.934876], {icon: markerIcon}).bindPopup(customPopup,customOptions).addTo(map);
+        // marker = L.marker([15.735859, 120.944876], {icon: markerIcon}).bindPopup(customPopup,customOptions).addTo(map);
 
         // $.ajax({
         //     url : window.location.origin + "/" + window.location.pathname.split('/', 2)[1] + "/system_admin/automon_marker_map",

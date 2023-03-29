@@ -3,8 +3,18 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="gradeModalLabel">Report of Grades</h4>
+                
+                <div id="savePreload">
+                    <!-- Generate via request -->
+                </div>
             </div>
             <div class="modal-body table-responsive">
+                <div class="row">
+                    <div class="col-xs-3 col-md-3 col-lg-3">
+                        <b>ID NUMBER: </b>
+                        <input class="form-control" name="studentID" id="studentID" type="text" readonly="true">
+                    </div>
+                </div>
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -24,7 +34,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-link waves-effect" onclick="saveGrade('insert')">SAVE</button>
+                <button type="button" class="btn btn-link waves-effect" onclick="save('update')">SAVE</button>
                 <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
             </div>
         </div>

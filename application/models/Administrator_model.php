@@ -712,6 +712,49 @@ class Administrator_model extends CI_Model {
 	/**
     * End of Grades Module Functions
     */
+
+	/**
+	 * CRUD
+	 */
+	public function save($table, $data = array())
+	{
+		$this->db->trans_begin();
+        $this->db->trans_strict(TRUE);
+
+        $this->db->insert($table, $data);
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        } else {
+            $this->db->trans_commit();
+            return true;
+        }
+	}
+
+	public function update($data = array(), $con = array(), $table = array())
+	{
+		if(!empty($data)){
+			$this->db->trans_begin();
+	    	$this->db->trans_strict(TRUE);
+
+            // Insert member data
+           	$this->db->update($table[0], $data, $con);
+            if ($this->db->trans_status() === FALSE) 
+            {
+		        $this->db->trans_rollback();
+		        return false;
+		    } else 
+		    {
+		        $this->db->trans_commit();
+		        return true;
+		    }
+        }
+        return false;
+	}
+	/**
+	 * END OF CRUD
+	 */
 }
 
 /* End of file Administrator_model.php */

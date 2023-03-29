@@ -258,10 +258,10 @@ class Administrator extends CI_Controller {
 				$htmlData .= "<td>".$studentGrade->user_id."</td>";
 				$htmlData .= "<td>".$studentGrade->schedid."</td>";
 				$htmlData .= "<td>".$studentGrade->faculty_id."</td>";
-				$htmlData .= "<td>".$studentGrade->cat_no."</td>";
+				$htmlData .= "<td><input class='form-control' type='text' name='gradeData[]' value='".$studentGrade->cat_no."' readonly /></td>";
 				$htmlData .= "<td>";
 					$htmlData .= "
-						<select class='form-control' ".($studentGrade->status == "approved" ? 'disabled="true"' : '').">
+						<select class='form-control' ".($studentGrade->status == "approved" ? '' : '')." name='gradeData[]'>
 							<option value='-1' ".(strtoupper($studentGrade->grades) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
 							<option value='1.00' ".(strtoupper($studentGrade->grades) == "1.00" ? 'selected="true"' : "").">1.00</option>
 							<option value='1.25' ".(strtoupper($studentGrade->grades) == "1.25" ? 'selected="true"' : "").">1.25</option>
@@ -282,7 +282,7 @@ class Administrator extends CI_Controller {
 				$htmlData .= "</td>";
 				$htmlData .= "<td>";
 					$htmlData .= "
-						<select class='form-control' ".($studentGrade->status == "approved" ? 'disabled="true"' : '').">
+						<select class='form-control' ".($studentGrade->status == "approved" ? '' : '')." name='gradeData[]'>
 							<option value='-1' ".(strtoupper($studentGrade->reexam) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
 							<option value='1.00' ".(strtoupper($studentGrade->reexam) == "1.00" ? 'selected="true"' : "").">1.00</option>
 							<option value='1.25' ".(strtoupper($studentGrade->reexam) == "1.25" ? 'selected="true"' : "").">1.25</option>
@@ -308,6 +308,73 @@ class Administrator extends CI_Controller {
 		echo json_encode(array("data"	=>	$htmlData));
 	}
 	/*End of grades module Functions*/
+
+	/**
+	 * CRUD
+	 */
+		public function save()
+		{
+			// $action = $_POST['action'];
+			$gradeData = $_POST['gradeData'];
+			$semester = $_POST['semester'];
+			$studentID = $_POST['studentID'];
+
+			$output = array();
+			$ctr = 1;
+
+			$grade = '';
+			$reexam = '';
+			$cat_no = '';
+
+			for ($i = 0 ; $i < count($gradeData); $i++)
+			{
+				
+				switch ($ctr)
+				{
+					case 1:
+						$cat_no = $gradeData[$i];
+						break;
+					case 2:
+						$grade = $gradeData[$i];
+						break;
+					case 3:
+						$reexam = $gradeData[$i];
+						break;
+				}
+
+				if ($ctr == 3)
+				{
+					$data = array(
+						"status"		=>	"approved",
+						"grade"			=>	$grade,
+						"reexam"		=>	$reexam,
+						"sched_section"	=>	date("Y-m-d H:i:s")
+					);
+
+					$condtion = array(
+						"subject"	=>	$cat_no,
+						"semester"	=>	$semester,
+						"user_id"	=>	$studentID
+					);
+
+					
+					// array_push($output, $data);
+					$ctr = 1;
+				}
+				$ctr++;
+			}
+			// $reexamData = $_POST['reexam'];
+			$msg = array(
+				"sys_msg"	=> 	"success",
+				"msg"		=>	"Successfully Saved",
+				"icon"		=>	"success"
+			);
+
+			echo json_encode(array("gradeData"	=>	$output));
+		}
+	 /**
+	  * END OF CRUD
+	  */
 
 	public function test()
 	{
