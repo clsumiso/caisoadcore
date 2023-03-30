@@ -1,5 +1,5 @@
 <!--===============================================================================================-->	
-    <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+    <!-- <link rel="icon" type="image/png" href="images/icons/favicon.ico"/> -->
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/vendor/bootstrap/css/bootstrap.min.css'); ?>">
 <!--===============================================================================================-->

@@ -714,6 +714,23 @@ class Administrator_model extends CI_Model {
     */
 
 	/**
+	 * LOGS metadata
+	 */
+	public function getGradesOldData($condition = array())
+	{
+		$this->db->select("subject, grades, reexam");
+		$this->db->from("tbl_grades");
+		$this->db->where("subject", $condition['subject']);
+		$this->db->where("semester_id", $condition['semester']);
+		$this->db->where("user_id", $condition['user_id']);
+		$query = $this->db->get();
+
+		return $query->result();
+	}
+	/**
+	 * END of logs metadata
+	 */
+	/**
 	 * CRUD
 	 */
 	public function save($table, $data = array())

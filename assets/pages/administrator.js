@@ -550,6 +550,7 @@ function save(action)
                 dataType: 'JSON',
                 data: 
                 { 
+                    action: action,
                     gradeData:  modalInitialValue,
                     semester:   $("#semesterGrades option:selected").val(),
                     studentID:  $("#studentID").val()
