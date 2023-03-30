@@ -258,10 +258,10 @@ class Administrator extends CI_Controller {
 				$htmlData .= "<td>".$studentGrade->user_id."</td>";
 				$htmlData .= "<td>".$studentGrade->schedid."</td>";
 				$htmlData .= "<td>".$studentGrade->faculty_id."</td>";
-				$htmlData .= "<td><input class='form-control' type='text' name='gradeData[]' value='".$studentGrade->cat_no."' readonly /></td>";
+				$htmlData .= "<td><input style='width: 150px;' class='form-control' type='text' name='gradeData[]' value='".$studentGrade->cat_no."' readonly /></td>";
 				$htmlData .= "<td>";
 					$htmlData .= "
-						<select class='form-control' ".($studentGrade->status == "approved" ? '' : '')." name='gradeData[]'>
+						<select style='width: 150px;' class='form-control' ".($studentGrade->status == "approved" ? '' : '')." name='gradeData[]'>
 							<option value='-1' ".(strtoupper($studentGrade->grades) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
 							<option value='1.00' ".(strtoupper($studentGrade->grades) == "1.00" ? 'selected="true"' : "").">1.00</option>
 							<option value='1.25' ".(strtoupper($studentGrade->grades) == "1.25" ? 'selected="true"' : "").">1.25</option>
@@ -282,7 +282,7 @@ class Administrator extends CI_Controller {
 				$htmlData .= "</td>";
 				$htmlData .= "<td>";
 					$htmlData .= "
-						<select class='form-control' ".($studentGrade->status == "approved" ? '' : '')." name='gradeData[]'>
+						<select style='width: 150px;' class='form-control' ".($studentGrade->status == "approved" ? '' : '')." name='gradeData[]'>
 							<option value='-1' ".(strtoupper($studentGrade->reexam) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
 							<option value='1.00' ".(strtoupper($studentGrade->reexam) == "1.00" ? 'selected="true"' : "").">1.00</option>
 							<option value='1.25' ".(strtoupper($studentGrade->reexam) == "1.25" ? 'selected="true"' : "").">1.25</option>

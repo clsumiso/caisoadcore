@@ -15,23 +15,26 @@
                         <input class="form-control" name="studentID" id="studentID" type="text" readonly="true">
                     </div>
                 </div>
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>STUDENT ID</th>
-                            <th>SCHEDID</th>
-                            <th>FACULTY</th>
-                            <th>CATALOGUE</th>
-                            <th>GRADES (1st)</th> 
-                            <th>GRADES (2nd)</th>
-                            <th>STATUS</th>
-                        </tr>
-                    </thead>
-                    <tbody id="gradeList">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>STUDENT ID</th>
+                                <th>SCHEDID</th>
+                                <th>FACULTY</th>
+                                <th>CATALOGUE</th>
+                                <th>GRADES (1st)</th> 
+                                <th>GRADES (2nd)</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gradeList">
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
+                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-link waves-effect" onclick="save('update')">SAVE</button>
