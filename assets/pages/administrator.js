@@ -474,78 +474,8 @@ function save(action)
     {
         if (isConfirm) 
         {
-            // let newValues = [];
-            // let ctr = 1;
-            // let index = 0;
-            // let grade = reexam = cat_no = "";
-
-            // let modalNewValue = $("[name='gradeData[]']").map(function(){
-            //                         // new value for grade data
-            //                         return $(this).val();
-            //                     });
-
-            // for (let i = 0; i < modalInitialValue.get().length; i++)
-            // {
-            //     switch (ctr) {
-            //         case 2:
-            //             grade = modalInitialValue.get(i);
-            //             break;
-            //         case 3:
-            //             reexam = modalInitialValue.get(i);
-            //             break;
-            //     }
-
-            //     if (ctr == 3)
-            //     {
-            //         let newValCtr = 1;
-            //         let newGrade = newReexam ="";
-            //         for (let x = index; x <= i; x++)
-            //         {
-            //             switch (newValCtr)
-            //             {
-            //                 case 1:
-            //                     cat_no = modalNewValue.get(x);
-            //                     break;
-            //                 case 2:
-            //                     newGrade = modalNewValue.get(x);
-            //                     break;
-            //                 case 3:
-            //                     newReexam = modalNewValue.get(x);
-            //                     break;
-            //             }
-
-            //             if (newValCtr == 3)
-            //             {
-            //                 newValCtr = 0;
-            //             }
-            //             newValCtr++;
-            //         }
-
-            //         if (grade != newGrade || reexam != newReexam)
-            //         {
-            //             newValues.push(cat_no);
-            //             newValues.push(grade);
-            //             newValues.push(reexam);
-            //         }
-
-            //         index = i + 1;
-            //         ctr = 0;
-            //     }
-            //     // if (ctr == 3)
-            //     // {
-            //     //     newValues.push(grade);
-            //     //     newValues.push(reexam);
-            //     //     ctr = 0;
-            //     // }
-                
-            //     ctr++;
-            // }
-
-            // console.log(modalInitialValue.get());
-            // console.log(modalNewValue.get());
-
             $.ajax({
-                url: window.location.origin + "/office-of-admissions/administrator/save",
+                url: window.location.origin + "/office-of-admissions/administrator/saveGrade",
                 type:"POST",
                 dataType: 'JSON',
                 data: 
@@ -561,8 +491,8 @@ function save(action)
                 },
                 success: function(data)
                 {
-                    // swal("OFFICE OF ADMISSIONS", data.msg, data.icon);
-                    console.log(data.gradeData);
+                    swal("OFFICE OF ADMISSIONS", data.sys_msg.msg, data.sys_msg.icon);
+                    // console.log(data.sys_msg);
                     // if (data.sys_msg == "success") 
                     // {
                     //     accountingData.draw();
@@ -570,7 +500,7 @@ function save(action)
                     //     $('[name="orNumberUpdate"]').val();
                     //     $('[name="amountUpdate"]').val();
                     // }
-                    
+                    gradeDetails($("#studentID").val(), $("#semesterGrades option:selected").val());
                     $('#savePreload').html('');
                 },
                 complete: function () 

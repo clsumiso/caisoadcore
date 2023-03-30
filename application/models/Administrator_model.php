@@ -702,7 +702,9 @@ class Administrator_model extends CI_Model {
 		$this->db->join('tbl_grades', 'tbl_class_schedule.cat_no = tbl_grades.subject', 'inner');
 		$this->db->where('tbl_registration.user_id', $userID);
 		$this->db->where('tbl_grades.user_id', $userID);
+		$this->db->where('tbl_grades.semester_id', $semesterID);
 		$this->db->where('tbl_registration.semester_id', $semesterID);
+		$this->db->where('tbl_class_schedule.semester_id', $semesterID);
 		$this->db->order_by('tbl_registration.schedid', 'ASC');
 		$query = $this->db->get();
 
@@ -721,7 +723,7 @@ class Administrator_model extends CI_Model {
 		$this->db->select("subject, grades, reexam");
 		$this->db->from("tbl_grades");
 		$this->db->where("subject", $condition['subject']);
-		$this->db->where("semester_id", $condition['semester']);
+		$this->db->where("semester_id", $condition['semester_id']);
 		$this->db->where("user_id", $condition['user_id']);
 		$query = $this->db->get();
 

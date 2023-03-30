@@ -312,7 +312,7 @@ class Administrator extends CI_Controller {
 	/**
 	 * CRUD
 	 */
-	public function save()
+	public function saveGrade()
 	{
 		// $action = $_POST['action'];
 		$gradeData = $_POST['gradeData'];
@@ -321,6 +321,7 @@ class Administrator extends CI_Controller {
 		$studentID = $_POST['studentID'];
 
 		$output = array();
+		$msg = array();
 		$ctr = 1;
 
 		$grade = '';
@@ -345,43 +346,102 @@ class Administrator extends CI_Controller {
 
 			if ($ctr == 3)
 			{
-				if ($grade != -1 && $reexam != -1)
-				{
-					$data = array(
-						"status"		=>	"approved",
-						"grade"			=>	$grade,
-						"reexam"		=>	$reexam,
-						"sched_section"	=>	date("Y-m-d H:i:s")
-					);
-				}else if ($grade != -1 && $reexam == -1)
-				{
-					$data = array(
-						"status"		=>	"approved",
-						"grade"			=>	$grade,
-						"sched_section"	=>	date("Y-m-d H:i:s")
-					);
-				}else if ($grade == -1 && $reexam != -1)
-				{
-					$data = array(
-						"status"		=>	"approved",
-						"reexam"		=>	$reexam,
-						"sched_section"	=>	date("Y-m-d H:i:s")
-					);
-				}else
-				{
-					$data = array();
-				}
+				// if ($grade != -1 && $reexam != -1)
+				// {
+				// 	$data = array(
+				// 		"status"		=>	"approved",
+				// 		"grade"			=>	$grade,
+				// 		"reexam"		=>	$reexam,
+				// 		"sched_section"	=>	date("Y-m-d H:i:s")
+				// 	);
+				// }else if ($grade != -1 && $reexam == -1)
+				// {
+				// 	$data = array(
+				// 		"status"		=>	"approved",
+				// 		"grade"			=>	$grade,
+				// 		"sched_section"	=>	date("Y-m-d H:i:s")
+				// 	);
+				// }else if ($grade == -1 && $reexam != -1)
+				// {
+				// 	$data = array(
+				// 		"status"		=>	"approved",
+				// 		"reexam"		=>	$reexam,
+				// 		"sched_section"	=>	date("Y-m-d H:i:s")
+				// 	);
+				// }else
+				// {
+				// 	$data = array();
+				// }
 				
-
+				$data = array();
 				$condtion = array(
 					"subject"	=>	$cat_no,
-					"semester"	=>	$semester,
+					"semester_id"	=>	$semester,
 					"user_id"	=>	$studentID
 				);
 
 				// array_push($output, $condtion);
 				// Get Old Data
 				$gradeOldData = $this->administrator->getGradesOldData($condtion);
+				foreach ($gradeOldData as $gradeVal) 
+				{
+					$data = array();
+					if ($grade != -1 && $reexam != -1)
+					{
+						if ($grade != $gradeVal->grades && $reexam != $gradeVal->reexam)
+						{
+							$data = array(
+								"status"		=>	"approved",
+								"grades"			=>	$grade,
+								"reexam"		=>	$reexam,
+								"sched_section"	=>	date("Y-m-d H:i:s")
+							);
+						}else if($grade == $gradeVal->grades && $reexam != $gradeVal->reexam)
+						{
+							$data = array(
+								"status"		=>	"approved",
+								"reexam"		=>	$reexam,
+								"sched_section"	=>	date("Y-m-d H:i:s")
+							);
+						}else if($grade != $gradeVal->grades && $reexam == $gradeVal->reexam)
+						{
+							$data = array(
+								"status"		=>	"approved",
+								"grades"			=>	$grade,
+								"sched_section"	=>	date("Y-m-d H:i:s")
+							);
+						}else
+						{
+							$data = array();
+						}
+					}else if ($grade != -1 && $reexam == -1)
+					{
+						if ($grade != $gradeVal->grades)
+						{
+							$data = array(
+								"status"		=>	"approved",
+								"grades"			=>	$grade,
+								"sched_section"	=>	date("Y-m-d H:i:s")
+							);
+						}
+					}else if ($grade == -1 && $reexam != -1)
+					{
+						if ($reexam != $gradeVal->reexam)
+						{
+							$data = array(
+								"status"		=>	"approved",
+								"reexam"		=>	$reexam,
+								"sched_section"	=>	date("Y-m-d H:i:s")
+							);
+						}
+					}else
+					{
+						$data = array();
+					}
+
+					// array_push($output, $data);
+				}
+
 				/**
 				 * First procedure save to metadata for history logs
 				 */
@@ -395,7 +455,42 @@ class Administrator extends CI_Controller {
 
 				);
 
-				$saveToMetadata = $this->administrator->save("metadata", $metadata);
+				if (count($data) > 0)
+				{
+					$saveToMetadata = $this->administrator->save("metadata", $metadata);
+					if ($saveToMetadata !== false)
+					{
+						$saveGrade = $this->administrator->update($data, $condtion, array("tbl_grades"));
+						if ($saveGrade !== false)
+						{
+							$msg = array(
+								"sys_msg"	=> 	"success",
+								"msg"		=>	"Successfully updated",
+								"icon"		=>	"success"
+							);
+						}else
+						{
+							$msg = array(
+								"sys_msg"	=> 	"failed",
+								"msg"		=>	"Something went wrong, please try again",
+								"icon"		=>	"error"
+							);
+						}
+					}else
+					{
+						$msg = array(
+							"sys_msg"	=> 	"failed",
+							"msg"		=>	"Something went wrong, please try again",
+							"icon"		=>	"error"
+						);
+					}
+				}
+
+				if (count($data) > 0)
+				{
+					array_push($output, $data);
+				}
+				
 				/**
 				 * END First procedure save to metadata for history logs
 				 */
@@ -404,13 +499,16 @@ class Administrator extends CI_Controller {
 			$ctr++;
 		}
 		// $reexamData = $_POST['reexam'];
-		$msg = array(
-			"sys_msg"	=> 	"success",
-			"msg"		=>	"Successfully Saved",
-			"icon"		=>	"success"
-		);
+		if (count($output) == 0)
+		{
+			$msg = array(
+				"sys_msg"	=> 	"no_change",
+				"msg"		=>	"No changes",
+				"icon"		=>	"info"
+			);
+		}
 
-		echo json_encode(array("gradeData"	=>	$output));
+		echo json_encode(array("sys_msg"	=>	$msg));
 	}
 	 /**
 	  * END OF CRUD
