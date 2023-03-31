@@ -696,7 +696,7 @@ class Administrator_model extends CI_Model {
 
 	public function getStudentGrade($userID = "", $semesterID = 0, $cat_no = "")
 	{
-		$this->db->select('tbl_registration.user_id, tbl_registration.schedid, tbl_class_schedule.cat_no, tbl_grades.faculty_id, tbl_grades.grades, tbl_grades.reexam, tbl_grades.status');
+		$this->db->select('tbl_registration.user_id, tbl_registration.schedid, tbl_class_schedule.cat_no, tbl_grades.faculty_id, tbl_grades.grades, tbl_grades.reexam, tbl_grades.remarks, tbl_grades.status');
 		$this->db->from('tbl_registration');
 		$this->db->join('tbl_class_schedule', 'tbl_registration.schedid = tbl_class_schedule.schedid', 'inner');
 		$this->db->join('tbl_grades', 'tbl_class_schedule.cat_no = tbl_grades.subject', 'inner');

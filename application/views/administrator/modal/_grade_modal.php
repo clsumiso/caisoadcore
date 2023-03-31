@@ -26,6 +26,7 @@
                                 <th>CATALOGUE</th>
                                 <th>GRADES (1st)</th> 
                                 <th>GRADES (2nd)</th>
+                                <th>REMARKS</th>
                                 <th>STATUS</th>
                             </tr>
                         </thead>

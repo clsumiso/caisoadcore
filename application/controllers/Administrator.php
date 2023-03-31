@@ -274,6 +274,7 @@ class Administrator extends CI_Controller {
 							<option value='3.00' ".(strtoupper($studentGrade->grades) == "3.00" ? 'selected="true"' : "").">3.00</option>
 							<option value='5.00' ".(strtoupper($studentGrade->grades) == "5.00" ? 'selected="true"' : "").">5.00</option>
 							<option value='D' ".(strtoupper($studentGrade->grades) == "D" ? 'selected="true"' : "").">D</option>
+							<option value='FD' ".(strtoupper($studentGrade->grades) == "FD" ? 'selected="true"' : "").">FORCE DROPPED</option>
 							<option value='NG' ".(strtoupper($studentGrade->grades) == "NG" ? 'selected="true"' : "").">NG</option>
 							<option value='INC' ".(strtoupper($studentGrade->grades) == "INC" ? 'selected="true"' : "").">INC</option>
 							<option value='IP' ".(strtoupper($studentGrade->grades) == "IP" ? 'selected="true"' : "").">IP</option>
@@ -295,12 +296,14 @@ class Administrator extends CI_Controller {
 							<option value='3.00' ".(strtoupper($studentGrade->reexam) == "3.00" ? 'selected="true"' : "").">3.00</option>
 							<option value='5.00' ".(strtoupper($studentGrade->reexam) == "5.00" ? 'selected="true"' : "").">5.00</option>
 							<option value='D' ".(strtoupper($studentGrade->reexam) == "D" ? 'selected="true"' : "").">D</option>
+							<option value='FD' ".(strtoupper($studentGrade->reexam) == "FD" ? 'selected="true"' : "").">FORCE DROPPED</option>
 							<option value='NG' ".(strtoupper($studentGrade->reexam) == "NG" ? 'selected="true"' : "").">NG</option>
 							<option value='INC' ".(strtoupper($studentGrade->reexam) == "INC" ? 'selected="true"' : "").">INC</option>
 							<option value='IP' ".(strtoupper($studentGrade->reexam) == "IP" ? 'selected="true"' : "").">IP</option>
 						</select>
 					";
 				$htmlData .= "</td>";
+				$htmlData .= "<td>".$studentGrade->remarks."</td>";
 				$htmlData .= "<td>".$studentGrade->status."</td>";
 			$htmlData .= "</tr>";
 		}
@@ -392,8 +395,9 @@ class Administrator extends CI_Controller {
 						{
 							$data = array(
 								"status"		=>	"approved",
-								"grades"			=>	$grade,
+								"grades"		=>	$grade,
 								"reexam"		=>	$reexam,
+								"remarks"		=>	$this->gradeRemarks($reexam),
 								"sched_section"	=>	date("Y-m-d H:i:s")
 							);
 						}else if($grade == $gradeVal->grades && $reexam != $gradeVal->reexam)
@@ -401,13 +405,15 @@ class Administrator extends CI_Controller {
 							$data = array(
 								"status"		=>	"approved",
 								"reexam"		=>	$reexam,
+								"remarks"		=>	$this->gradeRemarks($reexam),
 								"sched_section"	=>	date("Y-m-d H:i:s")
 							);
 						}else if($grade != $gradeVal->grades && $reexam == $gradeVal->reexam)
 						{
 							$data = array(
 								"status"		=>	"approved",
-								"grades"			=>	$grade,
+								"grades"		=>	$grade,
+								"remarks"		=>	$this->gradeRemarks($grade),
 								"sched_section"	=>	date("Y-m-d H:i:s")
 							);
 						}else
@@ -420,7 +426,8 @@ class Administrator extends CI_Controller {
 						{
 							$data = array(
 								"status"		=>	"approved",
-								"grades"			=>	$grade,
+								"grades"		=>	$grade,
+								"remarks"		=>	$this->gradeRemarks($grade),
 								"sched_section"	=>	date("Y-m-d H:i:s")
 							);
 						}
@@ -431,6 +438,7 @@ class Administrator extends CI_Controller {
 							$data = array(
 								"status"		=>	"approved",
 								"reexam"		=>	$reexam,
+								"remarks"		=>	$this->gradeRemarks($reexam),
 								"sched_section"	=>	date("Y-m-d H:i:s")
 							);
 						}
@@ -512,6 +520,49 @@ class Administrator extends CI_Controller {
 	}
 	 /**
 	  * END OF CRUD
+	  */
+
+	/**
+	 * OTHER Functions
+	 */
+	public function gradeRemarks($grade = "")
+	{
+		$remarks = "";
+		switch ($grade) {
+			case '1.00':
+				case '1.25':
+					case '1.50':
+						case '1.75':
+							case '2.00':
+								case '2.25':
+									case '2.50':
+										case '2.75':
+											case '3.00':
+												$remarks = "PASSED";
+				break;
+			case 'INC':
+				$remarks = "INCOMPLETE";
+				break;
+			case 'NG':
+				$remarks = "NO GRADE";
+				break;
+			case 'D':
+				$remarks = "DROPPED";
+			case 'FD':
+				$remarks = "FORCE DROPPED";
+				break;
+			case 'IP':
+				$remarks = "IN PROGRESS";
+				break;
+			case '5.00':
+				$remarks = "FAILED";
+				break;
+		}
+
+		return $remarks;
+	}
+	 /**
+	  * END of other functions
 	  */
 
 	public function test()
