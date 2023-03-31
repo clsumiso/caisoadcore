@@ -46,11 +46,93 @@
                                 <h2>Basic Information</h2>
                                 <section>
                                     <p>
+                                        <small></small>
                                         Instruction to Applicant: This form should be accomplished with all entries. Please fill-out all items, Applicant for MS/MPS must be a Bachelor’s degree graduate; applicant for PhD must be an MS/MA degree graduate. An application entity one for consideration to the specified program only.
                                     </p>
-
-                                    <div class="switch">
-                                        <label>NO<input type="checkbox"><span class="lever"></span>YES</label>
+                                    <hr>
+                                    <div class="row clearfix">
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
+                                            <p>Are you currently enrolled in a degree program in CLSU or in other higher education institution?</p>
+                                        </div>
+                                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                            <input name="question_1" type="radio" id="question_1_yes" value="true" class="with-gap radio-col-green">
+                                            <label for="question_1_yes">Yes</label>
+                                            <input name="question_1" type="radio" id="question_1_no" value="false" class="with-gap radio-col-green">
+                                            <label for="question_1_no">NO</label>
+                                        </div>
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
+                                            <p>Were you previously enrolled in a gradate program in CLSU (including DOT-Uni)?</p>
+                                        </div>
+                                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                            <input name="question_2" type="radio" id="question_2_yes" value="true" class="with-gap radio-col-green">
+                                            <label for="question_2_yes">Yes</label>
+                                            <input name="question_2" type="radio" id="question_2_no" value="false" class="with-gap radio-col-green">
+                                            <label for="question_2_no">NO</label>
+                                        </div>
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
+                                            <p>Degree Program Applied for: </p>
+                                        </div>
+                                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                            <input name="question_3" type="radio" id="question_3_yes" value="master" class="with-gap radio-col-green">
+                                            <label for="question_3_yes">Master's</label>
+                                            <input name="question_3" type="radio" id="question_3_no" value="phd" class="with-gap radio-col-green">
+                                            <label for="question_3_no">PhD</label>
+                                        </div>
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
+                                            <p>Field of study: </p>
+                                        </div>
+                                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                            <input type="text" name="question_4" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
+                                            <p>Title:</p>
+                                        </div>
+                                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                            <input name="question_5" type="radio" id="question_5_mr" value="mr" class="with-gap radio-col-green">
+                                            <label for="question_5_mr">Mr.</label>
+                                            <input name="question_5" type="radio" id="question_5_ms" value="ms" class="with-gap radio-col-green">
+                                            <label for="question_5_ms">Ms.</label>
+                                            <input name="question_5" type="radio" id="question_5_mrs" value="mrs" class="with-gap radio-col-green">
+                                            <label for="question_5_mrs">Mrs.</label>
+                                        </div>
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
+                                            <p>Name:</p>
+                                        </div>
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                            <input type="text" name="question_6" class="form-control" placeholder="(Family Name)" />
+                                        </div>
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                            <input type="text" name="question_7" class="form-control" placeholder="(First Name)" />
+                                        </div>
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                            <input type="text" name="question_8" class="form-control" placeholder="(MIddle Name)" />
+                                        </div>
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
+                                            <p>Mailing Address:</p>
+                                        </div>
+                                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                            <textarea name="question_9" class="form-control" placeholder="(House No., Street Name, Building)"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row clearfix">
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
+                                            <p>:</p>
+                                        </div>
+                                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                                            
+                                        </div>
                                     </div>
                                 </section>
 
