@@ -16,7 +16,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  *
  */
 
-class Application_model extends CI_Model {
+class Admission_application_model extends CI_Model {
 
   // ------------------------------------------------------------------------
 
