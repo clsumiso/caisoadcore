@@ -16,6 +16,7 @@ class Admission_application extends CI_Controller
     $this->load->view('application/_header', $data);
     $this->load->view('application/_css', $data);
     $this->load->view('application/application_view', $data);
+    $this->load->view('application/modal/_err_modal', $data);
     $this->load->view('application/_footer', $data);
     $this->load->view('application/_js', $data);
   }

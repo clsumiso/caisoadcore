@@ -133,12 +133,13 @@
                                         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                             <select class="form-control" name="question_10" id="region" onfocus="_region()" onchange="_province()">
                                                 <!-- generate via ajax -->
-                                                <option value="#">-- SELECT REGION --</option>
+                                                <option value="#" selected>-- SELECT REGION --</option>
                                             </select>
                                         </div>
                                         <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
                                             <select class="form-control" name="question_11" id="province" onchange="_municipality()">
                                                 <!-- generate via ajax -->
+                                                <option value="#" selected>-- SELECT PROVINCE --</option>
                                             </select>
                                         </div>
                                     </div>
@@ -149,11 +150,13 @@
                                         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                             <select class="form-control" name="question_12" id="municipality" onchange="_barangay()">
                                                 <!-- generate via ajax -->
+                                                <option value="#" selected>-- SELECT MUNICIPALITY --</option>
                                             </select>
                                         </div>
                                         <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
                                             <select class="form-control" name="question_13" id="barangay">
                                                 <!-- generate via ajax -->
+                                                <option value="#" selected>-- SELECT BARANGAY --</option>
                                             </select>
                                         </div>
                                     </div>
@@ -197,7 +200,7 @@
                                             <p>Present occupation or position:</p>
                                         </div>
                                         <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                                            <input type="text" name="question_19" class="form-control" placeholder="(Citizenship Here)" />
+                                            <input type="text" name="question_19" class="form-control" placeholder="(Present occupation or position Here)" />
                                         </div>
                                     </div>
                                     <div class="row clearfix">

@@ -15,18 +15,282 @@ $('#wizard_vertical').steps({
     },
     onFinished: function (event, currentIndex)
     {
-        _validation();
+        let err = "";
+        if (_validation()[0].length > 0)
+        {
+            err += "<ul class='align-left' style='list-style: none;'>";
+
+            if (_validation()[0][0]['basic_information'].length > 0)
+            {
+                err += "<li><h5>Basic Information</h5></li>";
+                err += "<ul class='align-left'>";
+                for (let index = 0; index < _validation()[0][0]['basic_information'].length; index++) 
+                {
+                    err += "<li>"+_validation()[0][0]['basic_information'][index]+"</li>";
+                }
+                err += "</ul>";
+            }
+
+            if (_validation()[0][1]['educational_background'].length > 0)
+            {
+                err += "<li><h5>Educational Background</h5></li>";
+                err += "<ul class='align-left'>";
+                for (let index = 0; index < _validation()[0][1]['educational_background'].length; index++) 
+                {
+                    err += "<li>"+_validation()[0][1]['educational_background'][index]+"</li>";
+                }
+                err += "</ul>";
+            }
+
+            if (_validation()[0][2]['reference'].length > 0)
+            {
+                err += "<li><h5>Reference</h5></li>";
+                err += "<ul class='align-left'>";
+                for (let index = 0; index < _validation()[0][2]['reference'].length; index++) 
+                {
+                    err += "<li>"+_validation()[0][2]['reference'][index]+"</li>";
+                }
+                err += "</ul>";
+            }
+            
+            err += "</ul>";
+
+            $("#errContent").html(err);
+            $("#errModal").modal('show');
+        }
     }
 });
 
 function _validation()
 {
-    if (!$("[name='question']").is(":checked"))
+    let err = [];
+    let errData = [];
+    let basic_information = [];
+    let educational_background = [];
+    let reference = [];
+    let other = [];
+    var emailReg = /^([\w-.]+@([\w-]+.)+[\w-]{2,4})?$/;
+    var emailblockReg = /^([\w-.]+@(?!gmail\.com)(?!yahoo\.com)(?!hotmail\.com)([\w-]+.)+[\w-]{2,4})?$/;
+
+    if (!$("[name='question_1']").is(":checked"))
     {
-        // alert("is required");
-        return false;
+       basic_information.push("Are you currently enrolled in a degree program in CLSU or in other higher education institution? is <b class='col-red'>required!!!</b>")
     }
-    return false;
+
+    if (!$("[name='question_2']").is(":checked"))
+    {
+       basic_information.push("Were you previously enrolled in a gradate program in CLSU (including DOT-Uni)? is <b class='col-red'>required!!!</b>")
+    }
+
+    if (!$("[name='question_3']").is(":checked"))
+    {
+       basic_information.push("Degree Program Applied for is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_4']").val() == "")
+    {
+       basic_information.push("Field of study is <b class='col-red'>required!!!</b>")
+    }
+
+    if (!$("[name='question_5']").is(":checked"))
+    {
+       basic_information.push("Title (Mr, Ms, or Mrs) is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_6']").val() == "")
+    {
+       basic_information.push("Family Name is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_7']").val() == "")
+    {
+       basic_information.push("First Name is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_9']").val() == "")
+    {
+       basic_information.push("(House No., Street Name, Building) is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_10'] option:selected").val() == "#")
+    {
+       basic_information.push("Region is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_11'] option:selected").val() == "#")
+    {
+       basic_information.push("Province is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_12'] option:selected").val() == "#")
+    {
+       basic_information.push("Municipality is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_13'] option:selected").val() == "#")
+    {
+       basic_information.push("Barangay is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_14']").val() == "")
+    {
+       basic_information.push("(Postal/Zip Code) is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_15']").val() == "")
+    {
+       basic_information.push("(Country) is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_16']").val() == "")
+    {
+       basic_information.push("(Email Address) is <b class='col-red'>required!!!</b>")
+    }
+
+    if (!emailReg.test($("[name='question_16']").val()))
+    {
+        basic_information.push("Invalid email address <b class='col-red'>*required</b>");
+    }else
+    {
+        if(!emailblockReg.test($("[name='question_16']").val()))
+        {
+            basic_information.push("Please use a corporate email address <b class='col-red'>*required</b>");
+        }
+    }
+
+    if ($("[name='question_17']").val() == "")
+    {
+       basic_information.push("(Mobile Phone Number) is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_18']").val() == "")
+    {
+       basic_information.push("(Citizenship) is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_19']").val() == "")
+    {
+       basic_information.push("(Present occupation or position) is <b class='col-red'>required!!!</b>")
+    }
+
+    if ($("[name='question_20']").val() == "")
+    {
+       basic_information.push("(Name & Address of Employment) is <b class='col-red'>required!!!</b>")
+    }
+
+    let question_21_val = $("[name='question_21[]']").map(function(){
+        return $(this).val();
+    });
+
+    let question_22_val = $("[name='question_22[]']").map(function(){
+        return $(this).val();
+    });
+
+    /**
+     * Educational Background validation
+     */
+    let question_21 = getObject(question_21_val);
+
+    if (question_21.length <= 0)
+    {
+        educational_background.push("Please specify College/University Attended Beyond High School <b class='col-red'>*required</b>")
+    }
+    
+    if (question_21.length > 0)
+    {
+        if (question_21.length % 4 != 0)
+        {
+            educational_background.push("Please specify College/University Attended Beyond High School <b class='col-red'>*please complete all fields!!!</b>");
+        }
+    }
+    /**
+     * End of Educational Background validation
+     */
+
+    /**
+     * Reference validation
+     */
+    let question_22 = getObject(question_22_val);
+
+    if (question_22.length <= 0)
+    {
+        reference.push("Please specify your references <b class='col-red'>*required</b>");
+    }
+
+    if (question_22.length > 0)
+    {
+        if ($("[name='question_3']:checked").val() == "master")
+        {
+            if (question_22.length < 12) 
+            {
+                reference.push("Your applying for Master's Degree program. Please specify two (2) references <b class='col-red'>*required</b>");
+            }else
+            {
+                if (!emailReg.test(question_22[4]) || !emailReg.test(question_22[10]))
+                {
+                    reference.push("Invalid email address <b class='col-red'>*required</b>");
+                }else
+                {
+                    if(!emailblockReg.test(question_22[4]) || !emailblockReg.test(question_22[10]))
+                    {
+                        reference.push("Please use a corporate email address <b class='col-red'>*required</b>");
+                    }
+                }
+            }
+        }else if ($("[name='question_3']:checked").val() == "phd")
+        {
+            if (question_22.length < 18) 
+            {
+                reference.push("Your applying for PhD Degree program. Please specify three (3) references <b class='col-red'>*required</b>");
+            }else
+            {
+                if (!emailReg.test(question_22[4]) || !emailReg.test(question_22[10]) || !emailReg.test(question_22[16]))
+                {
+                    reference.push("Invalid email address <b class='col-red'>*required</b>");
+                }else
+                {
+                    if(!emailblockReg.test(question_22[4]) || !emailblockReg.test(question_22[10]) || !emailblockReg.test(question_22[16]))
+                    {
+                        reference.push("Please use a corporate email address <b class='col-red'>*required</b>");
+                    }
+                }
+            }
+        }
+
+        if (question_22.length % 6 != 0)
+        {
+            reference.push("Reference information <b class='col-red'>*please complete all fields!!!</b>");
+        }
+    }
+    
+    /**
+     * End of Reference validation
+     */
+
+    errData = [
+        { "basic_information"       :   basic_information },
+        { "educational_background"  :   educational_background },
+        { "reference"               :   reference }
+    ]
+
+    err.push(errData);
+    // console.log(question_21.length % 4);
+
+    return err;
+}
+
+function getObject(dataVal)
+{
+    let tmpData = [];
+    for (let index = 0; index < dataVal.get().length; index++) 
+    {
+        if (dataVal.get(index) != "")
+        {
+            tmpData.push(dataVal.get(index));
+        }
+    }
+
+    return tmpData;
 }
 
 // Set school year advance 10 years
