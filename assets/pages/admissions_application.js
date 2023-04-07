@@ -16,14 +16,14 @@ $('#wizard_vertical').steps({
     onFinished: function (event, currentIndex)
     {
         let err = "";
-        if (_validation()[0].length > 0)
+        if (_validation()[0][0]['basic_information'].length > 0 || _validation()[0][1]['educational_background'].length > 0 || _validation()[0][2]['reference'].length > 0 || _validation()[0][3]['other'].length > 0)
         {
             err += "<ul class='align-left' style='list-style: none;'>";
 
             if (_validation()[0][0]['basic_information'].length > 0)
             {
                 err += "<li><h5>Basic Information</h5></li>";
-                err += "<ul class='align-left'>";
+                err += "<ul class='align-left' style='list-style: square;'>";
                 for (let index = 0; index < _validation()[0][0]['basic_information'].length; index++) 
                 {
                     err += "<li>"+_validation()[0][0]['basic_information'][index]+"</li>";
@@ -34,7 +34,7 @@ $('#wizard_vertical').steps({
             if (_validation()[0][1]['educational_background'].length > 0)
             {
                 err += "<li><h5>Educational Background</h5></li>";
-                err += "<ul class='align-left'>";
+                err += "<ul class='align-left' style='list-style: square;'>";
                 for (let index = 0; index < _validation()[0][1]['educational_background'].length; index++) 
                 {
                     err += "<li>"+_validation()[0][1]['educational_background'][index]+"</li>";
@@ -45,10 +45,21 @@ $('#wizard_vertical').steps({
             if (_validation()[0][2]['reference'].length > 0)
             {
                 err += "<li><h5>Reference</h5></li>";
-                err += "<ul class='align-left'>";
+                err += "<ul class='align-left' style='list-style: square;'>";
                 for (let index = 0; index < _validation()[0][2]['reference'].length; index++) 
                 {
                     err += "<li>"+_validation()[0][2]['reference'][index]+"</li>";
+                }
+                err += "</ul>";
+            }
+
+            if (_validation()[0][3]['other'].length > 0)
+            {
+                err += "<li><h5>Other</h5></li>";
+                err += "<ul class='align-left' style='list-style: square;'>";
+                for (let index = 0; index < _validation()[0][3]['other'].length; index++) 
+                {
+                    err += "<li>"+_validation()[0][3]['other'][index]+"</li>";
                 }
                 err += "</ul>";
             }
@@ -57,9 +68,37 @@ $('#wizard_vertical').steps({
 
             $("#errContent").html(err);
             $("#errModal").modal('show');
+        }else
+        {
+            // Get form
+            var form = $('#applicationForm')[0];
+    
+            // Create an FormData object 
+            var data = new FormData(form);
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: window.location.origin + "/office-of-admissions/admission_application/submitApplication",
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (data) 
+                {
+     
+                    console.log(data);
+     
+                },
+                error: function (e) 
+                {
+                    swal("System Message", e.responseText, "error");
+                }
+            });
         }
     }
 });
+
 
 function _validation()
 {
@@ -178,6 +217,26 @@ function _validation()
        basic_information.push("(Name & Address of Employment) is <b class='col-red'>required!!!</b>")
     }
 
+    if ($("[name='question_23']").val() == "")
+    {
+       other.push("(Field and Areas of Interes) is <b class='col-red'>required!!!</b>")
+    }
+
+    if (!$("[name='question_26']").is(":checked"))
+    {
+        other.push("Have you previously applied for admission to a graduate program in CLSU? is <b class='col-red'>required!!!</b>")
+    }
+
+    if (!$("[name='question_34']").is(":checked"))
+    {
+        other.push("Semester is <b class='col-red'>required!!!</b>")
+    }
+
+    if (!$("[name='question_35']").is(":checked"))
+    {
+        other.push("I certify that the information submitted in this application form is accurate is <b class='col-red'>required!!!</b>")
+    }
+
     let question_21_val = $("[name='question_21[]']").map(function(){
         return $(this).val();
     });
@@ -270,7 +329,8 @@ function _validation()
     errData = [
         { "basic_information"       :   basic_information },
         { "educational_background"  :   educational_background },
-        { "reference"               :   reference }
+        { "reference"               :   reference },
+        { "other"                   :   other }
     ]
 
     err.push(errData);
@@ -291,6 +351,11 @@ function getObject(dataVal)
     }
 
     return tmpData;
+}
+
+function wordCount(value)
+{
+    return value.split(' ').length;
 }
 
 // Set school year advance 10 years

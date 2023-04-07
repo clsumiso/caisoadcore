@@ -21,6 +21,13 @@ class Admission_application extends CI_Controller
     $this->load->view('application/_js', $data);
   }
 
+  public function submitApplication()
+  {
+    $data = $_POST;
+
+    echo json_encode($data);
+  }
+
 }
 
 
