@@ -344,27 +344,7 @@
                                                 <input type="text" name="question_22[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <input type="date" name="question_22[]" class="form-control" />
-                                            </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                                 <input type="text" name="question_22[]" class="form-control" />
-                                            </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <input type="text" name="question_22[]" class="form-control" />
-                                            </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <input type="text" name="question_22[]" class="form-control" />
-                                            </div>
-                                        </div>
-                                        <div class="row clearfix">
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <input type="text" name="question_22[]" class="form-control" />
-                                            </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <input type="text" name="question_22[]" class="form-control" />
-                                            </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <input type="date" name="question_22[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                                 <input type="text" name="question_22[]" class="form-control" />
@@ -384,7 +364,27 @@
                                                 <input type="text" name="question_22[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <input type="date" name="question_22[]" class="form-control" />
+                                                <input type="text" name="question_22[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <input type="text" name="question_22[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <input type="text" name="question_22[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <input type="text" name="question_22[]" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <input type="text" name="question_22[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <input type="text" name="question_22[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <input type="text" name="question_22[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                                 <input type="text" name="question_22[]" class="form-control" />

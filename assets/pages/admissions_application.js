@@ -70,30 +70,43 @@ $('#wizard_vertical').steps({
             $("#errModal").modal('show');
         }else
         {
-            // Get form
-            var form = $('#applicationForm')[0];
-    
-            // Create an FormData object 
-            var data = new FormData(form);
+            swal({
+                title: "Are you sure?",
+                text: "Your application will be forwarded to the reference you specified",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Submit",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            }, function (isConfirm) {
+                if (isConfirm) 
+                {
+                    // Get form
+                    var form = $('#applicationForm')[0];
+            
+                    // Create an FormData object 
+                    var data = new FormData(form);
 
-            $.ajax({
-                type: "POST",
-                enctype: 'multipart/form-data',
-                url: window.location.origin + "/office-of-admissions/admission_application/submitApplication",
-                data: data,
-                processData: false,
-                contentType: false,
-                cache: false,
-                success: function (data) 
-                {
-     
-                    console.log(data);
-     
-                },
-                error: function (e) 
-                {
-                    swal("System Message", e.responseText, "error");
-                }
+                    $.ajax({
+                        type: "POST",
+                        enctype: 'multipart/form-data',
+                        url: window.location.origin + "/office-of-admissions/admission_application/submitApplication",
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                        dataType: "JSON",
+                        success: function (data) 
+                        {
+                            swal(data.sys_msg.toUpperCase(), data.msg, data.type);
+                        },
+                        error: function (e) 
+                        {
+                            swal("System Message", e.responseText, "error");
+                        }
+                    });
+                } 
             });
         }
     }
@@ -113,77 +126,77 @@ function _validation()
 
     if (!$("[name='question_1']").is(":checked"))
     {
-       basic_information.push("Are you currently enrolled in a degree program in CLSU or in other higher education institution? is <b class='col-red'>required!!!</b>")
+       basic_information.push("Are you currently enrolled in a degree program in CLSU or in other higher education institution? is <b class='col-red'>required!!!</b>");
     }
 
     if (!$("[name='question_2']").is(":checked"))
     {
-       basic_information.push("Were you previously enrolled in a gradate program in CLSU (including DOT-Uni)? is <b class='col-red'>required!!!</b>")
+       basic_information.push("Were you previously enrolled in a gradate program in CLSU (including DOT-Uni)? is <b class='col-red'>required!!!</b>");
     }
 
     if (!$("[name='question_3']").is(":checked"))
     {
-       basic_information.push("Degree Program Applied for is <b class='col-red'>required!!!</b>")
+       basic_information.push("Degree Program Applied for is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_4']").val() == "")
     {
-       basic_information.push("Field of study is <b class='col-red'>required!!!</b>")
+       basic_information.push("Field of study is <b class='col-red'>required!!!</b>");
     }
 
     if (!$("[name='question_5']").is(":checked"))
     {
-       basic_information.push("Title (Mr, Ms, or Mrs) is <b class='col-red'>required!!!</b>")
+       basic_information.push("Title (Mr, Ms, or Mrs) is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_6']").val() == "")
     {
-       basic_information.push("Family Name is <b class='col-red'>required!!!</b>")
+       basic_information.push("Family Name is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_7']").val() == "")
     {
-       basic_information.push("First Name is <b class='col-red'>required!!!</b>")
+       basic_information.push("First Name is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_9']").val() == "")
     {
-       basic_information.push("(House No., Street Name, Building) is <b class='col-red'>required!!!</b>")
+       basic_information.push("(House No., Street Name, Building) is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_10'] option:selected").val() == "#")
     {
-       basic_information.push("Region is <b class='col-red'>required!!!</b>")
+       basic_information.push("Region is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_11'] option:selected").val() == "#")
     {
-       basic_information.push("Province is <b class='col-red'>required!!!</b>")
+       basic_information.push("Province is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_12'] option:selected").val() == "#")
     {
-       basic_information.push("Municipality is <b class='col-red'>required!!!</b>")
+       basic_information.push("Municipality is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_13'] option:selected").val() == "#")
     {
-       basic_information.push("Barangay is <b class='col-red'>required!!!</b>")
+       basic_information.push("Barangay is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_14']").val() == "")
     {
-       basic_information.push("(Postal/Zip Code) is <b class='col-red'>required!!!</b>")
+       basic_information.push("(Postal/Zip Code) is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_15']").val() == "")
     {
-       basic_information.push("(Country) is <b class='col-red'>required!!!</b>")
+       basic_information.push("(Country) is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_16']").val() == "")
     {
-       basic_information.push("(Email Address) is <b class='col-red'>required!!!</b>")
+       basic_information.push("(Email Address) is <b class='col-red'>required!!!</b>");
     }
 
     if (!emailReg.test($("[name='question_16']").val()))
@@ -199,42 +212,51 @@ function _validation()
 
     if ($("[name='question_17']").val() == "")
     {
-       basic_information.push("(Mobile Phone Number) is <b class='col-red'>required!!!</b>")
+       basic_information.push("(Mobile Phone Number) is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_18']").val() == "")
     {
-       basic_information.push("(Citizenship) is <b class='col-red'>required!!!</b>")
+       basic_information.push("(Citizenship) is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_19']").val() == "")
     {
-       basic_information.push("(Present occupation or position) is <b class='col-red'>required!!!</b>")
+       basic_information.push("(Present occupation or position) is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_20']").val() == "")
     {
-       basic_information.push("(Name & Address of Employment) is <b class='col-red'>required!!!</b>")
+       basic_information.push("(Name & Address of Employment) is <b class='col-red'>required!!!</b>");
     }
 
     if ($("[name='question_23']").val() == "")
     {
-       other.push("(Field and Areas of Interes) is <b class='col-red'>required!!!</b>")
+       other.push("(Field and Areas of Interes) is <b class='col-red'>required!!!</b>");
     }
 
     if (!$("[name='question_26']").is(":checked"))
     {
-        other.push("Have you previously applied for admission to a graduate program in CLSU? is <b class='col-red'>required!!!</b>")
+        other.push("Have you previously applied for admission to a graduate program in CLSU? is <b class='col-red'>required!!!</b>");
+    }
+
+    if ($("[name='question_26']").is(":checked"))
+    {
+        if ($("[name='question_26']:checked").val() == "true")
+        {
+            other.push("Please specify the date you previously applied for admission to a graduate program in CLSU? is <b class='col-red'>required!!!</b>");
+        }
+        
     }
 
     if (!$("[name='question_34']").is(":checked"))
     {
-        other.push("Semester is <b class='col-red'>required!!!</b>")
+        other.push("Semester is <b class='col-red'>required!!!</b>");
     }
 
     if (!$("[name='question_35']").is(":checked"))
     {
-        other.push("I certify that the information submitted in this application form is accurate is <b class='col-red'>required!!!</b>")
+        other.push("I certify that the information submitted in this application form is accurate is <b class='col-red'>required!!!</b>");
     }
 
     let question_21_val = $("[name='question_21[]']").map(function(){
@@ -252,7 +274,7 @@ function _validation()
 
     if (question_21.length <= 0)
     {
-        educational_background.push("Please specify College/University Attended Beyond High School <b class='col-red'>*required</b>")
+        educational_background.push("Please specify College/University Attended Beyond High School <b class='col-red'>*required</b>");
     }
     
     if (question_21.length > 0)
