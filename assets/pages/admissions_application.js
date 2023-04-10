@@ -100,6 +100,7 @@ $('#wizard_vertical').steps({
                         success: function (data) 
                         {
                             swal(data.sys_msg.toUpperCase(), data.msg, data.type);
+                            $("#applicationForm")[0].reset();
                         },
                         error: function (e) 
                         {
@@ -230,10 +231,10 @@ function _validation()
        basic_information.push("(Name & Address of Employment) is <b class='col-red'>required!!!</b>");
     }
 
-    if ($("[name='question_23']").val() == "")
-    {
-       other.push("(Field and Areas of Interes) is <b class='col-red'>required!!!</b>");
-    }
+    // if ($("[name='question_23']").val() == "")
+    // {
+    //    other.push("(Field and Areas of Interes) is <b class='col-red'>required!!!</b>");
+    // }
 
     if (!$("[name='question_26']").is(":checked"))
     {
@@ -244,7 +245,10 @@ function _validation()
     {
         if ($("[name='question_26']:checked").val() == "true")
         {
-            other.push("Please specify the date you previously applied for admission to a graduate program in CLSU? is <b class='col-red'>required!!!</b>");
+            if ($("[name='question_27']").val() == "")
+            {
+                other.push("Please specify the date you previously applied for admission to a graduate program in CLSU? is <b class='col-red'>required!!!</b>");
+            }
         }
         
     }

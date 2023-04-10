@@ -89,7 +89,10 @@
                                                 <p>Field of study: </p>
                                             </div>
                                             <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                                                <input type="text" name="question_4" class="form-control" />
+                                                <!-- <input type="text" name="question_4" class="form-control" /> -->
+                                                <select name="question_4" class="form-control">
+                                                    <?php echo $courseList; ?>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="row clearfix">
@@ -400,7 +403,7 @@
 
                                     <h2>Others</h2>
                                     <section>
-                                        <div class="row clearfix">
+                                        <div class="row clearfix" style="display: none;">
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 align-right">
                                                 <p>Field and Areas of Interest:</p>
                                             </div>

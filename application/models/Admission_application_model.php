@@ -27,7 +27,39 @@ class Admission_application_model extends CI_Model {
   }
 
   // ------------------------------------------------------------------------
+  public function gerGraduateProgram($courseType = array())
+  {
+    $this->db->select("course_id, course_name, course_desc");
+    $this->db->from("tbl_course");
+    $this->db->where_in("course_type", $courseType);
+    $this->db->order_by("course_desc", 'desc');
+    $query = $this->db->get();
 
+    return $query->result();
+  }
+
+  public function getApplicationID($applicationID = "")
+  {
+    
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select("application_id");
+    $applicantDB->from("oad0001");
+    $applicantDB->where("application_id", $applicationID);
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
+  public function getApplication($applicationID = "")
+  {
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select("*");
+    $applicantDB->from("oad0001");
+    $applicantDB->where("application_id", $applicationID);
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
 
   // ------------------------------------------------------------------------
   /**
