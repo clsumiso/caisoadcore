@@ -230,17 +230,17 @@
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                                 <p></p>
                                             </div>
-                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-center">
-                                                <p>Institution</p>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <p class="align-center">Institution</p>
                                             </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 align-center">
-                                                <p>Dates Attended</p>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <p class="align-center">Dates Attended</p>
                                             </div>
-                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-center">
-                                                <p>Degree Obtained</p>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <p class="align-center">Degree Obtained</p>
                                             </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 align-center">
-                                                <p>GPA</p>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <p class="align-center">GPA</p>
                                             </div>
                                         </div>
                                         <div class="row clearfix">
@@ -318,25 +318,24 @@
                                         <p>
                                             Name and contact details of two (for master's degree applicants) of three (for PhD applicants) persons, preferably professors, supervisors, or professionals under whom you have worked or studied. The individuals will be conducted directly by the Office of Admissions. Please provide accurate contact information
                                         </p>
-                                        
                                         <div class="row clearfix">
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 align-center">
-                                                <p>Name(s)</p>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <p class="align-center">Name(s)</p>
                                             </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 align-center">
-                                                <p>Name of relationship with the referee</p>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <p class="align-center">Name of relationship with the referee</p>
                                             </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 align-center">
-                                                <p>Affiliation (Please do not abbreviate)</p>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <p class="align-center">Affiliation (Please do not abbreviate)</p>
                                             </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 align-center">
-                                                <p>Position/Job Title</p>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <p class="align-center">Position/Job Title</p>
                                             </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 align-center">
-                                                <p>Corporate Email Address</p>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <p class="align-center">Corporate Email Address</p>
                                             </div>
-                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 align-center">
-                                                <p>Mobile Phone Number</p>
+                                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                                <p class="align-center">Mobile Phone Number</p>
                                             </div>
                                         </div>
                                         <div class="row clearfix">
@@ -419,16 +418,16 @@
                                         </p>
                                         <div class="row clearfix">
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                                <p>Language</p>
+                                                <p class="align-center">Language</p>
                                             </div>
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                                <p>Reading Skills</p>
+                                                <p class="align-center">Reading Skills</p>
                                             </div>
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                                <p>Writing Skills</p>
+                                                <p class="align-center">Writing Skills</p>
                                             </div>
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                                <p>Speaking Skills</p>
+                                                <p class="align-center">Speaking Skills</p>
                                             </div>
                                         </div>
                                         <div class="row clearfix">
@@ -494,14 +493,14 @@
                                             Teaching and Other Experiences
                                         </p>
                                         <div class="row clearfix">
-                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 align-center">
-                                                <p>Position</p>
+                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <p class="align-center">Position</p>
                                             </div>
-                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 align-center">
-                                                <p>Agency</p>
+                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <p class="align-center">Agency</p>
                                             </div>
-                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 align-center">
-                                                <p>Inclusive Dates</p>
+                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <p class="align-center">Inclusive Dates</p>
                                             </div>
                                         </div>
                                         <div class="row clearfix">
@@ -541,23 +540,79 @@
                                         <p>
                                             Published materials (not more than three), give the title, name of journal, year and pages of the three most recent published article.
                                         </p>
-                                        <div class="row clearfix">
+                                        <!-- <div class="row clearfix">
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                                 <textarea name="question_29" class="form-control" placeholder="(Please elaborate...)"></textarea>
+                                            </div>
+                                        </div> -->
+                                        <div class="row clearfix">
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <p class="align-center">Title</p>
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <p class="align-center">Name of Journal</p>
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <p class="align-center">Year</p>
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <p class="align-center">Pages</p>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <input type="text" name="question_29[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <input type="text" name="question_29[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <input type="text" name="question_29[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <input type="text" name="question_29[]" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <input type="text" name="question_29[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <input type="text" name="question_29[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <input type="text" name="question_29[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <input type="text" name="question_29[]" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <input type="text" name="question_29[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <input type="text" name="question_29[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <input type="text" name="question_29[]" class="form-control" />
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                <input type="text" name="question_29[]" class="form-control" />
                                             </div>
                                         </div>
                                         <p>
                                             Academic honors, awards, certificate, or honorary scholarship you have received: 
                                         </p>
                                         <div class="row clearfix">
-                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 align-center">
-                                                <p>Kind</p>
+                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <p class="align-center">Kind</p>
                                             </div>
-                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 align-center">
-                                                <p>Award Institution/Agency</p>
+                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <p class="align-center">Award Institution/Agency</p>
                                             </div>
-                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 align-center">
-                                                <p>Date</p>
+                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <p class="align-center">Date</p>
                                             </div>
                                         </div>
                                         <div class="row clearfix">

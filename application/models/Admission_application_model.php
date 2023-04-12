@@ -53,9 +53,10 @@ class Admission_application_model extends CI_Model {
   public function getApplication($applicationID = "")
   {
     $applicantDB = $this->load->database('applicantDB', TRUE);
-    $applicantDB->select("*");
+    $applicantDB->select("oad0001.*, tbl_course.course_desc, tbl_course.course_name");
     $applicantDB->from("oad0001");
-    $applicantDB->where("application_id", $applicationID);
+    $applicantDB->join("tbl_course", "oad0001.field_of_study = tbl_course.course_id", "inner");
+    $applicantDB->where("oad0001.application_id", $applicationID);
     $query = $applicantDB->get();
 
     return $query->result();

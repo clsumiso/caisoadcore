@@ -29,7 +29,7 @@ class Admission_application extends CI_Controller
     $htmlData = "";
     foreach ($courseData as $data) 
     {
-      $htmlData .= '<option value='.$data->course_id.'>'.strtoupper($data->course_desc).'</option>';
+      $htmlData .= '<option value='.$data->course_id.'>'.strtoupper($data->course_desc).' ('.$data->course_name.')</option>';
     }
 
     return $htmlData;
@@ -62,15 +62,15 @@ class Admission_application extends CI_Controller
       "citizenship"                 =>  $data['question_18'],
       "present_occupation"          =>  $data['question_19'],
       "address_of_employment"       =>  $data['question_20'],
-      "educational_background"      =>  json_encode($this->getArr($data['question_21'])),
-      "reference"                   =>  json_encode($this->getArr($data['question_22'])),
+      "educational_background"      =>  $this->getArr($data['question_21']),
+      "reference"                   =>  $this->getArr($data['question_22']),
       "area_of_interest"            =>  $data['question_23'],
       "aoi_major"                   =>  $data['question_24'],
-      "languange_proficiency"       =>  json_encode($this->getArr($data['question_25'])),
-      "graduate_program_applied"    =>  json_encode(array($data['question_26'], $data['question_27'])),
-      "teaching_experience"         =>  json_encode($this->getArr($data['question_28'])),
-      "publish_materials"           =>  $data['question_29'],
-      "academic"                    =>  json_encode($this->getArr($data['question_30'])),
+      "languange_proficiency"       =>  $this->getArr($data['question_25']),
+      "graduate_program_applied"    =>  $data['question_26']."||".$data['question_27'],
+      "teaching_experience"         =>  $this->getArr($data['question_28']),
+      "publish_materials"           =>  $this->getArr($data['question_29']),
+      "academic"                    =>  $this->getArr($data['question_30']),
       "future_plan"                 =>  $data['question_31'],
       "expected_source"             =>  $data['question_32'],
       "school_year"                 =>  $data['question_33'],
@@ -101,15 +101,32 @@ class Admission_application extends CI_Controller
   public function getArr($arr = array())
   {
     $arrData = array();
+    $delimetedData = "";
     for ($i=0; $i < count($arr); $i++) 
     { 
-      if ($arr[$i] != "") 
+      if ($arr[$i] != "")
       {
         array_push($arrData, $arr[$i]);
       }
     }
 
-    return $arrData;
+    for ($i=0; $i < count($arrData); $i++) 
+    { 
+      $delimetedData .= $arrData[$i];
+      if ($i < (count($arrData) - 1))
+      {
+        $delimetedData .= "||";
+      }
+    }
+
+    return $delimetedData;
+  }
+
+  public function getParseDelimetedData($str = "", $index = 0)
+  {
+    $parseData = explode("||", $str);
+
+    return count($parseData) > $index ? $parseData[$index] : "N/A";
   }
 
   function generateApplicantID($length_of_string)
@@ -128,6 +145,12 @@ class Admission_application extends CI_Controller
 
   public function admissionApplicationForm($data = array())
   {
+    if (count($data) == 0)
+    {
+      $this->load->view('err/custom_error');
+      return;
+    }
+
     $defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
     $fontDirs = $defaultConfig['fontDir'];
 
@@ -158,7 +181,9 @@ class Admission_application extends CI_Controller
           'default_font' => 'roboto'
     ]);
     $stylesheet = file_get_contents('assets/plugins/bootstrap/css/bootstrap.css');
+
     $html = "";
+    $eduactional_background = $data[0]->educational_background; 
     // Define the Header/Footer before writing anything so they appear on the first page
     // $mpdf->SetHTMLHeader('
     //   <table class="table" style="margin-bottom: 0;">
@@ -228,8 +253,8 @@ class Admission_application extends CI_Controller
               </td>
               <td style="vertical-align: 0;">
                 <p style="font-family: roboto; font-size: 11px;">
-                  <span style="font-size: 8px;background-color: #000; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Yes
-                  <span style="font-size: 8px;background-color: #fff; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> No
+                  <span style="font-size: 8px;'.($data[0]->enroll_grad_program == 1 ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Yes
+                  <span style="font-size: 8px;'.($data[0]->enroll_grad_program == 0 ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> No
                 </p>
               </td>
             </tr>
@@ -237,8 +262,8 @@ class Admission_application extends CI_Controller
               <td colspan="3" style="text-align: left;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
                   Degree Program Applied for:
-                  <span style="font-size: 8px;background-color: #000; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Master\'s
-                  <span style="font-size: 8px;background-color: #fff; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> PhD
+                  <span style="font-size: 8px;'.($data[0]->degree_program_applied == "master" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Master\'s
+                  <span style="font-size: 8px;'.($data[0]->degree_program_applied == "phd" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> PhD
                 </p>
               </td>
             </tr>
@@ -252,8 +277,8 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td colspan="5" style="border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.$data[0]->course_desc.' ('.$data[0]->course_name.')
                 </p>
               </td>
             </tr>
@@ -261,9 +286,9 @@ class Admission_application extends CI_Controller
               <td colspan="6" style="text-align: left; padding-top: 20px;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
                   Title:
-                  <span style="font-size: 8px;background-color: #000; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Mr.
-                  <span style="font-size: 8px;background-color: #fff; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Ms.
-                  <span style="font-size: 8px;background-color: #fff; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Mrs.
+                  <span style="font-size: 8px;'.($data[0]->title == "mr" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Mr.
+                  <span style="font-size: 8px;'.($data[0]->title == "ms" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Ms.
+                  <span style="font-size: 8px;'.($data[0]->title == "mrs" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Mrs.
                 </p>
               </td>
             </tr>
@@ -274,18 +299,18 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td colspan="2" style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Valdez
+                <p style="font-family: roboto; font-size: 12px; font-weight: bold;">
+                  '.strtoupper($data[0]->lname).'
                 </p>
               </td>
               <td colspan="2" style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Gerald
+                <p style="font-family: roboto; font-size: 12px; font-weight: bold;">
+                  '.strtoupper($data[0]->fname).'
                 </p>
               </td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Lomboy
+                <p style="font-family: roboto; font-size: 12px; font-weight: bold;">
+                  '.strtoupper($data[0]->mname).'
                 </p>
               </td>
             </tr>
@@ -296,17 +321,17 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td colspan="2" style="text-align: center;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                <p style="font-family: roboto; font-size: 9px; font-weight: regular;">
                   (Family Name)
                 </p>
               </td>
               <td colspan="2" style="text-align: center;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                <p style="font-family: roboto; font-size: 9px; font-weight: regular;">
                   (First Name)
                 </p>
               </td>
               <td style="text-align: center;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                <p style="font-family: roboto; font-size: 9px; font-weight: regular;">
                   (Middlename)
                 </p>
               </td>
@@ -320,33 +345,33 @@ class Admission_application extends CI_Controller
             </tr>
             <tr>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper($data[0]->mailing_address).'
                 </p>
               </td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper($data[0]->barangay).'
                 </p>
               </td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper($data[0]->municipality).'
                 </p>
               </td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper($data[0]->province).'
                 </p>
               </td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.$data[0]->postal_code.'
                 </p>
               </td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper($data[0]->country).'
                 </p>
               </td>
             </tr>
@@ -389,8 +414,8 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td style="text-align: left; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.$data[0]->email_address.'
                 </p>
               </td>
               <td style="text-align: left; width: 18%;">
@@ -399,8 +424,8 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td style="text-align: left; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.$data[0]->phone_number.'
                 </p>
               </td>
               <td style="text-align: left; width: 10%;">
@@ -409,8 +434,8 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td style="text-align: left; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper($data[0]->citizenship).'
                 </p>
               </td>
             </tr>
@@ -421,8 +446,8 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td colspan="4" style="text-align: left; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper($data[0]->present_occupation).'
                 </p>
               </td>
             </tr>
@@ -433,8 +458,8 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td colspan="4" style="text-align: left; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper($data[0]->address_of_employment).'
                 </p>
               </td>
             </tr>
@@ -485,26 +510,26 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td colspan="2" style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->educational_background, 0))).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->educational_background, 1)).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->educational_background, 2))).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->educational_background, 3)).'
                 </p>
               </td>
             </tr>
@@ -515,56 +540,56 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td colspan="2" style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->educational_background, 4))).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->educational_background, 5)).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->educational_background, 6))).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->educational_background, 7)).'
                 </p>
               </td>
             </tr>
             <tr>
               <td style="text-align: left;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
                   Doctorate
                 </p>
               </td>
               <td colspan="2" style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->educational_background, 8))).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->educational_background, 9)).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->educational_background, 10))).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->educational_background, 11)).'
                 </p>
               </td>
             </tr>
@@ -575,26 +600,26 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td colspan="2" style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->educational_background, 12))).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->educational_background, 13)).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->educational_background, 14))).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->educational_background, 15)).'
                 </p>
               </td>
             </tr>
@@ -602,7 +627,7 @@ class Admission_application extends CI_Controller
               <td colspan="9" style="padding-top: 10px;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
                   9. References
-                  Name and contact details of two (for master’s degree applicants) of three (for PhD applicants) persons, preferably professors, supervisors, or professionals under whom you have worked or studied. The individuals will be conducted directly by the Office of Admissions. Please provide accurate contact information                    
+                  Name and contact details of two (for master\'s degree applicants) of three (for PhD applicants) persons, preferably professors, supervisors, or professionals under whom you have worked or studied. The individuals will be conducted directly by the Office of Admissions. Please provide accurate contact information                    
                 </p>
               </td>
             </tr>
@@ -648,112 +673,112 @@ class Admission_application extends CI_Controller
             </tr>
             <tr>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Gerald Valdez
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->reference, 0))).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Nature of relationship
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->reference, 1))).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Affiliation            
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->reference, 2))).'            
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Position/Job Title
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->reference, 3))).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Corporate Email Address
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->reference, 4)).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Mobile Phone Number
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->reference, 5)).' 
                 </p>
               </td>
             </tr>
             <tr>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Gerald Valdez
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->reference, 6))).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Nature of relationship
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->reference, 7))).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Affiliation            
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->reference, 8))).'             
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Position/Job Title
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->reference, 9))).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Corporate Email Address
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->reference, 10)).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Mobile Phone Number
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->reference, 11)).' 
                 </p>
               </td>
             </tr>
             <tr>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Gerald Valdez
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->reference, 12))).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Nature of relationship
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->reference, 13))).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Affiliation            
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->reference, 14))).'             
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Position/Job Title
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.strtoupper(($this->getParseDelimetedData($data[0]->reference, 15))).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Corporate Email Address
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->reference, 16)).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Mobile Phone Number
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->reference, 17)).' 
                 </p>
               </td>
             </tr>
@@ -808,20 +833,20 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td style="text-align: center; border-bottom: 1px solid #000; vertical-align: bottom;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->languange_proficiency, 0)).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000; vertical-align: bottom;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->languange_proficiency, 1)).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000; vertical-align: bottom;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->languange_proficiency, 2)).' 
                 </p>
               </td>
             </tr>
@@ -837,20 +862,20 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td style="text-align: center; border-bottom: 1px solid #000; vertical-align: bottom;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->languange_proficiency, 3)).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000; vertical-align: bottom;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->languange_proficiency, 4)).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000; vertical-align: bottom;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->languange_proficiency, 5)).' 
                 </p>
               </td>
             </tr>
@@ -866,20 +891,20 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td style="text-align: center; border-bottom: 1px solid #000; vertical-align: bottom;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->languange_proficiency, 6)).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000; vertical-align: bottom;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->languange_proficiency, 7)).' 
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000; vertical-align: bottom;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->languange_proficiency, 8)).' 
                 </p>
               </td>
             </tr>
@@ -902,14 +927,14 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
               <td colspan="2" style="text-align: left; vertical-align: bottom; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->graduate_program_applied, 0) == "true" ? ($this->getParseDelimetedData($data[0]->graduate_program_applied, 1)) : "").'
                 </p>
               </td>
             </tr>
           </table>
 
-          <table class="table">
+          <table class="table table-bordered">
             <tr>
               <td colspan="5" style="padding-top: 10px;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
@@ -938,58 +963,58 @@ class Admission_application extends CI_Controller
             </tr>
             <tr>
               <td style="padding-top: 10px; text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->teaching_experience, 0)).' 
                 </p>
               </td>
               <td></td>
               <td style="padding-top: 10px; text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->teaching_experience, 1)).'
                 </p>
               </td>
               <td></td>
               <td style="padding-top: 10px; text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->teaching_experience, 2)).'
                 </p>
               </td>
             </tr>
             <tr>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->teaching_experience, 3)).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->teaching_experience, 4)).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->teaching_experience, 5)).'
                 </p>
               </td>
             </tr>
             <tr>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->teaching_experience, 6)).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->teaching_experience, 7)).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->teaching_experience, 8)).'
                 </p>
               </td>
             </tr>
@@ -1000,13 +1025,112 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
             </tr>
+          </table>
+          
+          <table class="table">
             <tr>
-              <td colspan="5" style="border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular; width: 100%;">
-                  Test              
+              <td style="padding-top: 10px; text-align: center;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                  Title
+                </p>
+              </td>
+              <td>&nbsp;&nbsp;</td>
+              <td style="padding-top: 10px; text-align: center;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                  Name of Journal
+                </p>
+              </td>
+              <td>&nbsp;&nbsp;</td>
+              <td style="padding-top: 10px; text-align: center;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                  Year
+                </p>
+              </td>
+              <td>&nbsp;&nbsp;</td>
+              <td style="padding-top: 10px; text-align: center;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                  Page
                 </p>
               </td>
             </tr>
+            <tr>
+              <td style="text-align: center; border-bottom: 1px solid #000;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->publish_materials, 0)).'
+                </p>
+              </td>
+              <td>&nbsp;&nbsp;</td>
+              <td style="text-align: center; border-bottom: 1px solid #000;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->publish_materials, 1)).'
+                </p>
+              </td>
+              <td>&nbsp;&nbsp;</td>
+              <td style="text-align: center; border-bottom: 1px solid #000;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->publish_materials, 2)).'
+                </p>
+              </td>
+              <td>&nbsp;&nbsp;</td>
+              <td style="text-align: center; border-bottom: 1px solid #000;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->publish_materials, 3)).'
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="text-align: center; border-bottom: 1px solid #000;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->publish_materials, 4)).'
+                </p>
+              </td>
+              <td>&nbsp;&nbsp;</td>
+              <td style="text-align: center; border-bottom: 1px solid #000;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->publish_materials, 5)).'
+                </p>
+              </td>
+              <td>&nbsp;&nbsp;</td>
+              <td style="text-align: center; border-bottom: 1px solid #000;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->publish_materials, 6)).'
+                </p>
+              </td>
+              <td>&nbsp;&nbsp;</td>
+              <td style="text-align: center; border-bottom: 1px solid #000;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->publish_materials, 7)).'
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="text-align: center; border-bottom: 1px solid #000;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->publish_materials, 8)).'
+                </p>
+              </td>
+              <td>&nbsp;&nbsp;</td>
+              <td style="text-align: center; border-bottom: 1px solid #000;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->publish_materials, 9)).'
+                </p>
+              </td>
+              <td>&nbsp;&nbsp;</td>
+              <td style="text-align: center; border-bottom: 1px solid #000;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->publish_materials, 10)).'
+                </p>
+              </td>
+              <td>&nbsp;&nbsp;</td>
+              <td style="text-align: center; border-bottom: 1px solid #000;">
+                <p style="font-family: roboto; font-size: 11px; font-weight: bold;">
+                  '.($this->getParseDelimetedData($data[0]->publish_materials, 11)).'
+                </p>
+              </td>
+            </tr>
+          </table>
+
+          <table class="table">
             <tr>
               <td colspan="5" style="padding-top: 10px;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
@@ -1118,6 +1242,9 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
             </tr>
+          </table>  
+
+          <table class="table">
             <tr>
               <td colspan="5" style="padding-top: 10px;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
@@ -1143,12 +1270,15 @@ class Admission_application extends CI_Controller
                   Semester:
                 </p>
               </td>
+              <td></td>
               <td style="vertical-align: 0;">
                 <p style="font-family: roboto; font-size: 11px;">
                   <span style="font-size: 8px;background-color: #000; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 1<sup>st</sup> Semester
                   <span style="font-size: 8px;background-color: #fff; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 2<sup>nd</sup> Semester
                 </p>
               </td>
+              <td></td>
+              <td></td>
             </tr>
             <tr>
               <td colspan="5" style="padding-top: 10px;">
@@ -1245,7 +1375,7 @@ class Admission_application extends CI_Controller
                 </p>
               </td>
             </tr>
-          </table>  
+          </table>
           
     ';
 
