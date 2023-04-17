@@ -24,11 +24,11 @@
 
 <body class="four-zero-four">
     <div class="four-zero-four-container">
-        <div class="error-code">404</div>
-        <div class="error-message">No record found</div>
-        <!-- <div class="button-place">
-            <a href="../../index.html" class="btn btn-default btn-lg waves-effect">GO TO HOMEPAGE</a>
-        </div> -->
+        <div class="error-code"><?php echo isset($code) ? $code : "" ?></div>
+        <div class="error-message"><?php echo isset($msg) ? $msg : "" ?></div>
+        <div class="button-place">
+            <a href="<?php echo isset($link) ? $link : "javascript:void(0)" ?>" class="btn bg-teal btn-lg waves-effect">GO TO CTEC</a>
+        </div>
     </div>
 
     <!-- Jquery Core Js -->

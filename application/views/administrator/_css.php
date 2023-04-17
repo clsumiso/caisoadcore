@@ -22,6 +22,10 @@
     
     <!-- Sweetalert Css -->
     <link href="<?php echo base_url('node_modules/adminbsb-materialdesign/plugins/sweetalert/sweetalert.css'); ?>" rel="stylesheet" />
+    
+    <!-- Bootstrap Material Datetime Picker Css -->
+    <link href="<?php echo base_url('node_modules/adminbsb-materialdesign/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css'); ?>" rel="stylesheet" />
+
     <!-- Bootstrap DatePicker Css -->
     <link href="<?php echo base_url('node_modules/adminbsb-materialdesign/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css'); ?>" rel="stylesheet" />
 

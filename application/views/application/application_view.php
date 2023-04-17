@@ -601,6 +601,16 @@
                                                 <input type="text" name="question_29[]" class="form-control" />
                                             </div>
                                         </div>
+                                        <div class="row clearfix">
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                            <p>
+                                                Upload the full list of publication if necessary
+                                            </p>
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                
+                                            </div>
+                                        </div>
                                         <p>
                                             Academic honors, awards, certificate, or honorary scholarship you have received: 
                                         </p>

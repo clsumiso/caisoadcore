@@ -518,6 +518,95 @@ class Administrator extends CI_Controller {
 
 		echo json_encode(array("sys_msg"	=>	$msg));
 	}
+
+	public function saveLetter()
+	{
+		$letterData = $_POST;
+		$msg = array();
+		$is_update = false;
+
+		$data = array(
+			"content"		=>	$letterData['content'],
+			"type"			=>	$letterData['letterType'],
+			"date_created"	=>	date("Y-m-d H:i:s"),
+			"date_updated"	=>	date("Y-m-d H:i:s")
+		);
+
+		$condtion = array(
+			"type"	=> $letterData['letterType']
+		);
+
+		// Check letter if exist
+		$letterContent = $this->administrator->getLetterTemplateContent($letterData['letterType']);
+		if (count($letterContent) > 0)
+		{
+			$data = array(
+				"content"		=>	$letterData['content'],
+				"type"			=>	$letterData['letterType'],
+				"date_updated"	=>	date("Y-m-d H:i:s")
+			);
+			$is_update = true;
+		}
+
+		if ($is_update == true)
+		{
+			$saveLetter = $this->administrator->updateLetter($data, $condtion, array("tbl_letter"));
+		}else
+		{
+			$saveLetter = $this->administrator->saveLetter('tbl_letter', $data);
+		}
+
+		if ($saveLetter !== false)
+		{
+			$msg = array(
+				"sys_msg"	=>	"success",
+				"msg"		=> 	"Letter Successfuly saved!",
+				"icon"		=>	"success"
+			);
+		}else
+		{
+			$msg = array(
+				"sys_msg"	=>	"failed",
+				"msg"		=> 	"Letter save failed!",
+				"icon"		=>	"error"
+			);
+		}
+
+		echo json_encode($msg);
+	}
+
+	public function saveRelease()
+	{
+		$releaseData = $_POST;
+		$msg = array();
+		$data = array(
+			"type"    			=>   $releaseData['letterType'],
+			"date_from"         =>   $releaseData['dFrom'],
+			"date_to"           =>   $releaseData['dTo'],
+			"percent_from"      =>   $releaseData['pFrom'],
+			"percent_to"        =>   $releaseData['pTo'],
+			"release_date"      =>   $releaseData['rDate']
+		);
+
+		$saveRelease = $this->administrator->saveLetter('tbl_release', $data);
+		if ($saveRelease !== false)
+		{
+			$msg = array(
+				"sys_msg"	=>	"success",
+				"msg"		=> 	"Release Setup Successfuly saved!",
+				"icon"		=>	"success"
+			);
+		}else
+		{
+			$msg = array(
+				"sys_msg"	=>	"failed",
+				"msg"		=> 	"Release Setup save failed!",
+				"icon"		=>	"error"
+			);
+		}
+
+		echo json_encode($msg);
+	}
 	 /**
 	  * END OF CRUD
 	  */
@@ -560,6 +649,69 @@ class Administrator extends CI_Controller {
 		}
 
 		return $remarks;
+	}
+
+	public function getLetterType()
+	{
+		$letterTypeData = $this->administrator->getApplicantLetterType();
+		$htmlData = "";
+
+		foreach ($letterTypeData as $type) 
+		{
+			$htmlData .= '<option value="'.$type->id.'">'.$type->name.'</option>';
+		}
+
+		echo json_encode(array("content"	=>	$htmlData));
+	}
+
+	public function getLetterTemplate()
+	{
+		$letterTemplateData = $this->administrator->getLetterTemplate();
+		$htmlData = '<option value="-1">-- SELECT TEMPLATE --</option>';
+
+		foreach ($letterTemplateData as $template) 
+		{
+			$htmlData .= '<option value="'.$template->type.'">'.$template->name.'</option>';
+		}
+
+		echo json_encode(array("content"	=>	$htmlData));
+	}
+
+	public function getLetterTemplateContent()
+	{
+		$letterID = $_POST['letterID'];
+		$letterTemplateData = $this->administrator->getLetterTemplateContent($letterID);
+		$htmlData = "";
+		foreach ($letterTemplateData as $template) 
+		{
+			$htmlData = $template->content;
+		}
+
+		echo json_encode(array("content"	=>	$htmlData));
+	}
+
+	public function getReleaseList()
+	{
+		$releaseData = $this->administrator->getReleaseList();
+		$htmlData = "";
+
+		foreach ($releaseData as $release) 
+		{
+			$htmlData .= '<tr>';
+				$htmlData .= '<td>
+								<button type="button" class="btn btn-sm bg-red waves-effect">DELETE</button>
+								<button type="button" class="btn btn-sm bg-amber waves-effect">EDIT</button>
+							</td>';
+				$htmlData .= '<td>'.$release->name.'</td>';
+				$htmlData .= '<td>'.$release->date_from.'</td>';
+				$htmlData .= '<td>'.$release->date_to.'</td>';
+				$htmlData .= '<td>'.$release->percent_from.'</td>';
+				$htmlData .= '<td>'.$release->percent_to.'</td>';
+				$htmlData .= '<td>'.$release->release_date.'</td>';
+			$htmlData .= '</tr>';
+		}
+
+		echo json_encode(array("content"	=>	$htmlData));
 	}
 	 /**
 	  * END of other functions

@@ -516,6 +516,111 @@ function save(action)
     });
 }
 
+function saveLetter()
+{
+    // console.log(CKEDITOR.instances.ckeditor.getData());
+    // tinyMCE.get('tinymce').getContent()
+    swal({
+        title: "Are you sure?",
+        text: "This letter will be saved as your template",
+        type: "info",
+        showCancelButton: true,
+        confirmButtonText: "Submit",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false,
+        closeOnCancel: true
+    }, function (isConfirm) {
+        if (isConfirm) 
+        {
+            $.ajax({
+                type: "POST",
+                url: window.location.origin + "/office-of-admissions/administrator/saveLetter",
+                data: { content: CKEDITOR.instances.ckeditor.getData(), letterType: $('[name="letterType"] option:selected').val() },
+                dataType: "JSON",
+                success: function (data) 
+                {
+                    swal({
+                        title: "Office of Admissions",
+                        text: data.msg,
+                        type: data.icon
+                    });
+                },
+                error: function (e) 
+                {
+                    swal("System Message", e.responseText, "error");
+                }
+            });
+        } 
+    });
+}
+
+function saveRelease()
+{
+    swal({
+        title: "Are you sure?",
+        text: "",
+        type: "info",
+        showCancelButton: true,
+        confirmButtonText: "Submit",
+        cancelButtonText: "Cancel",
+        closeOnConfirm: false,
+        closeOnCancel: true
+    }, function (isConfirm) {
+        if (isConfirm) 
+        {
+            $.ajax({
+                type: "POST",
+                url: window.location.origin + "/office-of-admissions/administrator/saveRelease",
+                data: { 
+                    "letterType"    :   $('[name="releaseLetterType"] option:selected').val(),
+                    "dFrom"         :   $('[name="dateFrom"]').val(),
+                    "dTo"           :   $('[name="dateTo"]').val(),
+                    "pFrom"         :   $('[name="percentFrom"]').val(),
+                    "pTo"           :   $('[name="percentTo"]').val(),
+                    "rDate"         :   $('[name="releaseDate"]').val()
+                },
+                dataType: "JSON",
+                success: function (data) 
+                {
+                    swal({
+                        title: "Office of Admissions",
+                        text: data.msg,
+                        type: data.icon
+                    });
+                    getReleaseList();
+                },
+                error: function (e) 
+                {
+                    swal("System Message", e.responseText, "error");
+                }
+            });
+        } 
+    });
+}
+
+function getReleaseList()
+{
+    $.ajax({
+        url: window.location.origin + "/office-of-admissions/administrator/getReleaseList",
+        type: "POST",
+        data: { uid: 0 },
+        dataType: "json",
+        success: function(response)
+        {
+          // console.log(response.course);
+          $("#releaseList").html(response.content);
+        },
+        complete: function () 
+        {
+  
+        },
+        error: function (jqXHR, textStatus, errorThrown) 
+        {
+           swal("Something went wrong!!!", "No data, please try again", "error");
+        }
+     });
+}getReleaseList();
+
 function getCourse(college = 0, drawData = null)
 {
    $.ajax({
@@ -544,6 +649,92 @@ function getCourse(college = 0, drawData = null)
          swal("Something went wrong!!!", "No data, please try again", "error");
       }
    });
+}
+
+function getLetterType()
+{
+    $.ajax({
+        url: window.location.origin + "/office-of-admissions/administrator/getLetterType",
+        type: "POST",
+        data: { uid: 0 },
+        dataType: "json",
+        success: function(response)
+        {
+          // console.log(response.course);
+          $('[name="letterType"]').html(response.content);
+          $('[name="letterType"]').selectpicker('refresh');
+          $('[name="releaseLetterType"]').html(response.content);
+          $('[name="releaseLetterType"]').selectpicker('refresh');
+        },
+        complete: function () 
+        {
+  
+        },
+        error: function (jqXHR, textStatus, errorThrown) 
+        {
+           swal("Something went wrong!!!", "No data, please try again", "error");
+        }
+     });
+}getLetterType();
+
+function getLetterTemplate()
+{
+    $.ajax({
+        url: window.location.origin + "/office-of-admissions/administrator/getLetterTemplate",
+        type: "POST",
+        data: { uid: 0 },
+        dataType: "json",
+        success: function(response)
+        {
+          // console.log(response.course);
+          $('[name="letterList"]').html(response.content);
+          $('[name="letterList"]').selectpicker('refresh');
+        },
+        complete: function () 
+        {
+  
+        },
+        error: function (jqXHR, textStatus, errorThrown) 
+        {
+           swal("Something went wrong!!!", "No data, please try again"+errorThrown, "error");
+        }
+     });
+}getLetterTemplate();
+
+function getLetterTemplateContent(id)
+{
+    $.ajax({
+        url: window.location.origin + "/office-of-admissions/administrator/getLetterTemplateContent",
+        type: "POST",
+        data: { letterID: id },
+        dataType: "json",
+        success: function(response)
+        {
+          // console.log(response.course);
+        //   $('[name="letterList"]').html(response.content);
+        //   $('[name="letterList"]').selectpicker('refresh');
+            CKEDITOR.instances['ckeditor'].setData(response.content);
+        },
+        complete: function () 
+        {
+  
+        },
+        error: function (jqXHR, textStatus, errorThrown) 
+        {
+           swal("Something went wrong!!!", "No data, please try again"+errorThrown, "error");
+        }
+     });
+}
+
+function addReleaseDate()
+{
+    $('#releaseDateModal').modal(
+    {
+        backdrop: 'static', 
+        position: 'center',
+        keyboard: false
+    }, 
+    'show');
 }
 
 function assessPayment(studentID, semester) 
@@ -939,3 +1130,92 @@ function pwdMapLocation() {
   }
   
 }pwdMapLocation();
+
+
+//TinyMCE
+// tinymce.init({
+//     selector: "textarea#tinymce",
+//     theme: "modern",
+//     height: 300,
+//     plugins: [
+//         'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+//         'searchreplace wordcount visualblocks visualchars code fullscreen',
+//         'insertdatetime media nonbreaking save table contextmenu directionality',
+//         'emoticons template paste textcolor colorpicker textpattern imagetools'
+//     ],
+//     toolbar1: 'insertfile undo redo | styleselect | fontsizeselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+//     toolbar2: 'print preview media | forecolor backcolor emoticons',
+//     fontsize_formats: "8px 10px 12px 14px 18px 24px 36px",
+//     indent: false,
+//     image_advtab: true,
+//     visualblocks_default_state: true
+// });
+// tinymce.suffix = ".min";
+// tinyMCE.baseURL = window.location.origin + '/office-of-admissions/node_modules/adminbsb-materialdesign/plugins/tinymce';
+
+//CKEditor
+CKEDITOR.replace('ckeditor',
+{
+    extraPlugins: 'uicolor,colorbutton,colordialog,font,div,showblocks,table',
+});
+CKEDITOR.plugins.add( 'ckeditor', {
+    init: function( editor ) {
+        var pluginDirectory = this.path;
+        editor.addContentsCss( pluginDirectory + window.location.origin + '/office-of-admissions/node_modules/adminbsb-materialdesign/plugins/bootstrap/css/bootstrap.css' );
+        editor.addContentsCss( pluginDirectory + window.location.origin + '/office-of-admissions/node_modules/adminbsb-materialdesign/css/style.css' );
+    }
+});
+CKEDITOR.config.height = 300;
+CKEDITOR.config.allowedContent = true;
+CKEDITOR.config.startupOutlineBlocks = true;
+
+//Datetimepicker plugin
+$('.datetimepicker').bootstrapMaterialDatePicker({
+    format: 'YYYY-MM-DD HH:mm:s',
+    clearButton: true,
+    weekStart: 1
+});
+
+function previewLetter()
+{
+    $("#previewContent").html(CKEDITOR.instances.ckeditor.getData());
+}
+
+function copyToClipboard(str = "")
+{
+    let textToCopy = "";
+    switch (str) {
+        case 1:
+            textToCopy = '<h1 class="applicantID" style="font-size: 24;">#APPLICANT ID</h1>';
+            break;
+        case 2:
+            textToCopy = '<p style="font-size: 24px; font-weight: regular;" class="releaseDate">#RELEASE DATE</p>';
+            break;
+        case 3:
+            textToCopy = '<b style="font-size: 24px; font-weight: bold;" class="name">#NAME</b>';
+            break;
+        case 4:
+            textToCopy = '<b style="font-size: 24px; font-weight: bold;" class="course">#COURSE</b>';
+            break;
+        case 5:
+            textToCopy = '<b style="font-size: 24px; font-weight: bold;" class="dateFrom">#DATE FROM</b>';
+            break;
+        case 6:
+            textToCopy = '<b style="font-size: 24px; font-weight: bold;" class="dateTo">#DATE TO</b>';
+            break;
+        case 7:
+            textToCopy = '<ol style="font-size: 24px; font-weight: regular;" class="program_for_other_qualifier" type="1"><li>#LIST</li></ol>';
+            break;
+        case 8:
+            textToCopy = 'https://oad.clsu2.edu.ph/applicants1/assets/img/photo_requirements.png';
+            break;
+        case 9:
+            textToCopy = 'https://oad.clsu2.edu.ph/applicants1/assets/img/signature_requirements.png';
+            break;
+    
+        default:
+            
+        break;
+    }
+    navigator.clipboard.writeText(textToCopy);
+}

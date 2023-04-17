@@ -41,14 +41,29 @@
                             </select>
                         </div>
                     </div> -->
+                    <!-- Letter Configurations -->
+                    <div class="row clearfix">
+                        <div class="col-sm-6 col-md-3 col-lg-3">
+                            <input type="file" class="form-control">
+                        </div>
+                    </div>
+                    <table id='applicantList' class='table table-bordered table-striped table-hover js-basic-example nowrap dataTable'>
+                        <thead>
+                            <tr>
+                                <th>Applicant ID</th>
+                                <th>Lastname</th>
+                                <th>Firstname</th>
+                                <th>Middlename</th>
+                                <th>Course/Program</th>
+                                <th>Confirm Date</th>
+                                <th>Confirm Status</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <!-- End of Letter Configurations -->
                     <!-- Table -->
-                    <table id='applicantTable' class='table table-bordered table-striped table-hover js-basic-example nowrap dataTable'>
+                    <!-- <table id='applicantTable' class='table table-bordered table-striped table-hover js-basic-example nowrap dataTable'>
                       <thead>
-                        <!-- <tr>
-                            <th colspan="4"></th>
-                            <th colspan="3" class="text-center">NAME</th=-
-                            <th colspan="4"></th>
-                        </tr> -->
                         <tr>
                             <th>#</th>
                             <th>...</th>
@@ -62,7 +77,7 @@
                         </tr>
                       </thead>
 
-                    </table>
+                    </table> -->
                 </div>
             </div>
         </div>
@@ -71,5 +86,4 @@
         </div>
     </div>
 </div>
-
-<?php $this->load->view('administrator/modal/_grade_modal'); ?>
+<?php $this->load->view('administrator/modal/_releaseDate_modal'); ?>

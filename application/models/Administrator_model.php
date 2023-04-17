@@ -716,6 +716,58 @@ class Administrator_model extends CI_Model {
     */
 
 	/**
+	 * Applicants Module
+	 */
+
+	public function getApplicantLetterType()
+	{
+		$applicantDB = $this->load->database('applicantDB', TRUE);
+		$applicantDB->select('*');
+		$applicantDB->from('tbl_letterType');
+		$query = $applicantDB->get();
+
+		return $query->result();
+	}
+
+	public function getLetterTemplate()
+	{
+		$applicantDB = $this->load->database('applicantDB', TRUE);
+		$applicantDB->select('tbl_letter.type, tbl_letterType.name, tbl_letterType.code');
+		$applicantDB->from('tbl_letter');
+		$applicantDB->join('tbl_letterType', 'tbl_letter.type = tbl_letterType.id', 'inner');
+		$query = $applicantDB->get();
+
+		return $query->result();
+	}
+
+	public function getLetterTemplateContent($type = "")
+	{
+		$applicantDB = $this->load->database('applicantDB', TRUE);
+		$applicantDB->select('content');
+		$applicantDB->from('tbl_letter');
+		$applicantDB->where('type', $type);
+		$applicantDB->limit(1);
+		$query = $applicantDB->get();
+
+		return $query->result();
+	}
+
+	public function getReleaseList()
+	{
+		$applicantDB = $this->load->database('applicantDB', TRUE);
+		$applicantDB->select('tbl_letterType.name, tbl_release.date_from, tbl_release.date_to, tbl_release.percent_from, tbl_release.percent_to, tbl_release.release_date');
+		$applicantDB->from('tbl_release');
+		$applicantDB->join('tbl_letterType', 'tbl_release.type = tbl_letterType.id', 'inner');
+		$query = $applicantDB->get();
+
+		return $query->result();
+	}
+
+	 /**
+	  * 
+	  */
+
+	/**
 	 * LOGS metadata
 	 */
 	public function getGradesOldData($condition = array())
@@ -751,6 +803,23 @@ class Administrator_model extends CI_Model {
         }
 	}
 
+	public function saveLetter($table, $data = array())
+	{
+		$applicantDB = $this->load->database('applicantDB', TRUE);
+		$applicantDB->trans_begin();
+        $applicantDB->trans_strict(TRUE);
+
+        $applicantDB->insert($table, $data);
+
+        if ($applicantDB->trans_status() === FALSE) {
+            $applicantDB->trans_rollback();
+            return false;
+        } else {
+            $applicantDB->trans_commit();
+            return true;
+        }
+	}
+
 	public function update($data = array(), $con = array(), $table = array())
 	{
 		if(!empty($data)){
@@ -766,6 +835,28 @@ class Administrator_model extends CI_Model {
 		    } else 
 		    {
 		        $this->db->trans_commit();
+		        return true;
+		    }
+        }
+        return false;
+	}
+
+	public function updateLetter($data = array(), $con = array(), $table = array())
+	{
+		$applicantDB = $this->load->database('applicantDB', TRUE);
+		if(!empty($data)){
+			$applicantDB->trans_begin();
+	    	$applicantDB->trans_strict(TRUE);
+
+            // Insert member data
+           	$applicantDB->update($table[0], $data, $con);
+            if ($applicantDB->trans_status() === FALSE) 
+            {
+		        $applicantDB->trans_rollback();
+		        return false;
+		    } else 
+		    {
+		        $applicantDB->trans_commit();
 		        return true;
 		    }
         }
