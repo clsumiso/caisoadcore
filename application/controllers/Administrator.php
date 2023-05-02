@@ -1,4 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/* Spreadsheet */
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class Administrator extends CI_Controller {
 
@@ -23,12 +26,15 @@ class Administrator extends CI_Controller {
         }
 
 		$data = array(
-			'name'		=>	$_SESSION['account_name'],
-			'user_type'	=>	strtoupper($_SESSION['utype']),
-			'email'		=>	$_SESSION['e_id'],
-			'get_time'	=>	$this->get_time(),
-            'semester'  =>  $this->semesterList(),
-            'college'  =>  $this->collegeList()
+			'name'				=>	$_SESSION['account_name'],
+			'user_type'			=>	strtoupper($_SESSION['utype']),
+			'email'				=>	$_SESSION['e_id'],
+			'get_time'			=>	$this->get_time(),
+            'semester'  		=>  $this->semesterList(),	
+            'college'  			=>  $this->collegeList(),
+            'applicantProgram'  =>  $this->applicantProgram()['programDropDown'],
+            'programCheckBox'  	=>  $this->applicantProgram()['programCheckbox'],
+            'applicantCategory' =>  $this->applicantCategory()
 		);
 		$this->load->view('administrator/_header', $data);
 	    $this->load->view('administrator/_css', $data);
@@ -75,7 +81,7 @@ class Administrator extends CI_Controller {
 		$college = $_POST['college'];
         $htmlData = '<option value="-1" selected>--- SELECT COURSE ---</option>';
 
-		$courseData = $this->administrator->getCourse($college);
+		$courseData = $this->administrator->getGradeCourse($college);
 		foreach ($courseData as $course) 
         {
 			if (!in_array($course->course_id, array(0, 144, 145)))
@@ -122,17 +128,32 @@ class Administrator extends CI_Controller {
 		echo json_encode($data);
 	}
 
+<<<<<<< Updated upstream
+=======
+	public function applicantList()
+	{
+		// POST data
+		$postData = $this->input->post();
+
+		// Get data
+		$data = $this->administrator->getApplicants($postData);
+
+		echo json_encode($data);
+	}
+
+>>>>>>> Stashed changes
 	/*Analytics*/
    	public function enrollPerCollegeChart()
    	{	
 		$semester = $_POST['sem'];
+		$enrollmentType = $_POST['enrollmentType'];
 		$course = array();
 		$output = array();
 		$college = array('CAG', 'CASS', 'CBAA', 'CED', 'CEN', 'CF', 'CHSI', 'COS', 'CVSM');
 		$collegeValue = array();
 		$pictureArr = array();
 		$cag = $cass = $cbaa = $ced = $cen = $cf = $chsi = $cos = $cvsm = 0;
-		$chartData = $this->administrator->getEnrollPerCollege($semester, $course);
+		$chartData = $this->administrator->getEnrollPerCollege($semester, $course, $enrollmentType);
 
 		foreach ($chartData as $chart) 
 		{
@@ -173,6 +194,7 @@ class Administrator extends CI_Controller {
 	{
 		$semester = $_POST['sem'];
 		$college = $_POST['college'];
+		$enrollmentType = $_POST['enrollmentType'];
 		$courseArr = array();
 		$courseNameArr = array();
 		$output = array();
@@ -180,10 +202,13 @@ class Administrator extends CI_Controller {
 		$chartTmpIndex = 0;
 
 		// Get data
-		$courseData = $this->administrator->getCourse($college);
+		$courseData = $this->administrator->getCourse($college, $enrollmentType);
 
 		foreach ($courseData as $course) 
 		{
+			
+			$parseCourseName = "";
+			$startingCheck = 0;
 			if (!in_array($course->course_id, array(0, 144, 145)))
 			{
 				array_push($courseArr, $course->course_id);
@@ -191,11 +216,28 @@ class Administrator extends CI_Controller {
 				//Set defult values for chart data VALUE
 				array_push($chartTmp, 0);
 				// Set Course Name
-				array_push($courseNameArr, $course->course_name);
+				if ($enrollmentType == "incoming_freshmen")
+				{
+					for ($x = 0; $x < strlen($course->course_name); $x++)
+					{
+						if ($course->course_name[$x] == "(")
+						{
+							$startingCheck = $x;
+						}
+					}
+					for ($x = $startingCheck; $x < strlen($course->course_name); $x++)
+					{
+						$parseCourseName .= $course->course_name[$x];
+					}
+				}else if ($enrollmentType == "resident")
+				{
+					$parseCourseName = $course->course_name;
+				}
+				array_push($courseNameArr, str_replace(array("(", ")"), "", $parseCourseName));
 			}
 		}
 
-		$chartData = $this->administrator->getEnrollPerCollege($semester, $courseArr);
+		$chartData = $this->administrator->getEnrollPerCollege($semester, $courseArr, $enrollmentType);
 		foreach ($chartData as $chart) 
 		{
 			for ($i = 0; $i < count($courseArr); $i++)
@@ -575,20 +617,94 @@ class Administrator extends CI_Controller {
 		echo json_encode($msg);
 	}
 
+<<<<<<< Updated upstream
+=======
+	public function saveLetterType()
+	{
+		$letterTypeData = $_POST;
+		$msg = array();
+		$is_update = false;
+
+		$data = array(
+			"name"		=>	$letterTypeData['name'],
+			"code"		=>	$letterTypeData['code']
+		);
+
+		$condtion = array(
+			"code"	=> $letterTypeData['code']
+		);
+
+		// Check letter type if exist
+		$letterType = $this->administrator->getLetterType($letterTypeData['code']);
+		if (count($letterType) > 0)
+		{
+			$is_update = true;
+		}
+
+		if ($is_update == true)
+		{
+			$saveLetterType = $this->administrator->updateLetter($data, $condtion, array("tbl_letterType"));
+		}else
+		{
+			$saveLetterType = $this->administrator->saveLetter('tbl_letterType', $data);
+		}
+
+		if ($saveLetterType !== false)
+		{
+			$msg = array(
+				"sys_msg"	=>	"success",
+				"msg"		=> 	"Successfuly saved!",
+				"icon"		=>	"success"
+			);
+		}else
+		{
+			$msg = array(
+				"sys_msg"	=>	"failed",
+				"msg"		=> 	"Save failed!",
+				"icon"		=>	"error"
+			);
+		}
+
+		echo json_encode($msg);
+	}
+
+>>>>>>> Stashed changes
 	public function saveRelease()
 	{
 		$releaseData = $_POST;
 		$msg = array();
+<<<<<<< Updated upstream
+=======
+		$is_update = false;
+>>>>>>> Stashed changes
 		$data = array(
 			"type"    			=>   $releaseData['letterType'],
 			"date_from"         =>   $releaseData['dFrom'],
 			"date_to"           =>   $releaseData['dTo'],
 			"percent_from"      =>   $releaseData['pFrom'],
 			"percent_to"        =>   $releaseData['pTo'],
+<<<<<<< Updated upstream
 			"release_date"      =>   $releaseData['rDate']
 		);
 
 		$saveRelease = $this->administrator->saveLetter('tbl_release', $data);
+=======
+			"release_date"      =>   $releaseData['rDate'],
+			"release_date_to"   =>   $releaseData['rDateTo'],
+			"program_id"      	=>   $releaseData['programs']
+		);
+
+		$checkRelease = $this->administrator->getList('tbl_release', array($_POST['releaseID']), 'release_id');
+
+		if (count($checkRelease) > 0)
+		{
+			$saveRelease = $this->administrator->updateLetter($data, array("release_id"	=>	$_POST['releaseID']), array('tbl_release'));
+		}else
+		{
+			$saveRelease = $this->administrator->saveLetter('tbl_release', $data);
+		}
+		
+>>>>>>> Stashed changes
 		if ($saveRelease !== false)
 		{
 			$msg = array(
@@ -607,11 +723,184 @@ class Administrator extends CI_Controller {
 
 		echo json_encode($msg);
 	}
+<<<<<<< Updated upstream
+=======
+
+	public function removeRelease()
+	{
+		$releaseID = $_POST['releaseID'];
+		$condition1 = array(
+			"release_id"		=>	$releaseID
+		);
+		$msg = array();
+		if ($this->administrator->delete($condition1, array("tbl_release")) !== false) 
+		{
+			$msg = array(
+				'sys_msg'   =>  'SUCCESS',
+				'msg'       =>  'SUCCESSFULLY REMOVED!!!',
+				'icon'      =>  'success'
+			);
+		}else
+		{
+			$msg = array(
+				'sys_msg'   =>  'FAILED',
+				'msg'       =>  'FAILED, PLEASE TRY AGAIN!!!',
+				'icon'      =>  'error'
+			);
+		}
+
+		echo json_encode($msg);
+	}
+
+	public function removeApplicant()
+	{
+		$appId = $_POST['appId'];
+		$condition1 = array(
+			"applicant_id"		=>	$appId
+		);
+		$condition2 = array(
+			"confirmation_id"		=>	$appId
+		);
+		$msg = array();
+		if ($this->administrator->delete($condition1, array("tbl_profile")) !== false || $this->administrator->delete($condition2, array("tbl_confirmation")) !== false) 
+		{
+			$msg = array(
+				'sys_msg'   =>  'SUCCESS',
+				'msg'       =>  'SUCCESSFULLY REMOVED!!!',
+				'icon'      =>  'success'
+			);
+		}else
+		{
+			$msg = array(
+				'sys_msg'   =>  'FAILED',
+				'msg'       =>  'FAILED, PLEASE TRY AGAIN!!!',
+				'icon'      =>  'error'
+			);
+		}
+
+		echo json_encode($msg);
+	}
+	
+	public function saveApplicant()
+	{
+		$post = $_POST;
+		$msg = array();
+		$data = array(
+			"fname"				=>	$post['firstname'],
+			"mname"				=>	$post['middlename'],
+			"lname"				=>	$post['lastname'],
+			"program_id"		=>	$post['applicantProgram'],
+			"qualifier_type"	=>	$post['applicantCategory']
+		);
+
+		if ($post['action']	== "update")
+		{
+			$condition = array(
+				"applicant_id"	=>	$post['appID']
+			);
+
+			$update = $this->administrator->updateLetter($data, $condition, array("tbl_profile"));
+			if ($update !== false)
+			{
+				$msg = array(
+					"sys_msg"	=> 	"success",
+					"msg"		=>	"Successfully updated",
+					"icon"		=>	"success"
+				);
+			}else
+			{
+				$msg = array(
+					"sys_msg"	=> 	"failed",
+					"msg"		=>	"Something went wrong, please try again",
+					"icon"		=>	"error"
+				);
+			}
+		}else if ($data['action']	== "insert")
+		{
+
+		}
+
+		echo json_encode($msg);
+	}
+>>>>>>> Stashed changes
 	 /**
 	  * END OF CRUD
 	  */
 
 	/**
+<<<<<<< Updated upstream
+=======
+	 * APPLICANT FUNCTION
+	 */
+
+	public function applicantInfo()
+	{
+		$applicantData = $this->administrator->getApplicantInfo($_POST['appId']);
+		$output = array();
+
+		foreach ($applicantData as $applicant) 
+		{
+			$output = array(
+				"appID"			=>	$applicant->applicant_id,
+				"firstname"		=>	$applicant->fname,
+				"middlename"	=>	$applicant->mname,
+				"lastname"		=>	$applicant->lname,
+				"programID"		=>	$applicant->program_id,
+				"qualifierType"	=>	$applicant->qualifier_type
+			);
+		}
+
+		echo json_encode($output);
+	}
+
+	public function applicantProgram()
+	{
+		$programData = $this->administrator->getList("tbl_program", array(), "");
+		$htmlData = '<option value="-1">-- SELECT PROGRAM --</option>';
+		$programCheckBox = '';
+		$ctr = 1;
+
+		foreach ($programData as $program) 
+		{
+			$htmlData .= '<option value="'.$program->program_id.'">'.$program->program_name.'</option>';
+		}
+
+		foreach ($programData as $program) 
+		{
+			$programCheckBox .= '
+				<input type="checkbox" name="program[]" id="program'.$ctr.'" class="filled-in chk-col-green" value="'.$program->program_id.'">
+				<label for="program'.$ctr.'">'.$program->program_name.'</label><br> 
+			';
+			$ctr++;
+		}
+
+		return array("programDropDown"	=>	$htmlData, "programCheckbox"	=>	$programCheckBox);
+	}
+
+	public function applicantCategory()
+	{
+		$letterData = $this->administrator->getList("tbl_letterType", array(), "");
+		$htmlData = '<option value="-1">-- SELECT CATEGORY --</option>';
+
+		foreach ($letterData as $letter) 
+		{
+			$htmlData .= '<option value="'.$letter->id.'">'.$letter->name.' ('.$letter->code.')</option>';
+		}
+
+		return $htmlData;
+	}
+
+	public function qualifierType()
+	{
+		
+	}
+
+	/**
+	 * END APPLICANT FUNCTION
+	 */
+
+	/**
+>>>>>>> Stashed changes
 	 * OTHER Functions
 	 */
 	public function gradeRemarks($grade = "")
@@ -658,7 +947,11 @@ class Administrator extends CI_Controller {
 
 		foreach ($letterTypeData as $type) 
 		{
+<<<<<<< Updated upstream
 			$htmlData .= '<option value="'.$type->id.'">'.$type->name.'</option>';
+=======
+			$htmlData .= '<option value="'.$type->id.'">'.$type->name.' ('.$type->code.')</option>';
+>>>>>>> Stashed changes
 		}
 
 		echo json_encode(array("content"	=>	$htmlData));
@@ -699,8 +992,13 @@ class Administrator extends CI_Controller {
 		{
 			$htmlData .= '<tr>';
 				$htmlData .= '<td>
+<<<<<<< Updated upstream
 								<button type="button" class="btn btn-sm bg-red waves-effect">DELETE</button>
 								<button type="button" class="btn btn-sm bg-amber waves-effect">EDIT</button>
+=======
+								<button type="button" class="btn btn-sm bg-red waves-effect" onclick="removeRelease(\''.$release->release_id.'\')">DELETE</button>
+								<button type="button" class="btn btn-sm bg-amber waves-effect" onclick="updateRelease(\''.$release->release_id.'\')">EDIT</button>
+>>>>>>> Stashed changes
 							</td>';
 				$htmlData .= '<td>'.$release->name.'</td>';
 				$htmlData .= '<td>'.$release->date_from.'</td>';
@@ -708,11 +1006,133 @@ class Administrator extends CI_Controller {
 				$htmlData .= '<td>'.$release->percent_from.'</td>';
 				$htmlData .= '<td>'.$release->percent_to.'</td>';
 				$htmlData .= '<td>'.$release->release_date.'</td>';
+<<<<<<< Updated upstream
+=======
+				$htmlData .= '<td>'.$release->release_date_to.'</td>';
+>>>>>>> Stashed changes
 			$htmlData .= '</tr>';
 		}
 
 		echo json_encode(array("content"	=>	$htmlData));
 	}
+<<<<<<< Updated upstream
+=======
+
+	public function releaseDateInfo()
+	{
+		$releaseData = $this->administrator->getIndividualReleaseList($_POST['releaseID']);
+		$htmlData = array();
+
+		foreach ($releaseData as $release) 
+		{
+			$htmlData = array(
+				"release_id"	=>	$release->release_id,
+				"letterType"	=>	$release->id,
+				"name"			=>	$release->name,
+				"date_from"		=>	$release->date_from,
+				"date_to"		=>	$release->date_to,
+				"percent_from"	=>	$release->percent_from,
+				"percent_to"	=>	$release->percent_to,
+				"release_date"	=>	$release->release_date,
+				"release_date_to"	=>	$release->release_date_to
+			);
+		}
+
+		echo json_encode($htmlData);
+	}
+
+	public function importApplicants()
+	{
+		$directoryName = FCPATH.'uploads/applicants/'.$_SESSION['e_id'];
+		$downloads = FCPATH.'downloads/applicants/'.$_SESSION['e_id'];
+		//Check if the directory already exists.
+		if(!is_dir($directoryName)){
+			//Directory does not exist, so lets create it.
+			mkdir($directoryName, 0755, true);
+		}
+		
+		$config['upload_path']          = 	$directoryName;
+		$config['allowed_types']        = 	'xlsx';
+		$config['max_size']             = 	1024;
+		$config['overwrite']            = 	TRUE;
+
+		$this->load->library('upload', $config);
+
+		if (!$this->upload->do_upload('userfile'))
+		{
+			$error = $this->upload->display_errors();
+			echo json_encode(array("msg" => $error, "sys_msg"	=> "error", "icon"	=>	"error"));
+			// $this->session->set_flashdata('error_upload', $error);
+			// redirect('faculty/grades');
+		}
+		else
+		{
+			$data = $this->upload->data();
+			$inputFileType = 'Xlsx';
+			$inputFileName = $directoryName."/".$data['file_name'];
+
+			$reader = IOFactory::createReader($inputFileType);
+			$reader->setReadDataOnly(true);
+			$spreadsheet = $reader->load($inputFileName);
+
+			$sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+			$importCtr = 0;
+			$updateCtr = 0;
+
+			for ($i=2; $i <= count($sheetData); $i++) 
+			{ 
+				$profileData = array(
+					"applicant_id"		=>	htmlentities($sheetData[$i]['A']),
+					"program_id"		=>	htmlentities($sheetData[$i]['E']),
+					"fname"				=>	htmlentities($sheetData[$i]['C']),
+					"mname"				=>	htmlentities($sheetData[$i]['D']),
+					"lname"				=>	htmlentities($sheetData[$i]['B']),
+					"qualifier_type"	=>	htmlentities($sheetData[$i]['F'])
+				);
+
+				$rankingData = array(
+					"applicant_id"		=>	htmlentities($sheetData[$i]['A']),
+					"percentile_rank"	=>	htmlentities($sheetData[$i]['G'])
+				);
+
+				$condtion = array(
+					"applicant_id"	=>	htmlentities($sheetData[$i]['A'])
+				);
+
+				if (count($this->administrator->checkIfExist("tbl_profile", $sheetData[$i]['A'])) > 0)
+				{
+					if ($this->administrator->updateLetter($profileData, $condtion, array('tbl_profile')) !== false)
+					{
+						$updateCtr++;
+					}
+				}else
+				{
+					if ($this->administrator->saveLetter('tbl_profile', $profileData) !== false)
+					{
+						$importCtr++;
+					}
+				}
+
+				if (count($this->administrator->checkIfExist("tbl_applicant_ranking", $sheetData[$i]['A'])) > 0)
+				{
+					if ($this->administrator->updateLetter($rankingData, $condtion, array('tbl_applicant_ranking')) !== false)
+					{
+						$updateCtr++;
+					}
+				}else
+				{
+					if ($this->administrator->saveLetter('tbl_applicant_ranking', $rankingData) !== false)
+					{
+						$importCtr++;
+					}
+				}
+			}
+
+			echo json_encode(array("msg" => $importCtr." row(s) imported and ".$updateCtr." updated sucessfully.", "sys_msg"	=> "success", "icon"	=>	"success", "import"	=>	$importCtr));
+			// $sheetData[2]['A'];
+		}
+	}
+>>>>>>> Stashed changes
 	 /**
 	  * END of other functions
 	  */

@@ -24,7 +24,11 @@ class Login_model extends CI_Model {
     return $query->result();
   }
 
+<<<<<<< Updated upstream
   public function update($data, $condition = array(), $table = "") 
+=======
+  public function update($data = array(), $condition = array(), $table ="") 
+>>>>>>> Stashed changes
   {
     $this->db->trans_begin();
     $this->db->trans_strict(TRUE);

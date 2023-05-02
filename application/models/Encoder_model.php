@@ -104,7 +104,7 @@ class Encoder_model extends CI_Model {
     {
         $this->db->select('*');
         $this->db->from('tbl_college');
-        $this->db->where('college_id <=', 9);
+        $this->db->where('college_id <=', 10);
         $query = $this->db->get();
 
         return $query->result();

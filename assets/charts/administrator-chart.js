@@ -1,6 +1,16 @@
 var MyGlobalObject={};
 var currentlyHovered;
 
+function filterEnrollmentType()
+{
+    enrollPerCollege($('[name="enrollPerCollegeSem"] option:selected').val());
+}
+
+function filterEnrollmentTypePerCourse()
+{
+    enrollPerCourse();
+}
+
 function enrollPerCollege(semester)
 {
     if(MyGlobalObject["enrollPerCollege"]){   //check if exist chart dispose that
@@ -23,7 +33,10 @@ function enrollPerCollege(semester)
     $.ajax({
         url: window.location.origin + "/office-of-admissions/administrator/enrollPerCollegeChart",
         type: "POST",
-        data: { sem: semester },
+        data: { 
+            sem: semester,
+            enrollmentType: $('[name="enrollmentType"] option:selected').val()
+        },
         dataType: "JSON",
         success: function(response) 
         {
@@ -325,11 +338,15 @@ function enrollPerCourse()
     $.ajax({
         url: window.location.origin + "/office-of-admissions/administrator/enrollPerCourse",
         type: "POST",
-        data: { sem: $("#enrollPerSemFilter option:selected").val(), college: $("#enrollPerSemCollegeFilter option:selected").val() },
+        data: { 
+            sem: $("#enrollPerSemFilter option:selected").val(), 
+            college: $("#enrollPerSemCollegeFilter option:selected").val(),
+            enrollmentType: $('[name="enrollmentTypePerCourse"] option:selected').val()
+        },
         dataType: "JSON",
         success: function(response) 
         {
-            for (let index = 0; index < response.length; index++) 
+            for (let index = 0; index < response.length; index++)
             {
                 data.push(response[index]);
             }
@@ -432,7 +449,11 @@ function enrollPerCoursePie()
     $.ajax({
         url: window.location.origin + "/office-of-admissions/administrator/enrollPerCourse",
         type: "POST",
-        data: { sem: $("#enrollPerSemFilter option:selected").val(), college: $("#enrollPerSemCollegeFilter option:selected").val() },
+        data: { 
+            sem: $("#enrollPerSemFilter option:selected").val(), 
+            college: $("#enrollPerSemCollegeFilter option:selected").val(),
+            enrollmentType: $('[name="enrollmentTypePerCourse"] option:selected').val() 
+        },
         dataType: "JSON",
         success: function(response) 
         {

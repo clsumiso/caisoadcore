@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Computation
 {
-    public function _tuitionFee($course_type, $course_id, $schedule, $tuitionFee_data =  array())
+    public function _tuitionFee($course_type = "", $course_id = "", $schedule = "", $tuitionFee_data =  array())
     {
         $tuition_fee = 0;
         if (count($tuitionFee_data) > 0)
@@ -91,7 +91,7 @@ class Computation
         return $tuition_fee;
     }
 
-    public function _entrance($year_level, $semester, $enrollment_count = 0, $admission_fee_data = array())
+    public function _entrance($year_level = "", $semester = "", $enrollment_count = 0, $admission_fee_data = array())
     {
         $entrance_fee = 0;
         if ($semester === "1")
@@ -246,7 +246,11 @@ class Computation
         return $student_news_organ;
     }
 
+<<<<<<< Updated upstream
     public function _entrance_new($enrollment_count = 0, $student_type = "", $year_level = 0, $entrance_new_data = array())
+=======
+    public function _entrance_new($enrollment_count = 0, $student_type = "" , $year_level = ""   , $entrance_new_data = array())
+>>>>>>> Stashed changes
     {
         $entrance = 0;
         if ($enrollment_count <= 1)

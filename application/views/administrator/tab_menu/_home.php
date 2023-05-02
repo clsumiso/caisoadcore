@@ -25,7 +25,14 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-6 col-lg-6">
                             <b>Semester</b>
-                            <select class="form-control" onchange="enrollPerCollege(this.value)">
+                            <select class="form-control" name="enrollmentType" onchange="filterEnrollmentType()">
+                                <option value="resident" selected>Resident</option>
+                                <option value="incoming_freshmen">Incoming Freshmen</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <b>Semester</b>
+                            <select class="form-control" name="enrollPerCollegeSem" onchange="enrollPerCollege(this.value)">
                                 <?php echo $semester; ?>
                             </select>
                         </div>
@@ -34,8 +41,20 @@
                             <!-- <select class="form-control" onchange="enrollPerCollege(this.value)">
                                 <?php echo $semester; ?>
                             </select> -->
+<<<<<<< Updated upstream
+=======
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div id="enrollPerCollege" class="dashboardChart"></div>
+>>>>>>> Stashed changes
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6" style="display: none;">
+                            <div id="map" class="dashboardChart" style="z-index: 0;"></div>
+                        </div>
+                    </div>
+<<<<<<< Updated upstream
                     <div class="row">
                         <div class="col-sm-12 col-md-6 col-lg-6">
                             <div id="enrollPerCollege" class="dashboardChart"></div>
@@ -44,9 +63,18 @@
                             <div id="map" class="dashboardChart" style="z-index: 0;"></div>
                         </div>
                     </div>
+=======
+>>>>>>> Stashed changes
                     <h3>Total Enrollment per COURSE</h3>
                     <div class="row">
-                        <div class="col-sm-12 col-md-4 col-lg-3">
+                        <div class="col-sm-12 col-md-3 col-lg-3">
+                            <b>Semester</b>
+                            <select class="form-control" name="enrollmentTypePerCourse" onchange="filterEnrollmentTypePerCourse()">
+                                <option value="resident" selected>Resident</option>
+                                <option value="incoming_freshmen">Incoming Freshmen</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3">
                             <b>Semester</b>
                             <select class="form-control" onchange="enrollPerCourse()" id="enrollPerSemFilter">
                                 <?php echo $semester; ?>
