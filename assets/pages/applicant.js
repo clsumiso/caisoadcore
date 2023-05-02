@@ -38,10 +38,7 @@ function getApplicantInfo(appID)
         complete: function () 
         {
             // $('#saveApplicantPreload').html('');
-<<<<<<< HEAD
-=======
             
->>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
             $('.fullscreen-loading').css("display", "none");
         },
         error: function (jqXHR, textStatus, errorThrown) 
