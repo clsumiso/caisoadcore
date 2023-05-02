@@ -876,7 +876,7 @@
                                         <textarea class="form-control" name="emergency_address" placeholder="Emergency Person Address"><?php echo set_value('emergency_address'); ?></textarea>
                                     </div>
                                 </div>
-                                <div class="row clearfix">
+                                <div class="row clearfix" style="display: none;">
                                     <div class="col-sm-12 col-md-4 col-4">
                                         <b>CLSU College Admission Test (Over-all rating)</b>
                                         <input type="number" step=0.01 name="admission_test" value="<?php echo set_value('admission_test'); ?>" class="form-control" placeholder="(Over-all rating)">

@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Computation
 {
-    public function _tuitionFee($course_type, $course_id, $schedule, $tuitionFee_data =  array())
+    public function _tuitionFee($course_type = "", $course_id = 0, $schedule = "", $tuitionFee_data =  array())
     {
         $tuition_fee = 0;
         if (count($tuitionFee_data) > 0)
@@ -91,7 +91,7 @@ class Computation
         return $tuition_fee;
     }
 
-    public function _entrance($year_level, $semester, $enrollment_count = 0, $admission_fee_data = array())
+    public function _entrance($year_level = 0, $semester = 0, $enrollment_count = 0, $admission_fee_data = array())
     {
         $entrance_fee = 0;
         if ($semester === "1")
@@ -118,7 +118,7 @@ class Computation
         return $entrance_fee;
     }
 
-    public function _medical_screening($enrollment_count = 0, $student_type, $admission_fee_data = array())
+    public function _medical_screening($enrollment_count = 0, $student_type = "", $admission_fee_data = array())
     {
         $medical_screening_fee = 0;
         if ($enrollment_count <= 1)
@@ -197,7 +197,7 @@ class Computation
         return $field_study;
     }
 
-    public function _bridging_fee($development_fee_data = array(), $course_id, $semester_enrolled_ctr = 0, $year_level = 0)
+    public function _bridging_fee($development_fee_data = array(), $course_id = 0, $semester_enrolled_ctr = 0, $year_level = 0)
     {
         $bridging_fee = 0;
         if ($semester_enrolled_ctr <= 4)
@@ -246,7 +246,7 @@ class Computation
         return $student_news_organ;
     }
 
-    public function _entrance_new($enrollment_count = 0, $student_type, $year_level, $entrance_new_data = array())
+    public function _entrance_new($enrollment_count = 0, $student_type = "", $year_level = 0, $entrance_new_data = array())
     {
         $entrance = 0;
         if ($enrollment_count <= 1)
@@ -302,7 +302,7 @@ class Computation
         return $audio_visual;
     }
 
-    public function _guidance_fee($course_type, $guidance_fee_data = array())
+    public function _guidance_fee($course_type = "", $guidance_fee_data = array())
     {
         $pta = $class_org = $cgc = $charity = 0;
 
@@ -354,7 +354,7 @@ class Computation
         return $guidance_fee_arr;
     }
 
-    public function _library_fee($course_type, $semester_number, $libray_fee_data = array())
+    public function _library_fee($course_type = "", $semester_number = 0, $libray_fee_data = array())
     {
         $library_fee = 0;
 
@@ -385,7 +385,7 @@ class Computation
         return $library_fee;
     }
 
-    public function _medical_dental($semester_number, $medical_dental_data = array())
+    public function _medical_dental($semester_number = 0, $medical_dental_data = array())
     {
         $medical_dental = 0;
         if (in_array($semester_number, array(1, 2)))
@@ -405,7 +405,7 @@ class Computation
         return $medical_dental;
     }
 
-    public function _insurance($semester_number, $medical_dental_data = array())
+    public function _insurance($semester_number = 0, $medical_dental_data = array())
     {
         $insurance = 0;
         if (in_array($semester_number, array(1)))
@@ -436,7 +436,7 @@ class Computation
         return $registration_fee;
     }
 
-    public function _school_id($student_type, $school_id_data = array())
+    public function _school_id($student_type = "", $school_id_data = array())
     {
         $school_id_fee = 0;
 

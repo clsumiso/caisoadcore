@@ -24,7 +24,7 @@ class Login_model extends CI_Model {
     return $query->result();
   }
 
-  public function update($data, $condition = array(), $table) 
+  public function update($data = array(), $condition = array(), $table = "") 
   {
     $this->db->trans_begin();
     $this->db->trans_strict(TRUE);

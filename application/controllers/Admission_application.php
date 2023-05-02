@@ -109,10 +109,10 @@ class Admission_application extends CI_Controller
       "degree_program_applied"      =>  $data['question_3'],
       "field_of_study"              =>  $data['question_4'],
       "title"                       =>  $data['question_5'],
-      "lname"                       =>  $data['question_6'],
-      "fname"                       =>  $data['question_7'],
-      "mname"                       =>  $data['question_8'],
-      "mailing_address"             =>  $data['question_9'],
+      "lname"                       =>  htmlentities($data['question_6']),
+      "fname"                       =>  htmlentities($data['question_7']),
+      "mname"                       =>  htmlentities($data['question_8']),
+      "mailing_address"             =>  htmlentities($data['question_9']),
       "region"                      =>  $data['question_10'],
       "province"                    =>  $data['question_11'],
       "municipality"                =>  $data['question_12'],
@@ -123,7 +123,7 @@ class Admission_application extends CI_Controller
       "phone_number"                =>  $data['question_17'],
       "citizenship"                 =>  $data['question_18'],
       "present_occupation"          =>  $data['question_19'],
-      "address_of_employment"       =>  $data['question_20'],
+      "address_of_employment"       =>  htmlentities($data['question_20']),
       "educational_background"      =>  $this->getArr($data['question_21']),
       "reference"                   =>  $this->getArr($data['question_22']),
       "area_of_interest"            =>  $data['question_23'],
@@ -216,7 +216,7 @@ class Admission_application extends CI_Controller
     { 
       if ($arr[$i] != "")
       {
-        array_push($arrData, $arr[$i]);
+        array_push($arrData, htmlentities($arr[$i]));
       }
     }
 
@@ -1516,6 +1516,62 @@ class Admission_application extends CI_Controller
     $applicationData = $this->admission_application->getApplication($applicationID);
 
     $this->admissionApplicationForm($applicationData);
+  }
+
+  public function emailRefrence($emailAddress = array(), $name = "", $sender = "")
+  {
+    $mail = new PHPMailer(true);
+    $output = array();
+    $msg = array();
+
+    for ($i=0; $i < count($emailAddress); $i++) 
+    { 
+      try {
+        //Server settings
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+        $mail->isSMTP();                                            //Send using SMTP
+        //$mail->isSendmail();
+        $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+        $mail->SMTPAuth   = true;                     //Set the SMTP server to send through 
+        $mail->Username   = 'clsuoad.noreply15@clsu2.edu.ph';                     //SMTP username
+        $mail->Password   = 'AD315510N5';                               //SMTP password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+        $mail->Port       = 587;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+  
+        //Recipients
+        $mail->setFrom('clsuoad.noreply15@clsu2.edu.ph', 'OFFICE OF ADMISSIONS');
+        // $mail->addAddress($email);
+        
+        //Set CC address
+        $mail->addCC("ccaddress@ccdomain.com", "Some CC Name");
+  
+        //Set BCC address
+        $mail->addBCC("bccaddress@ccdomain.com", "Some BCC Name");
+        $mail->addReplyTo($emailAddress[$i], $sender);     //Add a recipient
+  
+        //Content
+        $mail->isHTML(true);                                  //Set email format to HTML
+        $mail->Subject = 'OAD | Admission Application';
+  
+        $htmlContent  = '<p>Dear Maam/Sir,</p><br>';
+        $htmlContent  .= '<p>Good day, your verification code to reset your password is: </p><h3>Code: '.$this->_token().'</h3><br>';
+  
+        $mail->Body    = $htmlContent;
+            
+        $mail->send();
+        $mail->clearAddresses();
+      } catch (Exception $e) 
+      {
+        $msg = array(
+          "error" =>  $mail->ErrorInfo,
+          "email" =>  $emailAddress[$i]
+        );
+        // $msg .= "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+      }
+      
+      array_push($output, $msg);
+    }
+    
   }
 
 }
