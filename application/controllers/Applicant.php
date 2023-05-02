@@ -1,25 +1,19 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-<<<<<<< HEAD
 require 'vendor/autoload.php';
 
-=======
->>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
 class Applicant extends CI_Controller
 {
     
   public function __construct()
   {
     parent::__construct();
-<<<<<<< HEAD
     $this->load->helper(array('form', 'url'));
 		$this->load->helper('date');
     $this->load->library('form_validation');
     $this->load->model('applicant_model', 'applicant');
 		$this->load->model('administrator_model', 'administrator');
-=======
->>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
   }
 
   public function index()
@@ -27,17 +21,12 @@ class Applicant extends CI_Controller
     $data = array(
       "code"  =>  "404",
       "msg"   =>  "Page not Found!",
-<<<<<<< HEAD
       "link"  =>  "https://ctec.clsu2.edu.ph/clsucat/",
       "homepageBTN" =>  "GO TO CTEC"
-=======
-      "link"  =>  "https://ctec.clsu2.edu.ph/clsucat/"
->>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
     );
     $this->load->view('err/custom_error', $data);
   }
 
-<<<<<<< HEAD
   public function get_time()
 	{
 		$datestring = '%Y-%m-%d %H:%i:%s';
@@ -107,8 +96,6 @@ class Applicant extends CI_Controller
     $this->load->view('applicants/_js', $data);
   }
 
-=======
->>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
   public function applicantVerification($applicantID = "", $securityCode = "")
   {
       $simple_string = $applicantID;
@@ -124,7 +111,6 @@ class Applicant extends CI_Controller
 
       if (urlencode($encryption)  == $securityCode)
       {
-<<<<<<< HEAD
 
         if ($this->letterContent($applicantID) == "not_scheduled_today")
         {
@@ -169,30 +155,18 @@ class Applicant extends CI_Controller
           $this->load->view('applicants/_data_privacy_modal', $data);
           $this->load->view('applicants/_js', $data);
         }
-=======
-        $this->load->view('applicant/_header', $data);
-        $this->load->view('applicant/_css', $data);
-        $this->load->view('applicant/applicant_view', $data);
-        $this->load->view('applicant/_footer', $data);
-        $this->load->view('applicant/_js', $data);
->>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
       }else
       {
         $data = array(
           "code"  =>  "401",
           "msg"   =>  "Unauthorized Access",
-<<<<<<< HEAD
           "link"  =>  "https://ctec.clsu2.edu.ph/clsucat/",
           "homepageBTN" =>  "GO TO CTEC"
-=======
-          "link"  =>  "https://ctec.clsu2.edu.ph/clsucat/"
->>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
         );
         $this->load->view('err/custom_error', $data);
       }
   }
 
-<<<<<<< HEAD
   public function letterContent($applicantID = "")
   {
 
@@ -1816,8 +1790,6 @@ class Applicant extends CI_Controller
     // $mpdf->Output('enrollment_form.pdf', \Mpdf\Output\Destination::FILE);
     }
 
-=======
->>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
 }
 
 

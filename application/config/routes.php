@@ -53,14 +53,10 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route = array(
-<<<<<<< Updated upstream
-	"app-verification/(:any)/(:any)"	=>	"applicant/applicantVerification/$1/$2"
-=======
 	'default_controller' 				=> 'login',
 	"app-verification/(:any)/(:any)"	=>	"applicant/applicantVerification/$1/$2",
 	"app-verification"					=>	"applicant",
 	"grad-admission-verification"		=>	"admission_application/grad_admission_verification",
 	"app-enrollment-form/(:any)"		=>	"applicant/applicant_form/$1",
 	"app-dl-enrollment-form/(:any)"		=>	"applicant/donwloadEnrollmentForm/$1"
->>>>>>> Stashed changes
 );
