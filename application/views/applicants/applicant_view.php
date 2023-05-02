@@ -1,4 +1,16 @@
+<<<<<<< HEAD
 <body class="theme-green" onload="getApplicantInfo('<?php echo $appID; ?>')">
+=======
+<<<<<<< HEAD
+<body class="theme-green" onload="getApplicantInfo('<?php echo $appID; ?>')">
+=======
+<<<<<<< HEAD
+<body class="theme-green" onload="getApplicantInfo('<?php echo $appID; ?>')">
+=======
+<body class="theme-green">
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
+>>>>>>> 93caec5f8683284e87e5b206fc597fe48710c58f
     <!-- Page Loader -->
     <div class="page-loader-wrapper">
         <span class="loader"></span>
@@ -17,7 +29,18 @@
             <p>Please wait...</p>
         </div> -->
     </div>
+<<<<<<< HEAD
     <div class="fullscreen-loading" style="display: none;">Loading&#8230;</div>
+=======
+<<<<<<< HEAD
+    <div class="fullscreen-loading" style="display: none;">Loading&#8230;</div>
+=======
+<<<<<<< HEAD
+    <div class="fullscreen-loading" style="display: none;">Loading&#8230;</div>
+=======
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
+>>>>>>> 93caec5f8683284e87e5b206fc597fe48710c58f
     <!-- #END# Page Loader -->
     <!-- Overlay For Sidebars -->
     <div class="overlay"></div>
@@ -37,7 +60,19 @@
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="card">
                         <div class="body">
+<<<<<<< HEAD
                             <?= $letterContent ?>
+=======
+<<<<<<< HEAD
+                            <?= $letterContent ?>
+=======
+<<<<<<< HEAD
+                            <?= $letterContent ?>
+=======
+                            
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
+>>>>>>> 93caec5f8683284e87e5b206fc597fe48710c58f
                         </div>
                     </div>
                 </div>

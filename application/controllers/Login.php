@@ -366,7 +366,7 @@ class Login extends CI_Controller
               $response = array(
                 'sys_msg'   =>  "FAILED",
                 'redirect'  =>  "0",
-                'msg'       =>  'Login failed, please try again2!!!'
+                'msg'       =>  'Login failed, please try again!!!'
               );
           }
         }else
@@ -411,6 +411,8 @@ class Login extends CI_Controller
     $user_data = $this->login->get_user_info($email, $password);
     if (count($user_data) > 0)
     {
+      if ($user_data[0]->status == 1)
+      {
         $data = array(
             "uid"               =>  $user_data[0]->uname,
             "account_name"      =>  $user_data[0]->fname." ".$user_data[0]->lname,
@@ -423,13 +425,20 @@ class Login extends CI_Controller
             "course"            =>  $user_data[0]->course_name*/
         );
 
+        $this->session->set_userdata($data);
+        return true;
+      }else
+      {
+        return "Sorry your account is deactivated!!!";
+      }
+        
+
         // $_SESSION['fullname'] = $user_data[0]->lname.", ".$user_data[0]->fname." ".$user_data[0]->mname;
         // $_SESSION['course'] = $user_data[0]->course_name;
         // $_SESSION['sex']  = $user_data[0]->sex;
         // $_SESSION['semester'] = $semester[0]->semester_name.' '.$semester[0]->semester_year;
 
-        $this->session->set_userdata($data);
-        return true;
+        
       }
       else
       {

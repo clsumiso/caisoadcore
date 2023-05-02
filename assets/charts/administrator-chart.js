@@ -221,6 +221,7 @@ function enrollPerCourse()
     {   //check if exist chart dispose that
         MyGlobalObject["enrollPerCourse"].dispose()
     }
+    
     // // Create root element
     // // https://www.amcharts.com/docs/v5/getting-started/#Root_element
     var root = am5.Root.new("enrollPerCourse");

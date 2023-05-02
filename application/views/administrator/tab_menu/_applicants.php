@@ -42,6 +42,13 @@
                         </div>
                     </div> -->
                     <!-- Letter Configurations -->
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
+>>>>>>> 93caec5f8683284e87e5b206fc597fe48710c58f
                     <form action="" method="POST" id="importApplicantForm">
                         <div class="row clearfix">
                             <div class="errMsg"></div>
@@ -60,12 +67,39 @@
                             <tr>
                                 <th>#</th>
                                 <th>...</th>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+                    <div class="row clearfix">
+                        <div class="col-sm-6 col-md-3 col-lg-3">
+                            <input type="file" class="form-control">
+                        </div>
+                    </div>
+                    <table id='applicantList' class='table table-bordered table-striped table-hover js-basic-example nowrap dataTable'>
+                        <thead>
+                            <tr>
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
+>>>>>>> 93caec5f8683284e87e5b206fc597fe48710c58f
                                 <th>Applicant ID</th>
                                 <th>Lastname</th>
                                 <th>Firstname</th>
                                 <th>Middlename</th>
                                 <th>Course/Program</th>
+<<<<<<< HEAD
                                 <th>Qualifier Type</th>
+=======
+<<<<<<< HEAD
+                                <th>Qualifier Type</th>
+=======
+<<<<<<< HEAD
+                                <th>Qualifier Type</th>
+=======
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
+>>>>>>> 93caec5f8683284e87e5b206fc597fe48710c58f
                                 <th>Confirm Date</th>
                                 <th>Confirm Status</th>
                             </tr>
@@ -97,5 +131,19 @@
         </div>
     </div>
 </div>
+<<<<<<< HEAD
 <?php $this->load->view('administrator/modal/_releaseDate_modal'); ?>
 <?php $this->load->view('administrator/modal/_applicant_info_modal'); ?>
+=======
+<<<<<<< HEAD
+<?php $this->load->view('administrator/modal/_releaseDate_modal'); ?>
+<?php $this->load->view('administrator/modal/_applicant_info_modal'); ?>
+=======
+<<<<<<< HEAD
+<?php $this->load->view('administrator/modal/_releaseDate_modal'); ?>
+<?php $this->load->view('administrator/modal/_applicant_info_modal'); ?>
+=======
+<?php $this->load->view('administrator/modal/_releaseDate_modal'); ?>
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
+>>>>>>> 93caec5f8683284e87e5b206fc597fe48710c58f

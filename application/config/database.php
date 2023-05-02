@@ -94,12 +94,48 @@ $query_builder = TRUE;
 	'failover' => array(),
 	'save_queries' => FALSE
 );*/
+<<<<<<< HEAD
 
 $db['default'] = array(
+=======
+<<<<<<< HEAD
+
+$db['default'] = array(
+=======
+
+<<<<<<< Updated upstream
+$db['applicantDB'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => 'admissions',
-	'password' => '`1Q@W3E4R',
+	'username' => 'root',
+	'password' => '',
+	'database' => 'applicants',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => TRUE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => FALSE
+);
+
+/*$db['default'] = array(
+=======
+$db['default'] = array(
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
+>>>>>>> 93caec5f8683284e87e5b206fc597fe48710c58f
+	'dsn'	=> '',
+	'hostname' => 'localhost',
+	'username' => 'root',
+	'password' => '',
 	'database' => 'admissions',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
@@ -122,13 +158,31 @@ $db['default'] = array(
 $db['applicantDB'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
+<<<<<<< HEAD
 	'username' => 'applicants',
 	'password' => '`1Q@W3E4R',
+=======
+<<<<<<< HEAD
+	'username' => 'applicants',
+	'password' => '`1Q@W3E4R',
+=======
+	'username' => 'root',
+	'password' => '',
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
+>>>>>>> 93caec5f8683284e87e5b206fc597fe48710c58f
 	'database' => 'applicants',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
+<<<<<<< HEAD
 	'db_debug' => FALSE,
+=======
+<<<<<<< HEAD
+	'db_debug' => FALSE,
+=======
+	'db_debug' => TRUE,
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
+>>>>>>> 93caec5f8683284e87e5b206fc597fe48710c58f
 	'cache_on' => FALSE,
 	'cachedir' => '',
 	'char_set' => 'utf8',

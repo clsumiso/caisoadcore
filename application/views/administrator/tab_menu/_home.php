@@ -41,18 +41,54 @@
                             <!-- <select class="form-control" onchange="enrollPerCollege(this.value)">
                                 <?php echo $semester; ?>
                             </select> -->
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
+>>>>>>> 93caec5f8683284e87e5b206fc597fe48710c58f
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div id="enrollPerCollege" class="dashboardChart"></div>
+>>>>>>> Stashed changes
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6" style="display: none;">
+                            <div id="map" class="dashboardChart" style="z-index: 0;"></div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6" style="display: none;">
+                            <div id="map" class="dashboardChart" style="z-index: 0;"></div>
                         </div>
                         <div class="col-sm-12 col-md-6 col-lg-6" style="display: none;">
                             <div id="map" class="dashboardChart" style="z-index: 0;"></div>
                         </div>
                     </div>
+<<<<<<< HEAD
                     <h3>Total Enrollment per COURSE</h3>
                     <div class="row">
+=======
+<<<<<<< HEAD
+                    <h3>Total Enrollment per COURSE</h3>
+                    <div class="row">
+=======
+<<<<<<< Updated upstream
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div id="enrollPerCollege" class="dashboardChart"></div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div id="map" class="dashboardChart" style="z-index: 0;"></div>
+                        </div>
+                    </div>
+=======
+>>>>>>> Stashed changes
+                    <h3>Total Enrollment per COURSE</h3>
+                    <div class="row">
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
+>>>>>>> 93caec5f8683284e87e5b206fc597fe48710c58f
                         <div class="col-sm-12 col-md-3 col-lg-3">
                             <b>Semester</b>
                             <select class="form-control" name="enrollmentTypePerCourse" onchange="filterEnrollmentTypePerCourse()">
