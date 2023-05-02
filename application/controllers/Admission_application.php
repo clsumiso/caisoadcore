@@ -1408,25 +1408,16 @@ class Admission_application extends CI_Controller
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
                   Semester:
                 </p>
-<<<<<<< HEAD
-=======
-              </td>
-              <td></td>
-              <td style="vertical-align: 0;">
->>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                 <p style="font-family: roboto; font-size: 11px;">
                   <span style="font-size: 8px;background-color: #000; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 1<sup>st</sup> Semester
                   <span style="font-size: 8px;background-color: #fff; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 2<sup>nd</sup> Semester
                 </p>
               </td>
               <td></td>
-<<<<<<< HEAD
               <td>
                 
               </td>
               <td></td>
-=======
->>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
               <td></td>
             </tr>
             <tr>
