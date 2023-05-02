@@ -150,7 +150,7 @@ function assess(studentID, semester, row)
     });
 }
 
-function savePayment() 
+function savePayment(action) 
 {
     if ($('[name="ORnumber"]').val() == '' && $('[name="amount"]').val() != '') 
     {
@@ -185,10 +185,11 @@ function savePayment()
                     dataType: 'JSON',
                     data: 
                     { 
-                        studentID: $('[name="idNumber"]').val(), 
-                        semester: $('[name="semesterID"]').val(),
+                        studentID: action == 'insert' ? $('[name="idNumber"]').val() : "", 
+                        semester: action == 'insert' ? $('[name="semesterID"]').val() : "",
                         orNumber: $('[name="ORnumber"]').val(),
-                        amount: $('[name="amount"]').val()
+                        amount: $('[name="amount"]').val(),
+                        action: action
                     },
                     beforeSend: function ()
                     {

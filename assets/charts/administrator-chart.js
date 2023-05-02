@@ -1,6 +1,16 @@
 var MyGlobalObject={};
 var currentlyHovered;
 
+function filterEnrollmentType()
+{
+    enrollPerCollege($('[name="enrollPerCollegeSem"] option:selected').val());
+}
+
+function filterEnrollmentTypePerCourse()
+{
+    enrollPerCourse();
+}
+
 function enrollPerCollege(semester)
 {
     if(MyGlobalObject["enrollPerCollege"]){   //check if exist chart dispose that
@@ -23,7 +33,10 @@ function enrollPerCollege(semester)
     $.ajax({
         url: window.location.origin + "/office-of-admissions/administrator/enrollPerCollegeChart",
         type: "POST",
-        data: { sem: semester },
+        data: { 
+            sem: semester,
+            enrollmentType: $('[name="enrollmentType"] option:selected').val()
+        },
         dataType: "JSON",
         success: function(response) 
         {
@@ -59,7 +72,13 @@ function enrollPerCollege(semester)
     // Create axes
     // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
   
-    var xRenderer = am5xy.AxisRendererX.new(root, {});
+    var xRenderer = am5xy.AxisRendererX.new(root, { minGridDistance: 30 });
+    xRenderer.labels.template.setAll({
+      rotation: -90,
+      centerY: am5.p50,
+      centerX: am5.p100,
+      paddingRight: 15
+    });
     xRenderer.grid.template.set("visible", false);
     
     var xAxis = chart.xAxes.push(
@@ -318,11 +337,15 @@ function enrollPerCourse()
     $.ajax({
         url: window.location.origin + "/office-of-admissions/administrator/enrollPerCourse",
         type: "POST",
-        data: { sem: $("#enrollPerSemFilter option:selected").val(), college: $("#enrollPerSemCollegeFilter option:selected").val() },
+        data: { 
+            sem: $("#enrollPerSemFilter option:selected").val(), 
+            college: $("#enrollPerSemCollegeFilter option:selected").val(),
+            enrollmentType: $('[name="enrollmentTypePerCourse"] option:selected').val()
+        },
         dataType: "JSON",
         success: function(response) 
         {
-            for (let index = 0; index < response.length; index++) 
+            for (let index = 0; index < response.length; index++)
             {
                 data.push(response[index]);
             }
@@ -425,7 +448,11 @@ function enrollPerCoursePie()
     $.ajax({
         url: window.location.origin + "/office-of-admissions/administrator/enrollPerCourse",
         type: "POST",
-        data: { sem: $("#enrollPerSemFilter option:selected").val(), college: $("#enrollPerSemCollegeFilter option:selected").val() },
+        data: { 
+            sem: $("#enrollPerSemFilter option:selected").val(), 
+            college: $("#enrollPerSemCollegeFilter option:selected").val(),
+            enrollmentType: $('[name="enrollmentTypePerCourse"] option:selected').val() 
+        },
         dataType: "JSON",
         success: function(response) 
         {

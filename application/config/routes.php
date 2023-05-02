@@ -49,8 +49,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route = array(
-	'default_controller' => 'login'
-);
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+$route = array(
+	'default_controller' 				=> 'login',
+	"app-verification/(:any)/(:any)"	=>	"applicant/applicantVerification/$1/$2",
+	"app-verification"					=>	"applicant",
+	"grad-admission-verification"		=>	"admission_application/grad_admission_verification",
+	"app-enrollment-form/(:any)"		=>	"applicant/applicant_form/$1",
+	"app-dl-enrollment-form/(:any)"		=>	"applicant/donwloadEnrollmentForm/$1"
+);

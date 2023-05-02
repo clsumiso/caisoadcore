@@ -63,6 +63,13 @@ class Records_in_charge_model extends CI_Model {
 		$this->db->join('tbl_class_schedule', 'tbl_registration.schedid = tbl_class_schedule.schedid', 'inner');
 		$this->db->where('tbl_registration.semester_id', $semester_id);
 		$this->db->where('tbl_registration.user_id', $user_id);
+		if ($semester_id == 3) 
+		{
+			$this->db->where('tbl_registration.status', 2);
+		}else
+		{
+			$this->db->where('tbl_registration.ra_status', "approved");
+		}
 		$query = $this->db->get();
 
 		return $query->result();
