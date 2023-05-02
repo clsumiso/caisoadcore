@@ -4,7 +4,8 @@ function user_login() {
 
     if ($('[name="username"]').val() == '') 
     {
-      swal("Failed", "USERNAME or EMAIL IS REQUIRED!!!", "warning");
+      $('#systemAlert').removeClass('d-none');
+      $('#systemAlert').text("Username or email is required");
     } else if ($('[name="pass"]').val() == '') 
     {
         // Swal.fire({
@@ -13,13 +14,16 @@ function user_login() {
         //     text: 'PASSWORD IS REQUIRED!!!',
         //     padding: '2px'
         // })
-      swal("Failed", "PASSWORD IS REQUIRED!!!", "warning");
+      // swal("Failed", "", "warning");
+      $('#systemAlert').removeClass('d-none');
+      $('#systemAlert').text("Password is required");
     }else 
     {
         email = $('[name="username"]').val();
         psw = $('[name="pass"]').val();
         // remember = $('input[name=thename]:checked') ? 1 : 0;
-
+        $('#loginPreload').removeClass('d-none');
+        $('#systemAlert').addClass('d-none');
         try{
             grecaptcha.ready(function() {
                 // do request for recaptcha token
@@ -34,17 +38,8 @@ function user_login() {
                       data: { action: 'login', token: token, email: email, pass: psw/*, remember: remember*/ },
                       dataType: "JSON",
                       beforeSend: function() {
-                        // Swal.fire({
-                        //     title: 'OFFICE OF ADMISSIONS',
-                        //     html: 'Loading...please wait',
-                        //     timerProgressBar: true,
-                        //     allowOutsideClick: false,
-                        //     allowEscapeKey: false,
-                        //     didOpen: () => {
-                        //         Swal.showLoading()
-                        //     }
-                        // });
-                        $('#login-loading').html('<span class="loader1"></span>');
+                        $('#loginPreload').removeClass('d-none');
+                        $('#systemAlert').addClass('d-none');
                       },
                       success: function (response) {
                         if (response.sys_msg === "SUCCESS")
@@ -58,9 +53,14 @@ function user_login() {
                           //   title: response.sys_msg,
                           //   text: response.msg
                           // })
-                          $('#login-loading').html('Sign in to start your session');
-                          swal(response.sys_msg, response.msg, "error");
+                          
+                          $('#systemAlert').removeClass('d-none');
+                          $('#systemAlert').text(response.msg);
                         }
+                      },
+                      complete: function () 
+                      {
+                        $('#loginPreload').addClass('d-none');
                       }
                     });
                 });

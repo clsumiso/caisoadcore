@@ -626,50 +626,102 @@ class Accounting extends CI_Controller {
             }
         }
         /* END OF CHECK SCHOLARSHIP */
+        if (count($section_data) > 0) 
+        {
+            if ($section_data[0]->registration_only_tag == 1)
+            {
+                $data = array(
+                    "student_id"            =>  $student_profile[0]->user_id,
+                    "lname"                 =>  $student_profile[0]->lname,
+                    "fname"                 =>  $student_profile[0]->fname,
+                    "mname"                 =>  $student_profile[0]->mname,
+                    "sex"                   =>  $student_profile[0]->sex,
+                    "student_type"          =>  $student_profile[0]->student_type,
+                    "enroll_status"         =>  $student_profile[0]->enroll_status,
+                    "section"               =>  count($section_data) > 0 ? $section_data[0]->section : "****",
+                    "degree"                =>  $student_profile[0]->course_name,
+                    "college"               =>  $student_profile[0]->college_name,
+                    "tuition"               =>  0,
+                    "admission_entrance"    =>  0,
+                    "admission_med_screen"  =>  0,
+                    "recreation"            =>  0,
+                    "scuaa"                 =>  0,
+                    "athletic"              =>  0,
+                    "computer_fee"          =>  0,
+                    "field_study"           =>  0,
+                    "bridging_fee"          =>  0,
+                    "scientific_journal"    =>  0,
+                    "student_news_organ"    =>  0,
+                    "field_trip"            =>  0,
+                    "entrance_new"          =>  0,
+                    "pta"                   =>  0,
+                    "cgc"                   =>  0,
+                    "class_org"             =>  0,
+                    "charity"               =>  0,
+                    "laboratory_fee"        =>  0,
+                    "audio_visual"          =>  0,
+                    "library_fee"           =>  0,
+                    "medical_dental"        =>  0,
+                    "insurance"             =>  0,
+                    "registration"          =>  $registration,
+                    "school_id"             =>  0,
+                    "for_billing"           =>  0,
+                    "to_pay"                =>  100,
+                    "total_for_billing"     =>  0,
+                    "total_to_pay"          =>  100,
+                    "regular_units"         =>  $regular_units,
+                    "saturday_units"        =>  $saturday_units,
+                    "scholar_code"          =>  count($scholarship) > 0 ? $scholarship[0]->scholarship_code : ''
+                );
+            }else
+            {
+                $data = array(
+                    "student_id"            =>  $student_profile[0]->user_id,
+                    "lname"                 =>  $student_profile[0]->lname,
+                    "fname"                 =>  $student_profile[0]->fname,
+                    "mname"                 =>  $student_profile[0]->mname,
+                    "sex"                   =>  $student_profile[0]->sex,
+                    "student_type"          =>  $student_profile[0]->student_type,
+                    "enroll_status"         =>  $student_profile[0]->enroll_status,
+                    "section"               =>  count($section_data) > 0 ? $section_data[0]->section : "****",
+                    "degree"                =>  $student_profile[0]->course_name,
+                    "college"               =>  $student_profile[0]->college_name,
+                    "tuition"               =>  $tuition_fee,
+                    "admission_entrance"    =>  $entrance,
+                    "admission_med_screen"  =>  $med_screen,
+                    "recreation"            =>  $recreation,
+                    "scuaa"                 =>  $scuaa,
+                    "athletic"              =>  $athletic,
+                    "computer_fee"          =>  $computer,
+                    "field_study"           =>  $field_study,
+                    "bridging_fee"          =>  $bridging,
+                    "scientific_journal"    =>  $sj,
+                    "student_news_organ"    =>  $sno,
+                    "field_trip"            =>  0,
+                    "entrance_new"          =>  $entrance_new,
+                    "pta"                   =>  $pta,
+                    "cgc"                   =>  $cgc,
+                    "class_org"             =>  $class_org,
+                    "charity"               =>  $charity,
+                    "laboratory_fee"        =>  $laboratory_fee,
+                    "audio_visual"          =>  $audio_visual,
+                    "library_fee"           =>  $library_fee,
+                    "medical_dental"        =>  $md_fee,
+                    "insurance"             =>  $insurance,
+                    "registration"          =>  $registration,
+                    "school_id"             =>  $school_id,
+                    "for_billing"           =>  $for_billing,
+                    "to_pay"                =>  $to_pay,
+                    "total_for_billing"     =>  $total_for_billing,
+                    "total_to_pay"          =>  $total_to_pay,
+                    "regular_units"         =>  $regular_units,
+                    "saturday_units"        =>  $saturday_units,
+                    "scholar_code"          =>  count($scholarship) > 0 ? $scholarship[0]->scholarship_code : ''
+                );
+            }
+        }
 
-        $data = array(
-            "student_id"            =>  $student_profile[0]->user_id,
-            "lname"                 =>  $student_profile[0]->lname,
-            "fname"                 =>  $student_profile[0]->fname,
-            "mname"                 =>  $student_profile[0]->mname,
-            "sex"                   =>  $student_profile[0]->sex,
-            "student_type"          =>  $student_profile[0]->student_type,
-            "enroll_status"         =>  $student_profile[0]->enroll_status,
-            "section"               =>  count($section_data) > 0 ? $section_data[0]->section : "****",
-            "degree"                =>  $student_profile[0]->course_name,
-            "college"               =>  $student_profile[0]->college_name,
-            "tuition"               =>  $tuition_fee,
-            "admission_entrance"    =>  $entrance,
-            "admission_med_screen"  =>  $med_screen,
-            "recreation"            =>  $recreation,
-            "scuaa"                 =>  $scuaa,
-            "athletic"              =>  $athletic,
-            "computer_fee"          =>  $computer,
-            "field_study"           =>  $field_study,
-            "bridging_fee"          =>  $bridging,
-            "scientific_journal"    =>  $sj,
-            "student_news_organ"    =>  $sno,
-            "field_trip"            =>  0,
-            "entrance_new"          =>  $entrance_new,
-            "pta"                   =>  $pta,
-            "cgc"                   =>  $cgc,
-            "class_org"             =>  $class_org,
-            "charity"               =>  $charity,
-            "laboratory_fee"        =>  $laboratory_fee,
-            "audio_visual"          =>  $audio_visual,
-            "library_fee"           =>  $library_fee,
-            "medical_dental"        =>  $md_fee,
-            "insurance"             =>  $insurance,
-            "registration"          =>  $registration,
-            "school_id"             =>  $school_id,
-            "for_billing"           =>  $for_billing,
-            "to_pay"                =>  $to_pay,
-            "total_for_billing"     =>  $total_for_billing,
-            "total_to_pay"          =>  $total_to_pay,
-            "regular_units"         =>  $regular_units,
-            "saturday_units"        =>  $saturday_units,
-            "scholar_code"          =>  count($scholarship) > 0 ? $scholarship[0]->scholarship_code : ''
-        );
+        
         array_push($output, $data);
 
         return $output;
@@ -678,26 +730,70 @@ class Accounting extends CI_Controller {
     public function savePayment()
     {
         $studentID  =   $_POST['studentID'];
+        $paymentID  =   $_POST['paymentID'];
+        $transID  =   $_POST['transID'];
         $semester   =   $_POST['semester'];
+        $action   =   $_POST['action'];
         $orNumber   =   strtoupper($_POST['orNumber']);
         $amount     =   floatval($_POST['amount']);
+        $err = false;
         $msg = array();
 
-        $data = array(
-            "transaction_id"    =>  $orNumber,
-            "semester_id"       =>  $semester,
-            "user_id"           =>  $studentID,
-            "amount"            =>  $amount,
-            "date_of_payment"   =>  date("Y-m-d H:i:s")
-        );
-
-        if ($this->accounting->save('tbl_payment', $data)) 
+        if ($action == "insert")
         {
-            $msg = array(
-                "sys_msg"   =>  "success",
-                "msg"       =>  "SUCCESSFULLY SAVED!!!",
-                "icon"      =>  "success"
+            $data = array(
+                "transaction_id"    =>  $orNumber,
+                "semester_id"       =>  $semester,
+                "user_id"           =>  $studentID,
+                "amount"            =>  $amount,
+                "date_of_payment"   =>  date("Y-m-d H:i:s")
             );
+        }else
+        {
+            $data = array(
+                "transaction_id"    =>  $orNumber,
+                "amount"            =>  $amount,
+                "date_of_payment"   =>  date("Y-m-d H:i:s")
+            );
+
+            $condition = array(
+                "transaction_id"    => $transID,
+                "payment_id"        => $paymentID,
+                "semester_id"       => $semester,
+                "user_id"           => $studentID
+            );
+        }
+
+        if ($action == "insert")
+        {
+            $query = $this->accounting->save('tbl_payment', $data);
+        }else
+        {
+            if ($transID == "" || $paymentID == "" || $semester == "" || $studentID == "")
+            {
+                $err = true;
+            }else
+            {
+                $query = $this->accounting->update($data, $condition, array('tbl_payment'));
+            }
+        }
+
+        if($err == false){
+            if ($query) 
+            {
+                $msg = array(
+                    "sys_msg"   =>  "success",
+                    "msg"       =>  "SUCCESSFULLY SAVED!!!",
+                    "icon"      =>  "success"
+                );
+            }else
+            {
+                $msg = array(
+                    "sys_msg"   =>  "failed",
+                    "msg"       =>  "SAVE FAILED!!!",
+                    "icon"      =>  "error"
+                );
+            }
         }else
         {
             $msg = array(

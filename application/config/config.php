@@ -24,8 +24,8 @@ date_default_timezone_set('Asia/Manila');
 | a PHP script and you can easily do that on your own.
 |
 */
-// $config['base_url'] = 'https://oad.clsu2.edu.ph/office-of-admissions/';
-$config['base_url'] = 'http://localhost/office-of-admissions/';
+$config['base_url'] = 'https://oad.clsu2.edu.ph/office-of-admissions/';
+//$config['base_url'] = 'http://localhost/office-of-admissions/';
 
 /*
 |--------------------------------------------------------------------------
@@ -140,7 +140,7 @@ $config['subclass_prefix'] = 'MY_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = FALSE;
+$config['composer_autoload'] = 'vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
