@@ -16,7 +16,11 @@ $('#wizard_vertical').steps({
     onFinished: function (event, currentIndex)
     {
         let err = "";
+<<<<<<< HEAD
         if (_validation()[0][0]['basic_information'].length > 0 || _validation()[0][1]['educational_background'].length > 0 || _validation()[0][2]['reference'].length > 0 || _validation()[0][3]['other'].length > 0 || _validation()[0][4]['attachment'].length > 0)
+=======
+        if (_validation()[0][0]['basic_information'].length > 0 || _validation()[0][1]['educational_background'].length > 0 || _validation()[0][2]['reference'].length > 0 || _validation()[0][3]['other'].length > 0)
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
         {
             err += "<ul class='align-left' style='list-style: none;'>";
 
@@ -63,6 +67,7 @@ $('#wizard_vertical').steps({
                 }
                 err += "</ul>";
             }
+<<<<<<< HEAD
 
             if (_validation()[0][4]['attachment'].length > 0)
             {
@@ -74,6 +79,8 @@ $('#wizard_vertical').steps({
                 }
                 err += "</ul>";
             }
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
             
             err += "</ul>";
 
@@ -110,6 +117,7 @@ $('#wizard_vertical').steps({
                         dataType: "JSON",
                         success: function (data) 
                         {
+<<<<<<< HEAD
                             swal({
                                 title: data.sys_msg.toUpperCase(),
                                 text: data.msg,
@@ -128,6 +136,10 @@ $('#wizard_vertical').steps({
                                 }
                             });
                             
+=======
+                            swal(data.sys_msg.toUpperCase(), data.msg, data.type);
+                            $("#applicationForm")[0].reset();
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
                         },
                         error: function (e) 
                         {
@@ -149,7 +161,10 @@ function _validation()
     let educational_background = [];
     let reference = [];
     let other = [];
+<<<<<<< HEAD
     let attachment = [];
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
     var emailReg = /^([\w-.]+@([\w-]+.)+[\w-]{2,4})?$/;
     var emailblockReg = /^([\w-.]+@(?!gmail\.com)(?!yahoo\.com)(?!hotmail\.com)([\w-]+.)+[\w-]{2,4})?$/;
 

@@ -1,5 +1,13 @@
 <!--===============================================================================================-->	
+<<<<<<< HEAD
     <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+=======
+<<<<<<< Updated upstream
+    <!-- <link rel="icon" type="image/png" href="images/icons/favicon.ico"/> -->
+=======
+    <link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/vendor/bootstrap/css/bootstrap.min.css'); ?>">
 <!--===============================================================================================-->

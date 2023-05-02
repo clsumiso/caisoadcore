@@ -295,6 +295,401 @@ class Administrator_model extends CI_Model {
 		$rowperpage = $postData['length']; // Rows display per page
 		$columnIndex = $postData['order'][0]['column']; // Column index
 		if (!in_array($columnIndex, array(0,1)))
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+		{
+			$columnName = $postData['columns'][$columnIndex]['data']; // Column name
+		}else
+		{
+			$columnName = "";
+		}
+		$columnSortOrder = $postData['order'][0]['dir']; // asc or desc
+		$searchValue = $postData['search']['value']; // Search value
+
+		// Custom search filter 
+		$searchSemester = $postData['semester'];
+
+		## Search 
+		$search_arr = array();
+		$searchQuery = "";
+
+		if($searchValue != '')
+		{
+			$search_arr[] = " (tbl_enrollment.user_id like '%".$searchValue."%' OR tbl_profile.fname like '%".$searchValue."%' OR tbl_profile.mname like'%".$searchValue."%' OR tbl_profile.lname like'%".$searchValue."%' ) ";
+		}
+
+		if($searchSemester != '')
+		{
+			$search_arr[] = " tbl_enrollment.semester_id='".$searchSemester."' ";
+		}
+
+		if(count($search_arr) > 0)
+		{
+			$searchQuery = implode(" AND ",$search_arr);
+		}
+
+		## Total number of records without filtering
+		$this->db->select('count(*) as allcount');
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+		$this->db->where('tbl_enrollment.semester_id', $searchSemester);
+		$records = $this->db->get('tbl_enrollment')->result();
+		$totalRecords = $records[0]->allcount;
+
+		## Total number of record with filtering
+		$this->db->select('count(*) as allcount');
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+		if($searchQuery != '')
+		$this->db->where($searchQuery);
+		$records = $this->db->get('tbl_enrollment')->result();
+		$totalRecordwithFilter = $records[0]->allcount;
+
+		## Fetch records
+
+		$this->db->select('tbl_enrollment.user_id, tbl_semester.semester_name, tbl_profile.lname, tbl_profile.fname, tbl_profile.mname, tbl_course.course_name, tbl_enrollment.section, tbl_semester.semester_id, tbl_semester.semester_year');
+
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+
+		$this->db->order_by($columnName, $columnSortOrder);
+		$this->db->limit($rowperpage, $start);
+		$records = $this->db->get('tbl_enrollment')->result();
+
+		$data = array();
+		$ctr = 1;
+		foreach($records as $record)
+		{
+			$data[] = array( 
+				"numRows"			=>	($ctr++),
+				"action"			=>	'<button class="btn btn-sm btn-flat btn-primary waves-effect" onclick="assessPayment(\''.$record->user_id.'\', \''.$record->semester_id.'\')"><i class="material-icons">account_box</i>Assess Fees</button>',
+				"user_id"			=>	$record->user_id,
+				"semester_name"		=>	$record->semester_name." ".$record->semester_year,
+				"fname"				=>	$record->fname,
+				"mname"				=>	$record->mname,
+				"lname"				=>	$record->lname,
+				"course_name"		=>	$record->course_name,
+				"section"			=>	$record->section,
+				"trasaction_id"		=>	$this->getOR($record->user_id, $searchSemester),
+				"amount"			=>	$this->getAmountPaid($record->user_id, $record->semester_id)
+			); 
+		}
+
+		## Response
+		$response = array(
+			"draw" => intval($draw),
+			"iTotalRecords" => $totalRecords,
+			"iTotalDisplayRecords" => $totalRecordwithFilter,
+			"aaData" => $data
+		);
+
+		return $response; 
+	}
+
+	public function getGrades($postData=null)
+	{
+		$response = array();
+
+		## Read value
+		$draw = $postData['draw'];
+		$start = $postData['start'];
+		$rowperpage = $postData['length']; // Rows display per page
+		$columnIndex = $postData['order'][0]['column']; // Column index
+		if (!in_array($columnIndex, array(0,1,9)))
+		{
+			$columnName = $postData['columns'][$columnIndex]['data']; // Column name
+		}else
+		{
+			$columnName = "";
+		}
+		$columnSortOrder = $postData['order'][0]['dir']; // asc or desc
+		$searchValue = $postData['search']['value']; // Search value
+
+		// Custom search filter 
+		$searchSemester = $postData['semester'];
+		$searchCourse = $postData['course'];
+
+		## Search 
+		$search_arr = array();
+		$searchQuery = "";
+
+		if($searchValue != '')
+		{
+			$search_arr[] = " (tbl_enrollment.user_id like '%".$searchValue."%' OR tbl_profile.fname like '%".$searchValue."%' OR tbl_profile.mname like'%".$searchValue."%' OR tbl_profile.lname like'%".$searchValue."%' ) ";
+		}
+
+		if($searchSemester != '')
+		{
+			$search_arr[] = " tbl_enrollment.semester_id='".$searchSemester."' AND tbl_profile.course_id='".$searchCourse."' ";
+		}
+
+		if(count($search_arr) > 0)
+		{
+			$searchQuery = implode(" AND ",$search_arr);
+		}
+
+		## Total number of records without filtering
+		$this->db->select('count(*) as allcount');
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+		// $this->db->where('tbl_enrollment.semester_id', $searchSemester);
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+		$records = $this->db->get('tbl_enrollment')->result();
+		$totalRecords = $records[0]->allcount;
+
+		## Total number of record with filtering
+		$this->db->select('count(*) as allcount');
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+		$records = $this->db->get('tbl_enrollment')->result();
+		$totalRecordwithFilter = $records[0]->allcount;
+
+		## Fetch records
+
+		$this->db->select('tbl_enrollment.user_id, tbl_semester.semester_name, tbl_profile.lname, tbl_profile.fname, tbl_profile.mname, tbl_course.course_name, tbl_enrollment.section, tbl_semester.semester_id, tbl_semester.semester_year');
+
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+
+		$this->db->order_by($columnName, $columnSortOrder);
+		$this->db->limit($rowperpage, $start);
+		$records = $this->db->get('tbl_enrollment')->result();
+
+		$data = array();
+		$ctr = 1;
+		foreach($records as $record)
+		{
+			$data[] = array( 
+				"numRows"			=>	($ctr++),
+				"action"			=>	'<button type="button" class="btn bg-green waves-effect" onclick="gradeDetails(\''.$record->user_id.'\', \''.$record->semester_id.'\')">
+											<i class="material-icons">assignment</i> view grades
+										</button>',
+				"user_id"			=>	$record->user_id,
+				"semester_name"		=>	$record->semester_name." ".$record->semester_year,
+				"fname"				=>	$record->fname,
+				"mname"				=>	$record->mname,
+				"lname"				=>	$record->lname,
+				"course_name"		=>	$record->course_name,
+				"section"			=>	$record->section
+			); 
+		}
+
+		## Response
+		$response = array(
+			"draw" => intval($draw),
+			"iTotalRecords" => $totalRecords,
+			"iTotalDisplayRecords" => $totalRecordwithFilter,
+			"aaData" => $data
+		);
+
+		return $response; 
+	}
+
+	public function getApplicants($postData=null)
+	{
+		$response = array();
+
+		## Read value
+		$draw = $postData['draw'];
+		$start = $postData['start'];
+		$rowperpage = $postData['length']; // Rows display per page
+		$columnIndex = $postData['order'][0]['column']; // Column index
+		if (!in_array($columnIndex, array(0,1,9)))
+		{
+			$columnName = $postData['columns'][$columnIndex]['data']; // Column name
+		}else
+		{
+			$columnName = "";
+		}
+		$columnSortOrder = $postData['order'][0]['dir']; // asc or desc
+		$searchValue = $postData['search']['value']; // Search value
+
+		// Custom search filter 
+		$searchSemester = $postData['semester'];
+		$searchCourse = $postData['course'];
+
+		## Search 
+		$search_arr = array();
+		$searchQuery = "";
+
+		if($searchValue != '')
+		{
+			$search_arr[] = " (tbl_enrollment.user_id like '%".$searchValue."%' OR tbl_profile.fname like '%".$searchValue."%' OR tbl_profile.mname like'%".$searchValue."%' OR tbl_profile.lname like'%".$searchValue."%' ) ";
+		}
+
+		if($searchSemester != '')
+		{
+			$search_arr[] = " tbl_enrollment.semester_id='".$searchSemester."' AND tbl_profile.course_id='".$searchCourse."' ";
+		}
+
+		if(count($search_arr) > 0)
+		{
+			$searchQuery = implode(" AND ",$search_arr);
+		}
+
+		## Total number of records without filtering
+		$this->db->select('count(*) as allcount');
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+		// $this->db->where('tbl_enrollment.semester_id', $searchSemester);
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+		$records = $this->db->get('tbl_enrollment')->result();
+		$totalRecords = $records[0]->allcount;
+
+		## Total number of record with filtering
+		$this->db->select('count(*) as allcount');
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+		$records = $this->db->get('tbl_enrollment')->result();
+		$totalRecordwithFilter = $records[0]->allcount;
+
+		## Fetch records
+
+		$this->db->select('tbl_profile');
+
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+
+		$this->db->order_by($columnName, $columnSortOrder);
+		$this->db->limit($rowperpage, $start);
+		$records = $this->db->get('tbl_enrollment')->result();
+
+		$data = array();
+		$ctr = 1;
+		foreach($records as $record)
+		{
+			$data[] = array( 
+				"numRows"			=>	($ctr++),
+				"action"			=>	'<button type="button" class="btn bg-green waves-effect" onclick="gradeDetails(\''.$record->user_id.'\', \''.$record->semester_id.'\')">
+											<i class="material-icons">assignment</i> view grades
+										</button>',
+				"user_id"			=>	$record->user_id,
+				"semester_name"		=>	$record->semester_name." ".$record->semester_year,
+				"fname"				=>	$record->fname,
+				"mname"				=>	$record->mname,
+				"lname"				=>	$record->lname,
+				"course_name"		=>	$record->course_name,
+				"section"			=>	$record->section
+			); 
+		}
+
+		## Response
+		$response = array(
+			"draw" => intval($draw),
+			"iTotalRecords" => $totalRecords,
+			"iTotalDisplayRecords" => $totalRecordwithFilter,
+			"aaData" => $data
+		);
+
+		return $response; 
+	}
+	// End of DataTable data
+
+	public function getTotal($tableName, $semester, $status, $schedid = "")
+	{
+		$statusCheck = ($semester == 3 ? 'status' : "ra_status");
+
+		$this->db->select('user_id, status, ra_status');
+        $this->db->from($tableName);
+		$this->db->where('semester_id', $semester);
+		$this->db->where('schedid', $schedid);
+		$this->db->where($statusCheck, $status);
+        $query = $this->db->get();
+
+		return $query->num_rows();
+	}
+
+	/** 
+	 * Accounting Get Data Functions
+	 * 
+	*/
+	public function getAmountPaid($user_id = null, $semester = 0)
+	{
+		$this->db->select('amount');
+		$this->db->where('user_id', $user_id);
+		$this->db->where('semester_id', $semester);
+		$records = $this->db->get('tbl_payment')->result();
+
+		$total = 0;
+
+		foreach ($records as $record) 
+		{
+			$total += $record->amount;
+		}
+
+		return $total;
+	}
+
+	public function getOR($user_id = null, $semester = 0)
+	{
+		$this->db->select('payment_id, transaction_id, amount');
+		$this->db->where('user_id', $user_id);
+		$this->db->where('semester_id', $semester);
+		$records = $this->db->get('tbl_payment')->result();
+
+		$htmlData = '';
+
+		foreach ($records as $record) 
+		{
+			$htmlData .= '<a class="col-teal font-bold" href="javascript:void(0)" onclick="updateOR(\''.$record->payment_id.'\', \''.$record->transaction_id.'\', \''.$user_id.'\', \''.$semester.'\', \''.$record->amount.'\')">'.$record->transaction_id.'</a> |';
+		}
+
+		return $htmlData;
+	}
+	/**
+	 * End of Accounting Get Data Functions
+	 */
+
+	
+	/**
+	 * Data analytics Functions
+	 */
+   	public function getEnrollPerCollege($semester, $course = array())
+   	{
+		if($semester == 3)
+        {
+            $this->db->select('tbl_registration.user_id, tbl_profile.course_id, tbl_college.college_id, tbl_college.college_name');
+			$this->db->from('tbl_registration');
+			$this->db->join('tbl_profile', 'tbl_registration.user_id = tbl_profile.user_id', 'left');
+			$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+			$this->db->join('tbl_college', 'tbl_course.college_id = tbl_college.college_id', 'inner');
+			$this->db->where('tbl_registration.semester_id', $semester);
+			$this->db->where('tbl_registration.status', 2);
+			if (count($course) > 0) 
+			{
+				$this->db->where_in('tbl_profile.course_id', $course);
+			}
+			$this->db->group_by('tbl_registration.user_id', array('tbl_registration.user_id'));
+			$query = $this->db->get();
+        }else
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 		{
 			$columnName = $postData['columns'][$columnIndex]['data']; // Column name
 		}else
@@ -794,6 +1189,15 @@ class Administrator_model extends CI_Model {
 		return $query->result();
 	}
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+	public function getReleaseList()
+	{
+		$applicantDB = $this->load->database('applicantDB', TRUE);
+		$applicantDB->select('tbl_letterType.name, tbl_release.date_from, tbl_release.date_to, tbl_release.percent_from, tbl_release.percent_to, tbl_release.release_date');
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 	public function getLetterType($code = "")
 	{
 		$applicantDB = $this->load->database('applicantDB', TRUE);
@@ -810,6 +1214,10 @@ class Administrator_model extends CI_Model {
 	{
 		$applicantDB = $this->load->database('applicantDB', TRUE);
 		$applicantDB->select('tbl_letterType.name, tbl_release.type, tbl_release.release_id, tbl_release.date_from, tbl_release.date_to, tbl_release.percent_from, tbl_release.percent_to, tbl_release.release_date, tbl_release.release_date_to');
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 		$applicantDB->from('tbl_release');
 		$applicantDB->join('tbl_letterType', 'tbl_release.type = tbl_letterType.id', 'inner');
 		$query = $applicantDB->get();
@@ -817,6 +1225,13 @@ class Administrator_model extends CI_Model {
 		return $query->result();
 	}
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+	 /**
+	  * 
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 	public function getIndividualReleaseList($releaseID = "")
 	{
 		$applicantDB = $this->load->database('applicantDB', TRUE);
@@ -878,6 +1293,10 @@ class Administrator_model extends CI_Model {
 
 	 /**
 	  * END OF APPLICANT MODULE FUNCTION
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 	  */
 
 	/**
@@ -975,6 +1394,11 @@ class Administrator_model extends CI_Model {
         }
         return false;
 	}
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 
 	public function delete($condition = array(), $table = "")
     {
@@ -995,6 +1419,10 @@ class Administrator_model extends CI_Model {
 		}
         return false;
     }
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 	/**
 	 * END OF CRUD
 	 */

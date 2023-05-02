@@ -26,4 +26,14 @@
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="<?php echo base_url('assets/css/themes/all-themes.css'); ?>" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="<?php echo base_url('node_modules/leaflet/dist/leaflet.css'); ?>" />
+    <link rel="stylesheet" href="<?php echo base_url('node_modules/leaflet/dist/leaflet.fullscreen.css'); ?>" />
+
+    <style>
+        .dashboardChart {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
 </head>

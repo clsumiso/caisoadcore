@@ -11,7 +11,7 @@ class Login_model extends CI_Model {
 
   public function get_user_info($email, $password)
   {
-    $this->db->select("tbl_profile.profile_id, tbl_profile.email, tbl_profile.fname, tbl_profile.lname, tbl_profile.year_level, tbl_users.uname, tbl_users.user_type, tbl_profile.sex, tbl_course.course_name");
+    $this->db->select("tbl_profile.profile_id, tbl_profile.email, tbl_profile.fname, tbl_profile.lname, tbl_profile.year_level, tbl_users.uname, tbl_users.user_type, tbl_users.status, tbl_profile.sex, tbl_course.course_name");
     $this->db->from('tbl_profile');
     $this->db->join('tbl_users', 'tbl_profile.profile_id = tbl_users.profile_id', 'inner');
     $this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
@@ -24,7 +24,11 @@ class Login_model extends CI_Model {
     return $query->result();
   }
 
-  public function update($data, $condition = array(), $table) 
+<<<<<<< Updated upstream
+  public function update($data, $condition = array(), $table = "") 
+=======
+  public function update($data = array(), $condition = array(), $table ="") 
+>>>>>>> Stashed changes
   {
     $this->db->trans_begin();
     $this->db->trans_strict(TRUE);

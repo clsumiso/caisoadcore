@@ -1522,4 +1522,8 @@ class Admission_application extends CI_Controller
 
 
 /* End of file Application.php */
+<<<<<<< HEAD
 /* Location: ./application/controllers/Admission_application */
+=======
+/* Location: ./application/controllers/Admission_application */
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721

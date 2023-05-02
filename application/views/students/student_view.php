@@ -43,25 +43,19 @@
                             <div>
                                 <ul class="nav nav-tabs" role="tablist" style="font-size: 18px;">
                                     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
-                                    <li role="presentation"><a href="#manage_grades" aria-controls="grades" role="tab" data-toggle="tab">Manage Grades</a></li>
-                                    <li role="presentation"><a href="#teaching-loads" aria-controls="teaching-loads" role="tab" data-toggle="tab">Teaching Loads</a></li>
-                                    <li role="presentation"><a href="#import-menu" aria-controls="import-menu" role="tab" data-toggle="tab" style="font-weight: bolder;">IMPORT</a></li>
-                                    <li role="presentation"><a href="#export-menu" aria-controls="export-menu" role="tab" data-toggle="tab" style="font-weight: bolder;">EXPORT</a></li>
+                                    <li role="presentation"><a href="#grades" aria-controls="grades" role="tab" data-toggle="tab">Grades</a></li>
+                                    <li role="presentation"><a href="#schedule" aria-controls="schedule" role="tab" data-toggle="tab">Schedule</a></li>
                                     <li role="presentation"><a href="#profile_settings" aria-controls="settings" role="tab" data-toggle="tab">Profile Settings</a></li>
                                 </ul>
 
                                 <div class="tab-content">
-                                    <?php $this->load->view('faculty/tab_menu/_home.php'); ?>
+                                    <?php $this->load->view('students/tab_menu/_home.php'); ?>
 
-                                    <?php $this->load->view('faculty/tab_menu/_manage_grades.php'); ?>
+                                    <?php $this->load->view('students/tab_menu/_grades.php'); ?>
 
-                                    <?php $this->load->view('faculty/tab_menu/_teaching_loads.php'); ?>
+                                    <?php $this->load->view('students/tab_menu/_schedule.php'); ?>
 
-                                    <?php $this->load->view('faculty/tab_menu/_import.php'); ?>
-
-                                    <?php $this->load->view('faculty/tab_menu/_export.php'); ?>
-
-                                    <?php $this->load->view('faculty/tab_menu/_profile_settings.php'); ?>
+                                    <?php $this->load->view('students/tab_menu/_profile_settings.php'); ?>
                                 </div>
                             </div>
                         </div>

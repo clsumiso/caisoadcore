@@ -107,7 +107,7 @@ class Forgot_password extends CI_Controller {
   {
     if ($_POST['vcode'] == $_SESSION['vcode']) {
       $get_info = $this->forgot_password->check_email($_SESSION['u_email']);
-      $user_id = $get_info[0]->user_id;
+      $user_id = $get_info[0]->user_id;  
 
       $data = array(
         // 'upass' =>  explode('-', $user_id)[1].explode('-', $user_id)[0]
@@ -117,7 +117,7 @@ class Forgot_password extends CI_Controller {
       $res = $this->forgot_password->update('tbl_users', $data, array('user_id' =>  $user_id));
       if ($res > 0) {
         unset($_SESSION['vcode']);
-        echo json_encode(array('sys_msg'  => 1, 'default_pass' => 'wxyz123#'));
+        echo json_encode(array('sys_msg'  => 1, 'default_pass' => 'wxyz123#', 'test'  =>  json_encode($get_info)));
       }else{
         echo json_encode(array('sys_msg'  => 0));
       }

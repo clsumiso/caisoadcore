@@ -382,6 +382,21 @@ let gradeData = $('#gradeTable').DataTable({
         { data: "section" }
     ]
 });
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+
+$('#semesterGrades').change(function(){
+    gradeData.draw();
+});
+$('#gradeCollegeFilter').change(function(){
+    getCourse($('#gradeCollegeFilter option:selected').val(), gradeData)
+});
+$('#gradeCourse').change(function(){
+    gradeData.draw();
+});
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 $('#gradeCourse').change(function(){
     gradeData.draw();
 });
@@ -477,6 +492,10 @@ let applicantData = $('#applicantList').DataTable({
         { data: "confirmation_date" }
     ]
 });
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 
 let arrDay = ["M_", "T_", "W_", "TH_", "F_", "S_"]; 
 
@@ -607,7 +626,15 @@ function saveLetter()
     // tinyMCE.get('tinymce').getContent()
     swal({
         title: "Are you sure?",
+<<<<<<< HEAD
         text: "",
+=======
+<<<<<<< Updated upstream
+        text: "This letter will be saved as your template",
+=======
+        text: "",
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
         type: "info",
         showCancelButton: true,
         confirmButtonText: "Submit",
@@ -629,7 +656,14 @@ function saveLetter()
                         text: data.msg,
                         type: data.icon
                     });
+<<<<<<< HEAD
                     getLetterTemplate();
+=======
+<<<<<<< Updated upstream
+=======
+                    getLetterTemplate();
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
                 },
                 error: function (e) 
                 {
@@ -642,6 +676,11 @@ function saveLetter()
 
 function saveRelease()
 {
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
     let programs = "";
     let ctr = 0;
     $("[name='program[]']:checked").each(function(){
@@ -709,6 +748,10 @@ function saveRelease()
 
 function saveLetterType()
 {
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
     swal({
         title: "Are you sure?",
         text: "",
@@ -723,11 +766,28 @@ function saveLetterType()
         {
             $.ajax({
                 type: "POST",
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+                url: window.location.origin + "/office-of-admissions/administrator/saveRelease",
+                data: { 
+                    "letterType"    :   $('[name="releaseLetterType"] option:selected').val(),
+                    "dFrom"         :   $('[name="dateFrom"]').val(),
+                    "dTo"           :   $('[name="dateTo"]').val(),
+                    "pFrom"         :   $('[name="percentFrom"]').val(),
+                    "pTo"           :   $('[name="percentTo"]').val(),
+                    "rDate"         :   $('[name="releaseDate"]').val()
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
                 url: window.location.origin + "/office-of-admissions/administrator/saveLetterType",
                 data: 
                 { 
                     name: $("[name='letterTypeName']").val(), 
                     code: $("[name='letterTypeCode']").val()
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
                 },
                 dataType: "JSON",
                 success: function (data) 
@@ -737,7 +797,15 @@ function saveLetterType()
                         text: data.msg,
                         type: data.icon
                     });
+<<<<<<< HEAD
                     getLetterType();
+=======
+<<<<<<< Updated upstream
+                    getReleaseList();
+=======
+                    getLetterType();
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
                 },
                 error: function (e) 
                 {
@@ -748,6 +816,11 @@ function saveLetterType()
     });
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 function importApplicants()
 {
     swal({
@@ -1241,6 +1314,10 @@ function gradeDetails(studentID, semesterID)
     });
 }
 
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 function getReleaseList()
 {
     $.ajax({
@@ -1308,12 +1385,25 @@ function getLetterType()
           $('[name="letterType"]').selectpicker('refresh');
           $('[name="releaseLetterType"]').html(response.content);
           $('[name="releaseLetterType"]').selectpicker('refresh');
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+        },
+        complete: function () 
+        {
+  
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
           $('[name="applicantCategory"]').html(response.content);
           $('[name="applicantCategory"]').selectpicker('refresh');
         },
         complete: function () 
         {
             
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
         },
         error: function (jqXHR, textStatus, errorThrown) 
         {
@@ -1371,6 +1461,223 @@ function getLetterTemplateContent(id)
      });
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+function addReleaseDate()
+{
+    $('#releaseDateModal').modal(
+    {
+        backdrop: 'static', 
+        position: 'center',
+        keyboard: false
+    }, 
+    'show');
+}
+
+function assessPayment(studentID, semester) 
+{
+    $.ajax({
+        url: window.location.origin + "/office-of-admissions/accounting/accountingComponents",
+        type:"POST",
+        dataType: 'JSON',
+        data: { studentID: studentID, semester: semester },
+        beforeSend: function ()
+        {
+            $('#status-loading').html('<span class="loader"></span>');
+        },
+        success: function(data)
+        {
+            $('#fees').html(data.htmlData);
+            $('[name="fullname"]').val(data.fullname);
+        },
+        complete: function () 
+        {
+            $('#assessmentModal').modal(
+            {
+                backdrop: 'static', 
+                keyboard: false
+            }, 
+            'show');
+            $('.modal-title').text("ASSESSMENT FORM " + "(" + studentID + ")");
+            $('[name="idNumber"]').val(studentID);
+            $('[name="semesterID"]').val(semester);
+            $('[name="ORnumber"]').val(''),
+            $('[name="amount"]').val('')
+            $('#status-loading').html('');
+        },
+        error: function (jqXHR, textStatus, errorThrown) 
+        {
+            swal({
+                title: 'Session Expired, please re-login',
+                text: '',
+                type: "info",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: "LOGIN",
+                cancelButtonText: "CANCEL",
+                showCancelButton: true,
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                closeOnConfirm: false
+            }, function (isConfirm) 
+            {
+                if (isConfirm) 
+                {
+                    window.open(window.location.origin + "/office-of-admissions/", "_SELF");
+                }
+            });
+        }
+    });
+}
+
+function savePayment(action) 
+{
+    let txtORNumber = action == "insert" ? $('[name="ORnumber"]').val() : $('[name="orNumberUpdate"]').val();
+    let txtAmount = action == "insert" ? $('[name="amount"]').val() : $('[name="amountUpdate"]').val();
+    if (txtORNumber == '' && txtAmount != '') 
+    {
+        swal("Required Field!!!", "OR NUMBER IS REQUIRED!!!", "warning");
+    }else if (txtORNumber != '' && txtAmount == '')
+    {
+        swal("Required Field!!!", "AMOUNT IS REQUIRED!!!", "warning");
+    }else if (txtORNumber == '' && txtAmount == '')
+    {
+        swal("Required Field!!!", "OR NUMBER AND AMOUNT ARE REQUIRED!!!", "warning");
+    }else
+    {
+        swal({
+            title: 'Are you sure?',
+            text: '',
+            type: "info",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            confirmButtonText: "SAVE",
+            cancelButtonText: "CANCEL",
+            showCancelButton: true,
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            closeOnConfirm: false
+        }, function (isConfirm) 
+        {
+            if (isConfirm) 
+            {
+                $.ajax({
+                    url: window.location.origin + "/office-of-admissions/accounting/savePayment",
+                    type:"POST",
+                    dataType: 'JSON',
+                    data: 
+                    { 
+                        paymentID: action == "update" ? $('[name="paymentID"]').val() : "", 
+                        studentID: action == "insert" ? $('[name="idNumber"]').val() : $('[name="studID"]').val(), 
+                        semester: action == "insert" ? $('[name="semesterID"]').val() : $('[name="semesterPay"]').val(),
+                        transID: action == "update" ? $('[name="transID"]').val() : "",
+                        orNumber: action == "insert" ? $('[name="ORnumber"]').val() : $('[name="orNumberUpdate"]').val(),
+                        amount: action == "insert" ? $('[name="amount"]').val() : $('[name="amountUpdate"]').val(),
+                        action: action
+                    },
+                    beforeSend: function ()
+                    {
+                        $('#status-loading').html('<span class="loader"></span>');
+                    },
+                    success: function(data)
+                    {
+                        swal("OFFICE OF ADMISSIONS", data.msg, data.icon);
+                        if (data.sys_msg == "success") 
+                        {
+                            // $('#studentEnrollment').DataTable().cell(($('[name="dataRow"]').val()), 8).data($('[name="ORnumber"]').val());
+                            // $('#studentEnrollment').DataTable().cell(($('[name="dataRow"]').val()), 9).data($('[name="amount"]').val());
+                            // $('#studentEnrollment').DataTable().draw(false);
+
+                            // $('[name="ORnumber"]').val("");
+                            // $('[name="amount"]').val("");
+                            accountingData.draw();
+                            $('#assessmentModal').modal('hide');
+                            $('[name="orNumberUpdate"]').val();
+                            $('[name="amountUpdate"]').val();
+                        }
+                    },
+                    complete: function () 
+                    {
+                        $('#status-loading').html('');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) 
+                    {
+                        swal({
+                            title: 'Session Expired, please re-login',
+                            text: '',
+                            type: "info",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            confirmButtonText: "LOGIN",
+                            cancelButtonText: "CANCEL",
+                            showCancelButton: true,
+                            allowEscapeKey: false,
+                            allowOutsideClick: false,
+                            closeOnConfirm: false
+                        }, function (isConfirm) 
+                        {
+                            if (isConfirm) 
+                            {
+                                window.open(window.location.origin + "/office-of-admissions/", "_SELF");
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+}
+
+function updateOR(paymentID, transID, studid, semester, amount) 
+{
+    $('#updatePaymentModal').modal(
+    {
+        backdrop: 'static', 
+        position: 'center',
+        keyboard: false
+    }, 
+    'show');
+    $('[name="studID"]').val(studid);
+    $('[name="paymentID"]').val(paymentID);
+    $('[name="transID"]').val(transID);
+    $('[name="orNumberUpdate"]').val(transID);
+    $('[name="semesterPay"]').val(semester);
+    $('[name="amountUpdate"]').val(amount);
+}
+
+function gradeDetails(studentID, semesterID)
+{
+    $.ajax({
+        url: window.location.origin + "/office-of-admissions/administrator/studentGradeList",
+        type: "POST",
+        data: { studentID: studentID, semesterID: semesterID },
+        dataType: "JSON",
+        success: function (response)
+        {
+            $("#gradeList").html(response.data);
+            $("[name='studentID']").val(studentID);
+            $('#gradeModal').modal(
+            {
+                backdrop: 'static', 
+                keyboard: false
+            }, 
+            'show');
+        },
+        complete: function () 
+        {
+            
+        },
+        error: function (jqXHR, textStatus, errorThrown) 
+        {
+            console.log(errorThrown);
+        }
+    });
+}
+
+=======
+>>>>>>> Stashed changes
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 let map = "";
 function pwdMapLocation() {
   if ($('#map').length > 0) {

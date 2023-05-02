@@ -22,6 +22,10 @@
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="<?php echo base_url('assets/css/themes/all-themes.css'); ?>" rel="stylesheet" />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
     <style>
         /* Absolute Center Spinner */
         .fullscreen-loading {
@@ -145,4 +149,9 @@
         }
         }
     </style>
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 </head>

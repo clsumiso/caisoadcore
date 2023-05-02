@@ -128,6 +128,7 @@ class Administrator extends CI_Controller {
 		echo json_encode($data);
 	}
 
+<<<<<<< HEAD
 	public function applicantList()
 	{
 		// POST data
@@ -139,6 +140,8 @@ class Administrator extends CI_Controller {
 		echo json_encode($data);
 	}
 
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 	/*Analytics*/
    	public function enrollPerCollegeChart()
    	{	
@@ -614,6 +617,7 @@ class Administrator extends CI_Controller {
 		echo json_encode($msg);
 	}
 
+<<<<<<< HEAD
 	public function saveLetterType()
 	{
 		$letterTypeData = $_POST;
@@ -663,17 +667,23 @@ class Administrator extends CI_Controller {
 		echo json_encode($msg);
 	}
 
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 	public function saveRelease()
 	{
 		$releaseData = $_POST;
 		$msg = array();
+<<<<<<< HEAD
 		$is_update = false;
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 		$data = array(
 			"type"    			=>   $releaseData['letterType'],
 			"date_from"         =>   $releaseData['dFrom'],
 			"date_to"           =>   $releaseData['dTo'],
 			"percent_from"      =>   $releaseData['pFrom'],
 			"percent_to"        =>   $releaseData['pTo'],
+<<<<<<< HEAD
 			"release_date"      =>   $releaseData['rDate'],
 			"release_date_to"   =>   $releaseData['rDateTo'],
 			"program_id"      	=>   $releaseData['programs']
@@ -689,6 +699,12 @@ class Administrator extends CI_Controller {
 			$saveRelease = $this->administrator->saveLetter('tbl_release', $data);
 		}
 		
+=======
+			"release_date"      =>   $releaseData['rDate']
+		);
+
+		$saveRelease = $this->administrator->saveLetter('tbl_release', $data);
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 		if ($saveRelease !== false)
 		{
 			$msg = array(
@@ -707,6 +723,7 @@ class Administrator extends CI_Controller {
 
 		echo json_encode($msg);
 	}
+<<<<<<< HEAD
 
 	public function removeRelease()
 	{
@@ -804,11 +821,14 @@ class Administrator extends CI_Controller {
 
 		echo json_encode($msg);
 	}
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 	 /**
 	  * END OF CRUD
 	  */
 
 	/**
+<<<<<<< HEAD
 	 * APPLICANT FUNCTION
 	 */
 
@@ -879,6 +899,8 @@ class Administrator extends CI_Controller {
 	 */
 
 	/**
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 	 * OTHER Functions
 	 */
 	public function gradeRemarks($grade = "")
@@ -925,7 +947,11 @@ class Administrator extends CI_Controller {
 
 		foreach ($letterTypeData as $type) 
 		{
+<<<<<<< HEAD
 			$htmlData .= '<option value="'.$type->id.'">'.$type->name.' ('.$type->code.')</option>';
+=======
+			$htmlData .= '<option value="'.$type->id.'">'.$type->name.'</option>';
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 		}
 
 		echo json_encode(array("content"	=>	$htmlData));
@@ -966,8 +992,13 @@ class Administrator extends CI_Controller {
 		{
 			$htmlData .= '<tr>';
 				$htmlData .= '<td>
+<<<<<<< HEAD
 								<button type="button" class="btn btn-sm bg-red waves-effect" onclick="removeRelease(\''.$release->release_id.'\')">DELETE</button>
 								<button type="button" class="btn btn-sm bg-amber waves-effect" onclick="updateRelease(\''.$release->release_id.'\')">EDIT</button>
+=======
+								<button type="button" class="btn btn-sm bg-red waves-effect">DELETE</button>
+								<button type="button" class="btn btn-sm bg-amber waves-effect">EDIT</button>
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 							</td>';
 				$htmlData .= '<td>'.$release->name.'</td>';
 				$htmlData .= '<td>'.$release->date_from.'</td>';
@@ -975,12 +1006,16 @@ class Administrator extends CI_Controller {
 				$htmlData .= '<td>'.$release->percent_from.'</td>';
 				$htmlData .= '<td>'.$release->percent_to.'</td>';
 				$htmlData .= '<td>'.$release->release_date.'</td>';
+<<<<<<< HEAD
 				$htmlData .= '<td>'.$release->release_date_to.'</td>';
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 			$htmlData .= '</tr>';
 		}
 
 		echo json_encode(array("content"	=>	$htmlData));
 	}
+<<<<<<< HEAD
 
 	public function releaseDateInfo()
 	{
@@ -1096,6 +1131,8 @@ class Administrator extends CI_Controller {
 			// $sheetData[2]['A'];
 		}
 	}
+=======
+>>>>>>> 6f2e5c0064cd453532e5d152e8e908884bddf721
 	 /**
 	  * END of other functions
 	  */
