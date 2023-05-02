@@ -64,7 +64,11 @@
                                         </div>
                                         <div class="row clearfix">
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
+<<<<<<< HEAD
                                                 <p>Were you previously enrolled in a graduate program in CLSU (including DOT-Uni)?</p>
+=======
+                                                <p>Were you previously enrolled in a gradate program in CLSU (including DOT-Uni)?</p>
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                                             </div>
                                             <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
                                                 <input name="question_2" type="radio" id="question_2_yes" value="true" class="with-gap radio-col-green">
@@ -601,6 +605,19 @@
                                                 <input type="text" name="question_29[]" class="form-control" />
                                             </div>
                                         </div>
+<<<<<<< HEAD
+=======
+                                        <div class="row clearfix">
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                            <p>
+                                                Upload the full list of publication if necessary
+                                            </p>
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                                
+                                            </div>
+                                        </div>
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                                         <p>
                                             Academic honors, awards, certificate, or honorary scholarship you have received: 
                                         </p>
@@ -703,6 +720,7 @@
                                             </div>
                                         </div>
                                     </section>
+<<<<<<< HEAD
 
                                     <h2>Attachement</h2><section>
                                     <section>
@@ -731,6 +749,8 @@
                                             </div>
                                         </div>
                                     </section>
+=======
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                                 </div>
                             </form>
                         </div>

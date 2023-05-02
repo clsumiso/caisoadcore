@@ -36,7 +36,11 @@
                         </div>
                         <div class="col-sm-12 col-md-6 col-lg-6">
                             <b>Course</b>
+<<<<<<< HEAD
                             <select class="form-control" id="gradeCourse">
+=======
+                            <select class="form-control" onchange="" id="gradeCourse">
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                                 <option value="-1" selected></option>
                             </select>
                         </div>

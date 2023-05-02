@@ -3,6 +3,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="releaseDateModalLabel">Release Setup</h4>
+<<<<<<< HEAD
+=======
+                
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                 <div id="savePreload">
                     <!-- Generate via request -->
                 </div>
@@ -11,7 +15,10 @@
                 <div class="row clearfix">
                     <div class="col-xs-12 col-md-12 col-lg-12">
                         <b>Letter Type</b>
+<<<<<<< HEAD
                         <input type="hidden" class="form-control form-control" name="releaseID" readonly>
+=======
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                         <select name="releaseLetterType" class="form-control">
                                     
                         </select>
@@ -38,6 +45,7 @@
                     </div>
                 </div>
                 <div class="row clearfix">
+<<<<<<< HEAD
                     <div class="col-xs-12 col-md-6 col-lg-6">
                         <b>Release Date From</b>
                         <input type="text" class="datetimepicker form-control" name="releaseDate" placeholder="Please choose date & time...">
@@ -52,6 +60,12 @@
                         <h4>Program to be release</h4>
                         <?php echo $programCheckBox; ?>  
                     </div>
+=======
+                    <div class="col-xs-12 col-md-12 col-lg-12">
+                        <b>Release Date</b>
+                        <input type="text" class="datetimepicker form-control" name="releaseDate" placeholder="Please choose date & time...">
+                    </div>
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                 </div>
             </div>
             <div class="modal-footer">

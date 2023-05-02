@@ -9,10 +9,10 @@ class Administrator extends CI_Controller {
 		$this->load->helper('date');
 		$this->load->model('administrator_model', 'administrator');
 		$this->load->helper('directory');
-		if (!isset($_SESSION['uid'])) 
-        {
-        	redirect('/');
-        }
+		// if (!isset($_SESSION['uid'])) 
+        // {
+        // 	redirect('/');
+        // }
 	}
 
 	public function index()
@@ -99,6 +99,30 @@ class Administrator extends CI_Controller {
 		echo json_encode($data);
    	}
 
+	public function sectionMonitoringList()
+	{
+
+		// POST data
+		$postData = $this->input->post();
+
+		// Get data
+		$data = $this->administrator->getClassMonitoring($postData);
+
+		echo json_encode($data);
+	}
+
+	public function gradeList()
+	{
+		// POST data
+		$postData = $this->input->post();
+
+		// Get data
+		$data = $this->administrator->getGrades($postData);
+
+		echo json_encode($data);
+	}
+
+	/*Analytics*/
    	public function enrollPerCollegeChart()
    	{	
 		$semester = $_POST['sem'];
@@ -195,6 +219,507 @@ class Administrator extends CI_Controller {
 		}
 
 		echo json_encode($output);
+	}
+	/*end of analytics*/
+
+	/*
+    * Accounting Module Functions
+    *
+    *
+    */
+	public function accountingList()
+	{
+		// POST data
+		$postData = $this->input->post();
+
+		// Get data
+		$data = $this->administrator->getAccounting($postData);
+
+		echo json_encode($data);
+	}
+
+	/*End of accounting module*/
+
+	/*
+    * Grades Module Functions
+    */
+	public function studentGradeList()
+	{
+		$userID = $_POST['studentID'];
+		$semesterID = $_POST['semesterID'];
+		$htmlData = "";
+		$ctr = 1;
+		$studentGradeListData = $this->administrator->getStudentGrade($userID, $semesterID);
+
+		foreach ($studentGradeListData as $studentGrade) 
+		{
+			$htmlData .= "<tr>";
+				$htmlData .= "<td>".($ctr++)."</td>";
+				$htmlData .= "<td>".$studentGrade->user_id."</td>";
+				$htmlData .= "<td>".$studentGrade->schedid."</td>";
+				$htmlData .= "<td>".$studentGrade->faculty_id."</td>";
+				$htmlData .= "<td><input style='width: 150px;' class='form-control' type='text' name='gradeData[]' value='".$studentGrade->cat_no."' readonly /></td>";
+				$htmlData .= "<td>";
+					$htmlData .= "
+						<select style='width: 150px;' class='form-control' ".($studentGrade->status == "approved" ? '' : '')." name='gradeData[]'>
+							<option value='-1' ".(strtoupper($studentGrade->grades) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
+							<option value='1.00' ".(strtoupper($studentGrade->grades) == "1.00" ? 'selected="true"' : "").">1.00</option>
+							<option value='1.25' ".(strtoupper($studentGrade->grades) == "1.25" ? 'selected="true"' : "").">1.25</option>
+							<option value='1.50' ".(strtoupper($studentGrade->grades) == "1.50" ? 'selected="true"' : "").">1.50</option>
+							<option value='1.75' ".(strtoupper($studentGrade->grades) == "1.75" ? 'selected="true"' : "").">1.75</option>
+							<option value='2.00' ".(strtoupper($studentGrade->grades) == "2.00" ? 'selected="true"' : "").">2.00</option>
+							<option value='2.25' ".(strtoupper($studentGrade->grades) == "2.25" ? 'selected="true"' : "").">2.25</option>
+							<option value='2.50' ".(strtoupper($studentGrade->grades) == "2.50" ? 'selected="true"' : "").">2.50</option>
+							<option value='2.75' ".(strtoupper($studentGrade->grades) == "2.75" ? 'selected="true"' : "").">2.75</option>
+							<option value='3.00' ".(strtoupper($studentGrade->grades) == "3.00" ? 'selected="true"' : "").">3.00</option>
+							<option value='5.00' ".(strtoupper($studentGrade->grades) == "5.00" ? 'selected="true"' : "").">5.00</option>
+							<option value='D' ".(strtoupper($studentGrade->grades) == "D" ? 'selected="true"' : "").">D</option>
+							<option value='FD' ".(strtoupper($studentGrade->grades) == "FD" ? 'selected="true"' : "").">FORCE DROPPED</option>
+							<option value='NG' ".(strtoupper($studentGrade->grades) == "NG" ? 'selected="true"' : "").">NG</option>
+							<option value='INC' ".(strtoupper($studentGrade->grades) == "INC" ? 'selected="true"' : "").">INC</option>
+							<option value='IP' ".(strtoupper($studentGrade->grades) == "IP" ? 'selected="true"' : "").">IP</option>
+						</select>
+					";
+				$htmlData .= "</td>";
+				$htmlData .= "<td>";
+					$htmlData .= "
+						<select style='width: 150px;' class='form-control' ".($studentGrade->status == "approved" ? '' : '')." name='gradeData[]'>
+							<option value='-1' ".(strtoupper($studentGrade->reexam) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
+							<option value='1.00' ".(strtoupper($studentGrade->reexam) == "1.00" ? 'selected="true"' : "").">1.00</option>
+							<option value='1.25' ".(strtoupper($studentGrade->reexam) == "1.25" ? 'selected="true"' : "").">1.25</option>
+							<option value='1.50' ".(strtoupper($studentGrade->reexam) == "1.50" ? 'selected="true"' : "").">1.50</option>
+							<option value='1.75' ".(strtoupper($studentGrade->reexam) == "1.75" ? 'selected="true"' : "").">1.75</option>
+							<option value='2.00' ".(strtoupper($studentGrade->reexam) == "2.00" ? 'selected="true"' : "").">2.00</option>
+							<option value='2.25' ".(strtoupper($studentGrade->reexam) == "2.25" ? 'selected="true"' : "").">2.25</option>
+							<option value='2.50' ".(strtoupper($studentGrade->reexam) == "2.50" ? 'selected="true"' : "").">2.50</option>
+							<option value='2.75' ".(strtoupper($studentGrade->reexam) == "2.75" ? 'selected="true"' : "").">2.75</option>
+							<option value='3.00' ".(strtoupper($studentGrade->reexam) == "3.00" ? 'selected="true"' : "").">3.00</option>
+							<option value='5.00' ".(strtoupper($studentGrade->reexam) == "5.00" ? 'selected="true"' : "").">5.00</option>
+							<option value='D' ".(strtoupper($studentGrade->reexam) == "D" ? 'selected="true"' : "").">D</option>
+							<option value='FD' ".(strtoupper($studentGrade->reexam) == "FD" ? 'selected="true"' : "").">FORCE DROPPED</option>
+							<option value='NG' ".(strtoupper($studentGrade->reexam) == "NG" ? 'selected="true"' : "").">NG</option>
+							<option value='INC' ".(strtoupper($studentGrade->reexam) == "INC" ? 'selected="true"' : "").">INC</option>
+							<option value='IP' ".(strtoupper($studentGrade->reexam) == "IP" ? 'selected="true"' : "").">IP</option>
+						</select>
+					";
+				$htmlData .= "</td>";
+				$htmlData .= "<td>".$studentGrade->remarks."</td>";
+				$htmlData .= "<td>".$studentGrade->status."</td>";
+			$htmlData .= "</tr>";
+		}
+
+		echo json_encode(array("data"	=>	$htmlData));
+	}
+	/*End of grades module Functions*/
+
+	/**
+	 * CRUD
+	 */
+	public function saveGrade()
+	{
+		// $action = $_POST['action'];
+		$gradeData = $_POST['gradeData'];
+		$action = $_POST['action'];
+		$semester = $_POST['semester'];
+		$studentID = $_POST['studentID'];
+
+		$output = array();
+		$msg = array();
+		$ctr = 1;
+
+		$grade = '';
+		$reexam = '';
+		$cat_no = '';
+
+		for ($i = 0 ; $i < count($gradeData); $i++)
+		{
+			
+			switch ($ctr)
+			{
+				case 1:
+					$cat_no = $gradeData[$i];
+					break;
+				case 2:
+					$grade = $gradeData[$i];
+					break;
+				case 3:
+					$reexam = $gradeData[$i];
+					break;
+			}
+
+			if ($ctr == 3)
+			{
+				// if ($grade != -1 && $reexam != -1)
+				// {
+				// 	$data = array(
+				// 		"status"		=>	"approved",
+				// 		"grade"			=>	$grade,
+				// 		"reexam"		=>	$reexam,
+				// 		"sched_section"	=>	date("Y-m-d H:i:s")
+				// 	);
+				// }else if ($grade != -1 && $reexam == -1)
+				// {
+				// 	$data = array(
+				// 		"status"		=>	"approved",
+				// 		"grade"			=>	$grade,
+				// 		"sched_section"	=>	date("Y-m-d H:i:s")
+				// 	);
+				// }else if ($grade == -1 && $reexam != -1)
+				// {
+				// 	$data = array(
+				// 		"status"		=>	"approved",
+				// 		"reexam"		=>	$reexam,
+				// 		"sched_section"	=>	date("Y-m-d H:i:s")
+				// 	);
+				// }else
+				// {
+				// 	$data = array();
+				// }
+				
+				$data = array();
+				$condtion = array(
+					"subject"	=>	$cat_no,
+					"semester_id"	=>	$semester,
+					"user_id"	=>	$studentID
+				);
+
+				// array_push($output, $condtion);
+				// Get Old Data
+				$gradeOldData = $this->administrator->getGradesOldData($condtion);
+				foreach ($gradeOldData as $gradeVal) 
+				{
+					$data = array();
+					if ($grade != -1 && $reexam != -1)
+					{
+						if ($grade != $gradeVal->grades && $reexam != $gradeVal->reexam)
+						{
+							$data = array(
+								"status"		=>	"approved",
+								"grades"		=>	$grade,
+								"reexam"		=>	$reexam,
+								"remarks"		=>	$this->gradeRemarks($reexam),
+								"sched_section"	=>	date("Y-m-d H:i:s")
+							);
+						}else if($grade == $gradeVal->grades && $reexam != $gradeVal->reexam)
+						{
+							$data = array(
+								"status"		=>	"approved",
+								"reexam"		=>	$reexam,
+								"remarks"		=>	$this->gradeRemarks($reexam),
+								"sched_section"	=>	date("Y-m-d H:i:s")
+							);
+						}else if($grade != $gradeVal->grades && $reexam == $gradeVal->reexam)
+						{
+							$data = array(
+								"status"		=>	"approved",
+								"grades"		=>	$grade,
+								"remarks"		=>	$this->gradeRemarks($grade),
+								"sched_section"	=>	date("Y-m-d H:i:s")
+							);
+						}else
+						{
+							$data = array();
+						}
+					}else if ($grade != -1 && $reexam == -1)
+					{
+						if ($grade != $gradeVal->grades)
+						{
+							$data = array(
+								"status"		=>	"approved",
+								"grades"		=>	$grade,
+								"remarks"		=>	$this->gradeRemarks($grade),
+								"sched_section"	=>	date("Y-m-d H:i:s")
+							);
+						}
+					}else if ($grade == -1 && $reexam != -1)
+					{
+						if ($reexam != $gradeVal->reexam)
+						{
+							$data = array(
+								"status"		=>	"approved",
+								"reexam"		=>	$reexam,
+								"remarks"		=>	$this->gradeRemarks($reexam),
+								"sched_section"	=>	date("Y-m-d H:i:s")
+							);
+						}
+					}else
+					{
+						$data = array();
+					}
+
+					// array_push($output, $data);
+				}
+
+				/**
+				 * First procedure save to metadata for history logs
+				 */
+				$metadata = array(
+					"user_id"		=>	$_SESSION['uid'],
+					"semester_id"	=>	$semester,
+					"action"		=>	$action,
+					"old_data"		=>	json_encode($gradeOldData),
+					"new_data"		=>	json_encode($data),
+					"date_created"	=>	date("Y-m-d H:i:s")
+
+				);
+
+				if (count($data) > 0)
+				{
+					$saveToMetadata = $this->administrator->save("metadata", $metadata);
+					if ($saveToMetadata !== false)
+					{
+						$saveGrade = $this->administrator->update($data, $condtion, array("tbl_grades"));
+						if ($saveGrade !== false)
+						{
+							$msg = array(
+								"sys_msg"	=> 	"success",
+								"msg"		=>	"Successfully updated",
+								"icon"		=>	"success"
+							);
+						}else
+						{
+							$msg = array(
+								"sys_msg"	=> 	"failed",
+								"msg"		=>	"Something went wrong, please try again",
+								"icon"		=>	"error"
+							);
+						}
+					}else
+					{
+						$msg = array(
+							"sys_msg"	=> 	"failed",
+							"msg"		=>	"Something went wrong, please try again",
+							"icon"		=>	"error"
+						);
+					}
+				}
+
+				if (count($data) > 0)
+				{
+					array_push($output, $data);
+				}
+				
+				/**
+				 * END First procedure save to metadata for history logs
+				 */
+				$ctr = 0;
+			}
+			$ctr++;
+		}
+		// $reexamData = $_POST['reexam'];
+		if (count($output) == 0)
+		{
+			$msg = array(
+				"sys_msg"	=> 	"no_change",
+				"msg"		=>	"No changes",
+				"icon"		=>	"info"
+			);
+		}
+
+		echo json_encode(array("sys_msg"	=>	$msg));
+	}
+
+	public function saveLetter()
+	{
+		$letterData = $_POST;
+		$msg = array();
+		$is_update = false;
+
+		$data = array(
+			"content"		=>	$letterData['content'],
+			"type"			=>	$letterData['letterType'],
+			"date_created"	=>	date("Y-m-d H:i:s"),
+			"date_updated"	=>	date("Y-m-d H:i:s")
+		);
+
+		$condtion = array(
+			"type"	=> $letterData['letterType']
+		);
+
+		// Check letter if exist
+		$letterContent = $this->administrator->getLetterTemplateContent($letterData['letterType']);
+		if (count($letterContent) > 0)
+		{
+			$data = array(
+				"content"		=>	$letterData['content'],
+				"type"			=>	$letterData['letterType'],
+				"date_updated"	=>	date("Y-m-d H:i:s")
+			);
+			$is_update = true;
+		}
+
+		if ($is_update == true)
+		{
+			$saveLetter = $this->administrator->updateLetter($data, $condtion, array("tbl_letter"));
+		}else
+		{
+			$saveLetter = $this->administrator->saveLetter('tbl_letter', $data);
+		}
+
+		if ($saveLetter !== false)
+		{
+			$msg = array(
+				"sys_msg"	=>	"success",
+				"msg"		=> 	"Letter Successfuly saved!",
+				"icon"		=>	"success"
+			);
+		}else
+		{
+			$msg = array(
+				"sys_msg"	=>	"failed",
+				"msg"		=> 	"Letter save failed!",
+				"icon"		=>	"error"
+			);
+		}
+
+		echo json_encode($msg);
+	}
+
+	public function saveRelease()
+	{
+		$releaseData = $_POST;
+		$msg = array();
+		$data = array(
+			"type"    			=>   $releaseData['letterType'],
+			"date_from"         =>   $releaseData['dFrom'],
+			"date_to"           =>   $releaseData['dTo'],
+			"percent_from"      =>   $releaseData['pFrom'],
+			"percent_to"        =>   $releaseData['pTo'],
+			"release_date"      =>   $releaseData['rDate']
+		);
+
+		$saveRelease = $this->administrator->saveLetter('tbl_release', $data);
+		if ($saveRelease !== false)
+		{
+			$msg = array(
+				"sys_msg"	=>	"success",
+				"msg"		=> 	"Release Setup Successfuly saved!",
+				"icon"		=>	"success"
+			);
+		}else
+		{
+			$msg = array(
+				"sys_msg"	=>	"failed",
+				"msg"		=> 	"Release Setup save failed!",
+				"icon"		=>	"error"
+			);
+		}
+
+		echo json_encode($msg);
+	}
+	 /**
+	  * END OF CRUD
+	  */
+
+	/**
+	 * OTHER Functions
+	 */
+	public function gradeRemarks($grade = "")
+	{
+		$remarks = "";
+		switch ($grade) {
+			case '1.00':
+				case '1.25':
+					case '1.50':
+						case '1.75':
+							case '2.00':
+								case '2.25':
+									case '2.50':
+										case '2.75':
+											case '3.00':
+												$remarks = "PASSED";
+				break;
+			case 'INC':
+				$remarks = "INCOMPLETE";
+				break;
+			case 'NG':
+				$remarks = "NO GRADE";
+				break;
+			case 'D':
+				$remarks = "DROPPED";
+			case 'FD':
+				$remarks = "FORCE DROPPED";
+				break;
+			case 'IP':
+				$remarks = "IN PROGRESS";
+				break;
+			case '5.00':
+				$remarks = "FAILED";
+				break;
+		}
+
+		return $remarks;
+	}
+
+	public function getLetterType()
+	{
+		$letterTypeData = $this->administrator->getApplicantLetterType();
+		$htmlData = "";
+
+		foreach ($letterTypeData as $type) 
+		{
+			$htmlData .= '<option value="'.$type->id.'">'.$type->name.'</option>';
+		}
+
+		echo json_encode(array("content"	=>	$htmlData));
+	}
+
+	public function getLetterTemplate()
+	{
+		$letterTemplateData = $this->administrator->getLetterTemplate();
+		$htmlData = '<option value="-1">-- SELECT TEMPLATE --</option>';
+
+		foreach ($letterTemplateData as $template) 
+		{
+			$htmlData .= '<option value="'.$template->type.'">'.$template->name.'</option>';
+		}
+
+		echo json_encode(array("content"	=>	$htmlData));
+	}
+
+	public function getLetterTemplateContent()
+	{
+		$letterID = $_POST['letterID'];
+		$letterTemplateData = $this->administrator->getLetterTemplateContent($letterID);
+		$htmlData = "";
+		foreach ($letterTemplateData as $template) 
+		{
+			$htmlData = $template->content;
+		}
+
+		echo json_encode(array("content"	=>	$htmlData));
+	}
+
+	public function getReleaseList()
+	{
+		$releaseData = $this->administrator->getReleaseList();
+		$htmlData = "";
+
+		foreach ($releaseData as $release) 
+		{
+			$htmlData .= '<tr>';
+				$htmlData .= '<td>
+								<button type="button" class="btn btn-sm bg-red waves-effect">DELETE</button>
+								<button type="button" class="btn btn-sm bg-amber waves-effect">EDIT</button>
+							</td>';
+				$htmlData .= '<td>'.$release->name.'</td>';
+				$htmlData .= '<td>'.$release->date_from.'</td>';
+				$htmlData .= '<td>'.$release->date_to.'</td>';
+				$htmlData .= '<td>'.$release->percent_from.'</td>';
+				$htmlData .= '<td>'.$release->percent_to.'</td>';
+				$htmlData .= '<td>'.$release->release_date.'</td>';
+			$htmlData .= '</tr>';
+		}
+
+		echo json_encode(array("content"	=>	$htmlData));
+	}
+	 /**
+	  * END of other functions
+	  */
+
+	public function test()
+	{
+		echo json_encode($this->administrator->getTestDatabase2());
 	}
 
 }

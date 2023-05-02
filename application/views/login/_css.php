@@ -1,23 +1,21 @@
-	<!-- Favicon-->
-	<link rel="icon" href="<?php echo base_url('assets/images/logo.png'); ?>" type="image/x-icon">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
-
-    <!-- Bootstrap Core Css -->
-    <link href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.css?sid='.rand()); ?>" rel="stylesheet">
-
-    <!-- Waves Effect Css -->
-    <link href="<?php echo base_url('assets/plugins/node-waves/waves.css'); ?>" rel="stylesheet" />
-
-    <!-- Animation Css -->
-    <link href="<?php echo base_url('assets/plugins/animate-css/animate.css'); ?>" rel="stylesheet" />
+<!--===============================================================================================-->	
+    <!-- <link rel="icon" type="image/png" href="images/icons/favicon.ico"/> -->
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/vendor/bootstrap/css/bootstrap.min.css'); ?>">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css'); ?>">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/vendor/animate/animate.css'); ?>">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/vendor/css-hamburgers/hamburgers.min.css'); ?>">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/vendor/select2/select2.min.css'); ?>">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/css/util.css'); ?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/css/main.css?sid='.rand()); ?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/login_assets/css/preloader1.css?sid='.rand()); ?>">
+<!--===============================================================================================-->
     
     <!-- Sweetalert Css -->
     <link href="<?php echo base_url('assets/plugins/sweetalert/sweetalert.css'); ?>" rel="stylesheet" />
-
-    <!-- Custom Css -->
-    <link href="<?php echo base_url('assets/css/style.css?sid='.rand()); ?>" rel="stylesheet">
-    <link href="<?php echo base_url('assets/css/custom-css.css?sid='.rand()); ?>" rel="stylesheet">
 </head>

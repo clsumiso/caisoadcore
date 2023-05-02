@@ -14,6 +14,7 @@ class Applicant_model extends CI_Model {
 
 
   // ------------------------------------------------------------------------
+<<<<<<< HEAD
   public function getLetterContent($applicantID = "", $applicantType = 0)
   {
     $applicantDB = $this->load->database('applicantDB', TRUE);
@@ -130,6 +131,11 @@ class Applicant_model extends CI_Model {
   public function applicantLogs($applicantID = "")
   {
     
+=======
+  public function index()
+  {
+    // 
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
   }
 
   // ------------------------------------------------------------------------

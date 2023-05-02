@@ -8,7 +8,10 @@ class Admission_application extends CI_Controller
   {
     parent::__construct();
     $this->load->model("admission_application_model", "admission_application");
+<<<<<<< HEAD
     $this->load->library('upload'); 
+=======
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
   }
 
   public function index()
@@ -24,11 +27,14 @@ class Admission_application extends CI_Controller
     $this->load->view('application/_js', $data);
   }
 
+<<<<<<< HEAD
   public function grad_admission_verification()
   {
     # code...
   }
 
+=======
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
   public function courseList()
   {
     $courseData = $this->admission_application->gerGraduateProgram(array("MS", "MA", "PhD"));
@@ -45,6 +51,7 @@ class Admission_application extends CI_Controller
   {
     $data = $_POST;
     $msg = array();
+<<<<<<< HEAD
     $generatedApplicantID = $this->generateApplicantID(50);
 
     $count = count($_FILES['gradAttachment']['name']);
@@ -104,6 +111,11 @@ class Admission_application extends CI_Controller
 
     $arrData = array(
       "application_id"              =>  $generatedApplicantID,
+=======
+
+    $arrData = array(
+      "application_id"              =>  $this->generateApplicantID(50),
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
       "enroll_degree"               =>  $data['question_1'] == "true" ? 1 : 0,
       "enroll_grad_program"         =>  $data['question_2'] == "true" ? 1 : 0,
       "degree_program_applied"      =>  $data['question_3'],
@@ -138,9 +150,12 @@ class Admission_application extends CI_Controller
       "school_year"                 =>  $data['question_33'],
       "semester"                    =>  $data['question_34'],
       "confirmation_status"         =>  1,
+<<<<<<< HEAD
       "tor_file"                    =>  $tor_file,
       "gwa_file"                    =>  $gwa_file,
       "img_file"                    =>  $img_file,
+=======
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
       "date_created"                =>  date("Y-m-d H:i:s")
     );
 
@@ -163,6 +178,7 @@ class Admission_application extends CI_Controller
     echo json_encode($msg);
   }
 
+<<<<<<< HEAD
   public function uploadFile($directory = "", $fileName = "", $file = "")
   {
     $msg = array();
@@ -208,6 +224,8 @@ class Admission_application extends CI_Controller
     // return $msg;
   }
 
+=======
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
   public function getArr($arr = array())
   {
     $arrData = array();
@@ -257,6 +275,7 @@ class Admission_application extends CI_Controller
   {
     if (count($data) == 0)
     {
+<<<<<<< HEAD
       $data = array(
         "code"        =>  "404",
         "msg"         =>  "Application not found, please contact OFFICE OF ADMISSIONS (OAD)",
@@ -265,6 +284,9 @@ class Admission_application extends CI_Controller
       );
 
       $this->load->view('err/custom_error', $data);
+=======
+      $this->load->view('err/custom_error');
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
       return;
     }
 
@@ -1386,16 +1408,25 @@ class Admission_application extends CI_Controller
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
                   Semester:
                 </p>
+<<<<<<< HEAD
+=======
+              </td>
+              <td></td>
+              <td style="vertical-align: 0;">
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                 <p style="font-family: roboto; font-size: 11px;">
                   <span style="font-size: 8px;background-color: #000; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 1<sup>st</sup> Semester
                   <span style="font-size: 8px;background-color: #fff; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 2<sup>nd</sup> Semester
                 </p>
               </td>
               <td></td>
+<<<<<<< HEAD
               <td>
                 
               </td>
               <td></td>
+=======
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
               <td></td>
             </tr>
             <tr>
@@ -1522,4 +1553,8 @@ class Admission_application extends CI_Controller
 
 
 /* End of file Application.php */
+<<<<<<< HEAD
 /* Location: ./application/controllers/Admission_application */
+=======
+/* Location: ./application/controllers/Application.php */
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21

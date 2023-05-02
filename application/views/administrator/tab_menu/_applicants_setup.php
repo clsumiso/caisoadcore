@@ -39,8 +39,12 @@
                                             <th>Date To</th>
                                             <th>Percentage <br> Rank From</th>
                                             <th>Percentage <br> Rank To</th>
+<<<<<<< HEAD
                                             <th>Release Date From</th>
                                             <th>Release Date To</th>
+=======
+                                            <th>Release Date</th>
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                                         </tr>
                                     </thead>
                                     <tbody id="releaseList">
@@ -56,6 +60,7 @@
                         <div class="row clearfix">
                             <div class="col-sm-6 col-md-3 col-lg-3">
                                 <b>Name</b>
+<<<<<<< HEAD
                                 <input type="text" name="letterTypeName" class="form-control">
                             </div>
                             <div class="col-sm-6 col-md-3 col-lg-3">
@@ -65,6 +70,17 @@
                             <div class="col-sm-2 col-md-2 col-lg-2">
                                 <b>&nbsp;</b>
                                 <button type="button" class="btn btn-primary btn-block waves-effect" onclick="saveLetterType()">SAVE</button>
+=======
+                                <input type="text" class="form-control">
+                            </div>
+                            <div class="col-sm-6 col-md-3 col-lg-3">
+                                <b>Code</b>
+                                <input type="text" class="form-control">
+                            </div>
+                            <div class="col-sm-2 col-md-2 col-lg-2">
+                                <b>&nbsp;</b>
+                                <button type="button" class="btn btn-primary btn-block waves-effect">SAVE</button>
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                             </div>
                         </div>
                     </form>
@@ -170,7 +186,11 @@
                             </div>
                             <div class="col-sm-12 col-md-8 col-lg-8">
                                 <textarea id="ckeditor">
+<<<<<<< HEAD
                                     <div class="row d-flex justify-content-center" style="margin-left: 10%; margin-right: 10%;">
+=======
+                                    <div class="row d-flex justify-content-center">
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                                         <div class="col-sm-12 col-md-12 col-lg-12">
                                             <div class="row">
                                                 <div class="col-sm-12 col-md-12 col-lg-12">

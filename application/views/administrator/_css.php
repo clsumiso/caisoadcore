@@ -1,5 +1,5 @@
     <!-- Favicon-->
-    <link rel="icon" href="<?php echo base_url('node_modules/adminbsb-materialdesign/images/logo.png'); ?>" type="image/x-icon">
+    <link rel="icon" href="<?php echo base_url('assets/images/logo.png'); ?>" type="image/x-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
@@ -22,6 +22,10 @@
     
     <!-- Sweetalert Css -->
     <link href="<?php echo base_url('node_modules/adminbsb-materialdesign/plugins/sweetalert/sweetalert.css'); ?>" rel="stylesheet" />
+    
+    <!-- Bootstrap Material Datetime Picker Css -->
+    <link href="<?php echo base_url('node_modules/adminbsb-materialdesign/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css'); ?>" rel="stylesheet" />
+
     <!-- Bootstrap DatePicker Css -->
     <link href="<?php echo base_url('node_modules/adminbsb-materialdesign/plugins/bootstrap-datepicker/css/bootstrap-datepicker.css'); ?>" rel="stylesheet" />
 
@@ -34,6 +38,9 @@
 
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="<?php echo base_url('node_modules/adminbsb-materialdesign/css/themes/all-themes.css'); ?>" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="<?php echo base_url('node_modules/leaflet/dist/leaflet.css'); ?>" />
+    <link rel="stylesheet" href="<?php echo base_url('node_modules/leaflet/dist/leaflet.fullscreen.css'); ?>" />
 
     <style>
         .dashboardChart {

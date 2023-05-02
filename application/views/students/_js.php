@@ -25,7 +25,16 @@
     <script src="<?php echo base_url('assets/plugins/jquery-datatable/extensions/export/buttons.print.min.js'); ?>"></script>
 
     <!-- Custom Js -->
-    <script src="<?php echo base_url('assets/pages/faculty.js?sid='.rand()); ?>"></script>
+    <script src="<?php echo base_url('node_modules/leaflet/dist/leaflet.js'); ?>"></script> 
+    <script src="<?php echo base_url('node_modules/leaflet/dist/Leaflet.fullscreen.min.js'); ?>"></script>
+    <script src="<?php echo base_url('node_modules/leaflet.browser.print/dist/leaflet.browser.print.min.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/pages/student.js?sid='.rand()); ?>"></script>
+    <!-- Resources --><!-- Resources -->
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <script src="<?php echo base_url('assets/charts/student-chart.js?sid='.rand()); ?>"></script>
 
     <!-- Custom Js -->
     <script src="<?php echo base_url('assets/js/admin.js'); ?>"></script>

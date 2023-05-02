@@ -4,7 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<<<<<<< HEAD
     <title>OFFICE OF ADMISSIONS</title>
+=======
+    <title>404 | Bootstrap Based Admin Template - Material Design</title>
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
     <!-- Favicon-->
     <link rel="icon" href="../../favicon.ico" type="image/x-icon">
 
@@ -27,7 +31,11 @@
         <div class="error-code"><?php echo isset($code) ? $code : "" ?></div>
         <div class="error-message"><?php echo isset($msg) ? $msg : "" ?></div>
         <div class="button-place">
+<<<<<<< HEAD
             <a href="<?php echo isset($link) ? $link : "javascript:void(0)" ?>" class="btn bg-teal btn-lg waves-effect"><?php echo $homepageBTN; ?></a>
+=======
+            <a href="<?php echo isset($link) ? $link : "javascript:void(0)" ?>" class="btn bg-teal btn-lg waves-effect">GO TO CTEC</a>
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
         </div>
     </div>
 

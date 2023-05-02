@@ -54,3 +54,7 @@ $route = array(
 );
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+$route = array(
+	"app-verification/(:any)/(:any)"	=>	"applicant/applicantVerification/$1/$2"
+);

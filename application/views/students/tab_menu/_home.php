@@ -20,12 +20,34 @@
                 <div class="post-heading">
                     <p>Description Here</p>
                 </div>
-                <div class="post-content">
-                    
+                <div class="post-content" style="padding: 10px;">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <b>Semester</b>
+                            <select class="form-control" onchange="gradesAnlyticsPieChart(this.value)">
+                                <?php echo $semester; ?>
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <b>CLSU MAP</b>
+                            <select class="form-control" onchange="javascript:alert('Not yet available')">
+                                <option value="-1">no data available</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div id="gradesAnlyticsPieChart" class="dashboardChart"></div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div id="map" class="dashboardChart" style="z-index: 0;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="panel-footer">
+            <p>Note: No Grade (NG), In Progress (IP), Drop (D) and Incomplete (INC) will not be shown in the Bar Chart above. You can check the status in <b>Grades Tab</b>.</p>
             <!-- <ul>
                 <li>
                     <a href="#">

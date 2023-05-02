@@ -118,7 +118,7 @@ class Computation
         return $entrance_fee;
     }
 
-    public function _medical_screening($enrollment_count = 0, $student_type, $admission_fee_data = array())
+    public function _medical_screening($enrollment_count = 0, $student_type = "", $admission_fee_data = array())
     {
         $medical_screening_fee = 0;
         if ($enrollment_count <= 1)
@@ -197,7 +197,7 @@ class Computation
         return $field_study;
     }
 
-    public function _bridging_fee($development_fee_data = array(), $course_id, $semester_enrolled_ctr = 0, $year_level = 0)
+    public function _bridging_fee($development_fee_data = array(), $course_id = 0, $semester_enrolled_ctr = 0, $year_level = 0)
     {
         $bridging_fee = 0;
         if ($semester_enrolled_ctr <= 4)
@@ -246,7 +246,7 @@ class Computation
         return $student_news_organ;
     }
 
-    public function _entrance_new($enrollment_count = 0, $student_type, $year_level, $entrance_new_data = array())
+    public function _entrance_new($enrollment_count = 0, $student_type = "", $year_level = 0, $entrance_new_data = array())
     {
         $entrance = 0;
         if ($enrollment_count <= 1)

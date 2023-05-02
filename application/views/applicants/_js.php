@@ -21,7 +21,11 @@
 
     <!-- Custom Js -->
     <script src="<?php echo base_url('assets/js/admin.js'); ?>"></script>
+<<<<<<< HEAD
     <script src="<?php echo base_url('assets/pages/applicant.js?sid='.rand()); ?>"></script>
+=======
+    <script src="<?php echo base_url('assets/pages/admissions_application.js?sid='.rand()); ?>"></script>
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
 </body>
 
 </html>

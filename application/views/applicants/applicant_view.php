@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 <body class="theme-green" onload="getApplicantInfo('<?php echo $appID; ?>')">
+=======
+<body class="theme-green">
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
     <!-- Page Loader -->
     <div class="page-loader-wrapper">
         <span class="loader"></span>
@@ -17,7 +21,10 @@
             <p>Please wait...</p>
         </div> -->
     </div>
+<<<<<<< HEAD
     <div class="fullscreen-loading" style="display: none;">Loading&#8230;</div>
+=======
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
     <!-- #END# Page Loader -->
     <!-- Overlay For Sidebars -->
     <div class="overlay"></div>
@@ -37,7 +44,11 @@
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="card">
                         <div class="body">
+<<<<<<< HEAD
                             <?= $letterContent ?>
+=======
+                            
+>>>>>>> 8f4e08ab01c3fc6313cfa008ebea363e0fb9eb21
                         </div>
                     </div>
                 </div>
