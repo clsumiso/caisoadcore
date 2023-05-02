@@ -22,52 +22,6 @@ class Administrator_model extends CI_Model {
 		return $query->result();
 	}
 
-	public function getCollege()
-	{
-		$this->db->select('college_id, college_name');
-        $this->db->from('tbl_college');
-		$this->db->where('college_id < 11');
-        $query = $this->db->get();
-
-		return $query->result();
-	}
-
-	public function getCourse($college = "", $enrollmentType = "")
-	{
-		if ($enrollmentType == "resident")
-		{
-			$this->db->select('course_id, course_name, course_desc');
-			$this->db->from('tbl_course');
-			$this->db->where('college_id', $college);
-			$this->db->where_in('course_type', array('BS', 'B', 'C', 'D', 'MS', 'PhD'));
-			$this->db->order_by('course_name', 'asc');
-			$query = $this->db->get();
-		}else if ($enrollmentType == "incoming_freshmen")
-		{
-			$applicantDB = $this->load->database('applicantDB', TRUE);
-			$applicantDB->select('program_id AS course_id, program_name AS course_name, program_name AS course_desc');
-			$applicantDB->from('tbl_program');
-			$applicantDB->where('college_id', $college);
-			$applicantDB->order_by('program_name', 'asc');
-			$query = $applicantDB->get();
-		}
-		
-
-		return $query->result();
-	}
-
-	public function getGradeCourse($college = "")
-	{
-		$this->db->select('course_id, course_name, course_desc');
-        $this->db->from('tbl_course');
-		$this->db->where('college_id', $college);
-		$this->db->where_in('course_type', array('BS', 'B', 'C', 'D', 'MS', 'PhD'));
-		$this->db->order_by('course_name', 'asc');
-        $query = $this->db->get();
-
-		return $query->result();
-	}
-
 	// Get DataTable data
    	function getSchedule($postData=null)
 	{
