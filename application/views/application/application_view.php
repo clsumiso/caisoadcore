@@ -17,6 +17,7 @@
             <p>Please wait...</p>
         </div> -->
     </div>
+    <div class="fullscreen-loading" style="display: none;">Please wait&#8230;</div>
     <!-- #END# Page Loader -->
     <!-- Overlay For Sidebars -->
     <div class="overlay"></div>
@@ -48,7 +49,7 @@
                                     <section>
                                         <p>
                                             <small></small>
-                                            Instruction to Applicant: This form should be accomplished with all entries. Please fill-out all items, Applicant for MS/MPS must be a Bachelor’s degree graduate; applicant for PhD must be an MS/MA degree graduate. An application entity one for consideration to the specified program only.
+                                            Instruction to Applicant: This form should be accomplished with all entries. Please fill-out all items, Applicant for MS/MPS must be a Bachelor’s degree graduate; applicant for PhD must be an MS/MA degree graduate. An application entitles one for consideration to the specified program only.
                                         </p>
                                         <hr>
                                         <div class="row clearfix">
@@ -75,7 +76,24 @@
                                         </div>
                                         <div class="row clearfix">
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
-                                                <p>Degree Program Applied for: </p>
+                                                <p>
+                                                    Have you previously applied for admission to a graduate program in CLSU?
+                                                </p>
+                                            </div>
+                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                                <input name="question_26" type="radio" id="question_26_yes" value="true" class="with-gap radio-col-green">
+                                                <label for="question_26_yes">Yes</label>
+                                                <input name="question_26" type="radio" id="question_26_no" value="false" class="with-gap radio-col-green">
+                                                <label for="question_26_no">NO</label>
+                                            </div>
+                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="display: none;" id="question_27_container">
+                                                <label for="question_27">If yes, when</label>   
+                                                <input name="question_27" id="question_27" type="date" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
+                                                <p>Level Applied for: </p>
                                             </div>
                                             <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
                                                 <input name="question_3" type="radio" id="question_3_yes" value="master" class="with-gap radio-col-green">
@@ -86,7 +104,7 @@
                                         </div>
                                         <div class="row clearfix">
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
-                                                <p>Field of study: </p>
+                                                <p>Degree Program: </p>
                                             </div>
                                             <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
                                                 <!-- <input type="text" name="question_4" class="form-control" /> -->
@@ -323,7 +341,7 @@
                                                 <p class="align-center">Name(s)</p>
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <p class="align-center">Name of relationship with the referee</p>
+                                                <p class="align-center">Nature of relationship with the referee</p>
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                                 <p class="align-center">Affiliation (Please do not abbreviate)</p>
@@ -470,23 +488,6 @@
                                             </div>
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                                                 <input type="text" name="question_25[]" class="form-control" />
-                                            </div>
-                                        </div>
-                                        <div class="row clearfix">
-                                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 align-right">
-                                                <p>
-                                                    Have you previously applied for admission to a graduate program in CLSU?
-                                                </p>
-                                            </div>
-                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                                <input name="question_26" type="radio" id="question_26_yes" value="true" class="with-gap radio-col-green">
-                                                <label for="question_26_yes">Yes</label>
-                                                <input name="question_26" type="radio" id="question_26_no" value="false" class="with-gap radio-col-green">
-                                                <label for="question_26_no">NO</label>
-                                            </div>
-                                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="display: none;" id="question_27_container">
-                                                <label for="question_27">If yes, when</label>   
-                                                <input name="question_27" id="question_27" type="date" class="form-control">
                                             </div>
                                         </div>
                                         <p>
@@ -704,7 +705,7 @@
                                         </div>
                                     </section>
 
-                                    <h2>Attachement</h2><section>
+                                    <h2>Attachment</h2><section>
                                     <section>
                                         <p>
                                             Transcript of Records (TOR), <span class="col-red">please upload pdf file format</span>
@@ -712,10 +713,10 @@
                                         <div class="row clearfix">
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                                 <input type="file" class="form-control" name="gradAttachment[]" id="torFile">
-                                            </div>
+                                            </div> 
                                         </div>
                                         <p>
-                                            Certificate of Point Average from your previous school (GWA), <span class="col-red">please upload pdf file format</span>
+                                            Certificate of Grade Point Average from your previous school (GWA), <span class="col-red">please upload pdf file format</span>
                                         </p>
                                         <div class="row clearfix">
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -723,7 +724,7 @@
                                             </div>
                                         </div>
                                         <p>
-                                            2x2 Passport Size Picture, <span class="col-red">please upload JPEG|JPG|PNG file format</span>
+                                            Passport Size Picture, <span class="col-red">please upload JPEG|JPG|PNG file format</span>
                                         </p>
                                         <div class="row clearfix">
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

@@ -414,11 +414,6 @@ class Applicant extends CI_Controller
               'rules' => 'required'
       ),
       array(
-              'field' => 'highSchoolGradeAverage',
-              'label' => 'High School Grade Average',
-              'rules' => 'required'
-      ),
-      array(
               'field' => 'highSchoolYearGraduated',
               'label' => 'Year of Graduation',
               'rules' => 'required'
@@ -781,7 +776,6 @@ class Applicant extends CI_Controller
         "senior_high_address"           =>  $_POST['street3'], 
         "senior_high_cluster"           =>  $_POST['region3']."|".$_POST['province3']."|".$_POST['municipality3']."|".$_POST['barangay3'],  
         "type_of_school"                =>  $_POST['schoolType'], 
-        "high_school_average"           =>  $_POST['highSchoolGradeAverage'], 
         "high_school_grad_year"         =>  $_POST['highSchoolYearGraduated'], 
         "father_name"                   =>  $_POST['father_name'], 
         "father_age"                    =>  $_POST['father_age'], 

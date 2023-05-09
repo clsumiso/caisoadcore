@@ -394,7 +394,7 @@
                                         <input name="schoolType" type="radio" id="schoolType3" value="public" <?php echo  set_radio('schoolType', 'public'); ?> class="with-gap radio-col-primary">
                                         <label for="schoolType3">Public</label>
                                     </div>
-                                    <div class="col-sm-12 col-md-3 col-3">
+                                    <div class="col-sm-12 col-md-3 col-3" style="display: none;">
                                         <b>High School Grade Average</b><br>
                                         <input name="highSchoolGradeAverage" type="number" step=0.01 value="<?php echo set_value('highSchoolGradeAverage'); ?>" id="highSchoolGradeAverage" class="form-control" placeholder="AVERAGE">
                                     </div>
@@ -888,7 +888,7 @@
                                         <input type="text" name="scholarship_name" class="form-control" placeholder="(Name of Scholarship)">
                                     </div>
                                 </div>
-                                <div class="row clearfix">
+                                <div class="row clearfix" style="display: none;">
                                     <div class="col-sm-12 col-md-12 col-12">
                                         <b>What course do you intend to enroll in CLSU?</b>
                                         <select name="intendedProgram" class="form-control">

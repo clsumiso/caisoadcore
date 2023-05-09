@@ -1,5 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class Admission_application extends CI_Controller
 {
@@ -24,6 +27,15 @@ class Admission_application extends CI_Controller
     $this->load->view('application/_js', $data);
   }
 
+  public function reference()
+  {
+    $this->load->view('application/_header');
+    $this->load->view('application/_css');
+    $this->load->view('application/reference_view');
+    $this->load->view('application/_footer');
+    $this->load->view('application/_js');
+  }
+
   public function grad_admission_verification()
   {
     # code...
@@ -35,7 +47,10 @@ class Admission_application extends CI_Controller
     $htmlData = "";
     foreach ($courseData as $data) 
     {
-      $htmlData .= '<option value='.$data->course_id.'>'.strtoupper($data->course_desc).' ('.$data->course_name.')</option>';
+      if (!in_array($data->course_id, array(78, 172)))
+      {
+        $htmlData .= '<option value='.$data->course_id.'>'.strtoupper($data->course_desc).' ('.$data->course_name.')</option>';
+      }
     }
 
     return $htmlData;
@@ -53,6 +68,12 @@ class Admission_application extends CI_Controller
     $tor_file = "";
     $gwa_file = "";
     $img_file = "";
+    $referenceEmail = array();
+    $referenceName = array();
+    $referenceEmailCtr = 4;
+    $referenceNameCtr = 0;
+    $emailFailed = array();
+    
     for($i=0; $i < $count; $i++)
     {
       $directoryName = FCPATH.'uploads/graduate_level_requirements/'.$directories[$i];
@@ -73,7 +94,7 @@ class Admission_application extends CI_Controller
         $_FILES['file']['size'] = $_FILES['gradAttachment']['size'][$i];
 
         $config['upload_path'] = $directoryName; 
-        $config['allowed_types'] = 'jpg|jpeg|JPG|JPEG|pdf|PDF';
+        $config['allowed_types'] = 'jpg|jpeg|JPG|JPEG|png|PNG|pdf|PDF';
         $config['max_size'] = '10024';
         $config['file_name'] = $generatedApplicantID;
 
@@ -144,22 +165,77 @@ class Admission_application extends CI_Controller
       "date_created"                =>  date("Y-m-d H:i:s")
     );
 
+    for ($i=0; $i < count(explode("||", $this->getArr($data['question_22']))); $i++) 
+    { 
+      if ($i == $referenceEmailCtr)
+      {
+        array_push($referenceEmail, explode("||", $this->getArr($data['question_22']))[$referenceEmailCtr]);
+        $referenceEmailCtr += 6;
+      }
+
+      if ($i == $referenceNameCtr)
+      {
+        array_push($referenceName, explode("||", $this->getArr($data['question_22']))[$referenceNameCtr]);
+        $referenceNameCtr += 6;
+      }
+    }
+
+    // $msg = array(
+    //   "sys_msg" =>  "success",
+    //   "msg"     =>  "Applcation submitted successfully",
+    //   "type"    =>  "success",
+    //   "test"    =>  json_encode($referenceName)
+    // );
+
+    $emailStatus = $this->emailRefrence($referenceEmail, htmlentities($data['question_7'].", ".htmlentities($data['question_8'])." ".htmlentities($data['question_6'])), $data['question_16'], $referenceName);
+    $emailCtr = 0;
     $save = $this->admission_application->save("oad0001", $arrData);
     if ($save !== false) 
     {
-      $msg = array(
-        "sys_msg" =>  "success",
-        "msg"     =>  "Applcation submitted successfully",
-        "type"    =>  "success"
-      );
+
+      for ($i=0; $i < count($emailStatus); $i++) 
+      { 
+        if ($emailStatus[$i]['error'] === true)
+        {
+          $emailCtr++;
+        }
+        
+        if ($emailStatus[$i]['error'] !== true)
+        {
+          array_push($emailFailed, $emailStatus[$i]['email']);
+        }
+      }
+
+      if ($emailCtr == count($emailStatus))
+      {
+        $msg = array(
+          "sys_msg"       =>  "success",
+          "msg"           =>  "Applcation submitted successfully",
+          "type"          =>  "success",
+          "emailStatus"   =>  "",
+          "emailFailed"   =>  ""
+        );
+      }else
+      {
+        $msg = array(
+          "sys_msg"       =>  "failed",
+          "msg"           =>  "Applcation submitted failed",
+          "type"          =>  "error",
+          "emailStatus"   =>  $emailCtr == count($emailStatus) ? "success" : "failed",
+          "emailFailed"   =>  $emailFailed
+        );
+      }
     }else
     {
       $msg = array(
         "sys_msg" =>  "failed",
         "msg"     =>  "Applcation submitted failed",
-        "type"    =>  "error"
+        "type"    =>  "error",
+        "emailStatus"   =>  "",
+        "emailFailed"   =>  ""
       );
     }
+    
     echo json_encode($msg);
   }
 
@@ -1518,48 +1594,130 @@ class Admission_application extends CI_Controller
     $this->admissionApplicationForm($applicationData);
   }
 
-  public function emailRefrence($emailAddress = array(), $name = "", $sender = "")
+  public function emailRefrence($emailAddress = array(), $applicantName = "", $applicantEmail = "", $referenceName = array())
   {
     $mail = new PHPMailer(true);
     $output = array();
     $msg = array();
+    $htmlContent = '
+      <html>
+        <body style="margin 0 auto;">
+        
+        <div style="margin: 0 auto; display: flex; justify-content: center; flex-direction: row; font-family: sans-serif; border: 4px dashed #636e72; padding: 10px;">
+        <div>
+          <h2 style="color: #fff; background-color: #00b894; padding: 10px; text-align: center;">GRADUATE-LEVEL APPLICATION FOR ADMISSION</h2>
+          <p>Dear [References Name],</p>
+          <p>
+              I hope this letter finds you well. I am writing to request your assistance as a reference for my job search. As someone who knows me and my work well, I believe that your endorsement could be a valuable asset in helping me secure my application for admission.
+            </p>
+          <p>
+              If you would be willing to serve as a reference for me, please let me know if there is any additional information or documentation that you need from me to make the process smoother.
+            </p>
+          <p>
+              I am grateful for all of the support you have provided me over the years, and I greatly appreciate your willingness to serve as a reference. Please let me know if there is anything that I can do to return the favor in the future.
+            </p>
+          <p>
+              Thank you for your consideration.
+            </p>
+          <p>
+              Sincerely,
+            </p>
+          <p>
+              [Your Name]
+            </p>
+            <br>
+            <br>
+            <br>
+            <h3 style="text-align: center;"><a href="javascript:void(0)" style="color: #fff; background-color: #00b894; padding: 15px;">Reference Form</a></h3>
+            <br>
+            <h3 style="text-align: center;"><a href="javascript:void(0)" style="color: #fff; background-color: #e17055; padding: 15px;">REJECT</a></h3>
+        </div>
+        </div>
+        
+        </body>
+      </html>
+    ';
 
     for ($i=0; $i < count($emailAddress); $i++) 
     { 
       try {
         //Server settings
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+        // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
         $mail->isSMTP();                                            //Send using SMTP
         //$mail->isSendmail();
         $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
         $mail->SMTPAuth   = true;                     //Set the SMTP server to send through 
-        $mail->Username   = 'clsuoad.noreply15@clsu2.edu.ph';                     //SMTP username
-        $mail->Password   = 'AD315510N5';                               //SMTP password
+        $mail->Username   = 'clsuoad.noreply@clsu2.edu.ph';                     //SMTP username
+        $mail->Password   = 'AD315510N5';                              //SMTP password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
         $mail->Port       = 587;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
   
         //Recipients
-        $mail->setFrom('clsuoad.noreply15@clsu2.edu.ph', 'OFFICE OF ADMISSIONS');
+        $mail->setFrom('clsuoad.noreply@clsu2.edu.ph', 'OFFICE OF ADMISSIONS');
         // $mail->addAddress($email);
         
         //Set CC address
-        $mail->addCC("ccaddress@ccdomain.com", "Some CC Name");
+        $mail->addCC($applicantEmail, $applicantName);
   
         //Set BCC address
-        $mail->addBCC("bccaddress@ccdomain.com", "Some BCC Name");
-        $mail->addReplyTo($emailAddress[$i], $sender);     //Add a recipient
+        $mail->addBCC($emailAddress[$i], $referenceName[$i]);
+        $mail->addReplyTo($applicantEmail, $applicantEmail);     //Add a recipient
   
         //Content
         $mail->isHTML(true);                                  //Set email format to HTML
         $mail->Subject = 'OAD | Admission Application';
   
-        $htmlContent  = '<p>Dear Maam/Sir,</p><br>';
-        $htmlContent  .= '<p>Good day, your verification code to reset your password is: </p><h3>Code: '.$this->_token().'</h3><br>';
-  
+        $htmlContent  = '
+          <html>
+            <body style="margin 0 auto;">
+            
+              <div style="margin: 0 auto; display: flex; justify-content: center; flex-direction: row; font-family: sans-serif; border: 4px dashed #636e72; padding: 10px;">
+                <div>
+                    <h2 style="color: #fff; background-color: #00b894; padding: 10px; text-align: center;">GRADUATE-LEVEL APPLICATION FOR ADMISSION</h2>
+                    <p>Dear '.$referenceName[$i].',</p>
+                    <p>
+                        I hope this letter finds you well. I am writing to request your assistance as a reference for my job search. As someone who knows me and my work well, I believe that your endorsement could be a valuable asset in helping me secure my application for admission.
+                      </p>
+                    <p>
+                        If you would be willing to serve as a reference for me, please let me know if there is any additional information or documentation that you need from me to make the process smoother.
+                      </p>
+                    <p>
+                        I am grateful for all of the support you have provided me over the years, and I greatly appreciate your willingness to serve as a reference. Please let me know if there is anything that I can do to return the favor in the future.
+                    </p>
+                    <p>
+                        Thank you for your consideration.
+                    </p>
+                    <br>
+                    <br>
+                    <p>
+                        Sincerely,
+                    </p>
+                    <br>
+                    <br>
+                    <p>
+                      '.$applicantName.'
+                    </p>
+                    <br>
+                    <br>
+                    <br>
+                    <h3 style="text-align: center;">'.anchor('javascript:void(0)', 'Reference Form', array('title' => 'Reference Form', 'style' => 'color: #fff; background-color: #00b894; padding: 15px;')).'</h3>
+                    <br>
+                    <h3 style="text-align: center;">'.anchor('javascript:void(0)', 'Reject', array('title' => 'Reject', 'style' => 'color: #fff; background-color: #e17055; padding: 15px;')).'</h3>
+                </div>
+              </div>
+            </body>
+          </html>`
+        ';
+        
         $mail->Body    = $htmlContent;
             
-        $mail->send();
+        $email_sent = $mail->send();
+        $msg = array(
+          "error" =>  $email_sent,
+          "email" =>  $emailAddress[$i]
+        );
         $mail->clearAddresses();
+        
       } catch (Exception $e) 
       {
         $msg = array(
@@ -1571,6 +1729,8 @@ class Admission_application extends CI_Controller
       
       array_push($output, $msg);
     }
+
+    return $output;
     
   }
 

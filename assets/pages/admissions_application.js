@@ -88,7 +88,7 @@ $('#wizard_vertical').steps({
                 showCancelButton: true,
                 confirmButtonText: "Submit",
                 cancelButtonText: "Cancel",
-                closeOnConfirm: false,
+                closeOnConfirm: true,
                 closeOnCancel: true
             }, function (isConfirm) {
                 if (isConfirm) 
@@ -108,6 +108,11 @@ $('#wizard_vertical').steps({
                         contentType: false,
                         cache: false,
                         dataType: "JSON",
+                        beforeSend: function ()
+                        {
+                            // $('#saveApplicantPreload').html('<span class="loader1"></span>');
+                            $('.fullscreen-loading').css("display", "block");
+                        },
                         success: function (data) 
                         {
                             swal({
@@ -115,19 +120,174 @@ $('#wizard_vertical').steps({
                                 text: data.msg,
                                 type: data.type,
                                 showCancelButton: true,
-                                confirmButtonText: "Submit",
+                                confirmButtonText: "Ok",
                                 cancelButtonText: "Cancel",
-                                closeOnConfirm: false,
+                                closeOnConfirm: true,
                                 closeOnCancel: true
                             }, function (isConfirm) 
                             {
                                 if (isConfirm)
                                 {
+                                    
                                     $("#applicationForm")[0].reset();
                                     window.open(window.location.origin + "/office-of-admissions/grad-admission-verification", "_SELF");
                                 }
                             });
                             
+                        },
+                        complete: function () 
+                        {
+                            // $('#saveApplicantPreload').html('');
+                            $('.fullscreen-loading').css("display", "none");
+                        },
+                        error: function (e) 
+                        {
+                            swal("System Message", e.responseText, "error");
+                        }
+                    });
+                } 
+            });
+        }
+    }
+});
+
+$('#reference_form_container').steps({
+    headerTag: 'h2',
+    bodyTag: 'section',
+    transitionEffect: 'slideLeft',
+    stepsOrientation: 'vertical',
+    onInit: function (event, currentIndex) {
+        setButtonWavesEffect(event);
+    },
+    onStepChanged: function (event, currentIndex, priorIndex) {
+        setButtonWavesEffect(event);
+    },
+    onFinished: function (event, currentIndex)
+    {
+        let err = "";
+        if (_validation()[0][0]['basic_information'].length > 0 || _validation()[0][1]['educational_background'].length > 0 || _validation()[0][2]['reference'].length > 0 || _validation()[0][3]['other'].length > 0 || _validation()[0][4]['attachment'].length > 0)
+        {
+            err += "<ul class='align-left' style='list-style: none;'>";
+
+            if (_validation()[0][0]['basic_information'].length > 0)
+            {
+                err += "<li><h5>Basic Information</h5></li>";
+                err += "<ul class='align-left' style='list-style: square;'>";
+                for (let index = 0; index < _validation()[0][0]['basic_information'].length; index++) 
+                {
+                    err += "<li>"+_validation()[0][0]['basic_information'][index]+"</li>";
+                }
+                err += "</ul>";
+            }
+
+            if (_validation()[0][1]['educational_background'].length > 0)
+            {
+                err += "<li><h5>Educational Background</h5></li>";
+                err += "<ul class='align-left' style='list-style: square;'>";
+                for (let index = 0; index < _validation()[0][1]['educational_background'].length; index++) 
+                {
+                    err += "<li>"+_validation()[0][1]['educational_background'][index]+"</li>";
+                }
+                err += "</ul>";
+            }
+
+            if (_validation()[0][2]['reference'].length > 0)
+            {
+                err += "<li><h5>Reference</h5></li>";
+                err += "<ul class='align-left' style='list-style: square;'>";
+                for (let index = 0; index < _validation()[0][2]['reference'].length; index++) 
+                {
+                    err += "<li>"+_validation()[0][2]['reference'][index]+"</li>";
+                }
+                err += "</ul>";
+            }
+
+            if (_validation()[0][3]['other'].length > 0)
+            {
+                err += "<li><h5>Other</h5></li>";
+                err += "<ul class='align-left' style='list-style: square;'>";
+                for (let index = 0; index < _validation()[0][3]['other'].length; index++) 
+                {
+                    err += "<li>"+_validation()[0][3]['other'][index]+"</li>";
+                }
+                err += "</ul>";
+            }
+
+            if (_validation()[0][4]['attachment'].length > 0)
+            {
+                err += "<li><h5>Attachment</h5></li>";
+                err += "<ul class='align-left' style='list-style: square;'>";
+                for (let index = 0; index < _validation()[0][4]['attachment'].length; index++) 
+                {
+                    err += "<li>"+_validation()[0][4]['attachment'][index]+"</li>";
+                }
+                err += "</ul>";
+            }
+            
+            err += "</ul>";
+
+            $("#errContent").html(err);
+            $("#errModal").modal('show');
+        }else
+        {
+            swal({
+                title: "Are you sure?",
+                text: "Your application will be forwarded to the reference you specified",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Submit",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            }, function (isConfirm) {
+                if (isConfirm) 
+                {
+                    // Get form
+                    var form = $('#applicationForm')[0];
+            
+                    // Create an FormData object 
+                    var data = new FormData(form);
+
+                    $.ajax({
+                        type: "POST",
+                        enctype: 'multipart/form-data',
+                        url: window.location.origin + "/office-of-admissions/admission_application/submitApplication",
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                        dataType: "JSON",
+                        beforeSend: function ()
+                        {
+                            // $('#saveApplicantPreload').html('<span class="loader1"></span>');
+                            $('.fullscreen-loading').css("display", "block");
+                        },
+                        success: function (data) 
+                        {
+                            swal({
+                                title: data.sys_msg.toUpperCase(),
+                                text: data.msg,
+                                type: data.type,
+                                showCancelButton: true,
+                                confirmButtonText: "Ok",
+                                cancelButtonText: "Cancel",
+                                closeOnConfirm: true,
+                                closeOnCancel: true
+                            }, function (isConfirm) 
+                            {
+                                if (isConfirm)
+                                {
+                                    
+                                    $("#applicationForm")[0].reset();
+                                    window.open(window.location.origin + "/office-of-admissions/grad-admission-verification", "_SELF");
+                                }
+                            });
+                            
+                        },
+                        complete: function () 
+                        {
+                            // $('#saveApplicantPreload').html('');
+                            $('.fullscreen-loading').css("display", "none");
                         },
                         error: function (e) 
                         {
@@ -228,16 +388,16 @@ function _validation()
        basic_information.push("(Email Address) is <b class='col-red'>required!!!</b>");
     }
 
-    if (!emailReg.test($("[name='question_16']").val()))
-    {
-        basic_information.push("Invalid email address <b class='col-red'>*required</b>");
-    }else
-    {
-        if(!emailblockReg.test($("[name='question_16']").val()))
-        {
-            basic_information.push("Please use a corporate email address <b class='col-red'>*required</b>");
-        }
-    }
+    // if (!emailReg.test($("[name='question_16']").val()))
+    // {
+    //     basic_information.push("Invalid email address <b class='col-red'>*required</b>");
+    // }else
+    // {
+    //     if(!emailblockReg.test($("[name='question_16']").val()))
+    //     {
+    //         basic_information.push("Please use a corporate email address <b class='col-red'>*required</b>");
+    //     }
+    // }
 
     if ($("[name='question_17']").val() == "")
     {
@@ -330,6 +490,8 @@ function _validation()
         reference.push("Please specify your references <b class='col-red'>*required</b>");
     }
 
+    var corporateEmails = /^([\w-.]+@(?!clsu\.edu\.ph)(?!clsu2\.edu\.ph)(?!philrice\.gov\.ph)(?!ovp\.gov\.ph)(?!hudcc\.gov\.ph)(?!dar\.gov\.ph)(?!da\.gov\.ph)(?!dbm\.gov\.ph)(?!deped\.gov\.ph)(?!doe\.gov\.ph)(?!denr\.gov\.ph)(?!dof\.gov\.ph)(?!dfa\.gov\.ph)(?!doh\.gov\.ph)(?!dilg\.gov\.ph)(?!doj\.gov\.ph)(?!dole\.gov\.ph)(?!dnd\.gov\.ph)(?!dpwh\.gov\.ph)(?!dost\.gov\.ph)(?!dswd\.gov\.ph)(?!tourism\.gov\.ph)(?!dti\.gov\.ph)(?!dotc\.gov\.ph)(?!ched\.gov\.ph)(?!cfo\.gov\.ph)(?!gcg\.gov\.ph)(?!mmda\.gov\.ph)(?!minda\.gov\.ph)(?!napc\.gov\.ph)(?!ncmf\.gov\.ph)(?!neda\.gov\.ph)(?!nsc\.gov\.ph)(?!opapp\.gov\.ph)(?!pcdspo\.gov\.ph)(?!pcoo\.gov\.ph)(?!pllo\.gov\.ph)(?!pms\.gov\.ph)(?!tesda\.gov\.ph)(?!pcc\.gov\.ph)([\w-]+.)+[\w-]{2,4})?$/;
+
     if (question_22.length > 0)
     {
         if ($("[name='question_3']:checked").val() == "master")
@@ -339,14 +501,23 @@ function _validation()
                 reference.push("Your applying for Master's Degree program. Please specify two (2) references <b class='col-red'>*required</b>");
             }else
             {
-                if (!emailReg.test(question_22[4]) || !emailReg.test(question_22[10]))
+                if (!emailReg.test($.trim(question_22[4])) || !emailReg.test($.trim(question_22[10])))
                 {
                     reference.push("Invalid email address <b class='col-red'>*required</b>");
                 }else
                 {
-                    if(!emailblockReg.test(question_22[4]) || !emailblockReg.test(question_22[10]))
+                    if ($.inArray($.trim($('[name="question_16"]').val()), [$.trim(question_22[4]), $.trim(question_22[10])]) != -1)
                     {
-                        reference.push("Please use a corporate email address <b class='col-red'>*required</b>");
+                        reference.push("Invalid reference email, do not use your own email address. <b class='col-red'>*required</b>");
+                    }else
+                    {
+                        if(!corporateEmails.test(question_22[4]) && !corporateEmails.test(question_22[10]))
+                        {
+                            
+                        }else
+                        {
+                            reference.push("Please use a corporate email address <b class='col-red'>*required</b>");
+                        }
                     }
                 }
             }
@@ -357,14 +528,28 @@ function _validation()
                 reference.push("Your applying for PhD Degree program. Please specify three (3) references <b class='col-red'>*required</b>");
             }else
             {
-                if (!emailReg.test(question_22[4]) || !emailReg.test(question_22[10]) || !emailReg.test(question_22[16]))
+                if (!emailReg.test($.trim(question_22[4])) || !emailReg.test($.trim(question_22[10])) || !emailReg.test($.trim(question_22[16])))
                 {
                     reference.push("Invalid email address <b class='col-red'>*required</b>");
                 }else
                 {
-                    if(!emailblockReg.test(question_22[4]) || !emailblockReg.test(question_22[10]) || !emailblockReg.test(question_22[16]))
+                    if ($.inArray($.trim($('[name="question_16"]').val()), [$.trim(question_22[4]), $.trim(question_22[10]), $.trim(question_22[16])]) != -1)
                     {
-                        reference.push("Please use a corporate email address <b class='col-red'>*required</b>");
+
+                        // if(!emailblockReg.test(question_22[4]) || !emailblockReg.test(question_22[10]) || !emailblockReg.test(question_22[16]))
+                        // {
+                        //     reference.push("Please use a corporate email address <b class='col-red'>*required</b>");
+                        // }
+                        reference.push("Invalid reference email, do not use your own email address. <b class='col-red'>*required</b>");
+                    }else
+                    {
+                        if(!corporateEmails.test(question_22[4]) && !corporateEmails.test(question_22[10]) && !corporateEmails.test(question_22[16]))
+                        {
+                            
+                        }else
+                        {
+                            reference.push("Please use a corporate email address <b class='col-red'>*required</b>");
+                        }
                     }
                 }
             }
@@ -404,15 +589,14 @@ function _validation()
 
     if ($("#pictureFile").val() == "")
     {
-        attachment.push("2x2 Passport Size Picture is <b class='col-red'>required!!!</b>");
+        attachment.push("Passport Size Picture is <b class='col-red'>required!!!</b>");
     }else if ($("#pictureFile").val() != "")
     {
         if (_validateFile($("#pictureFile")) === false)
         {
-            attachment.push("2x2 Passport Size Picture <b class='col-red'>invalid FILE Type!!!</b>");
+            attachment.push("Passport Size Picture <b class='col-red'>invalid FILE Type!!!</b>");
         }
     }
-
 
     errData = [
         { "basic_information"       :   basic_information },
@@ -496,7 +680,7 @@ function wordCount(value)
 // Set school year advance 10 years
 for (let index = parseInt(year); index < parseInt(year) + 10; index++) 
 {
-    $('[name="question_33"]').append("<option value="+index+">"+index+"</option>");
+    $('[name="question_33"]').append("<option value="+index+"-"+(index + 1)+">"+index+"-"+(index + 1)+"</option>");
 }
 
 $('input[type=radio][name="question_26"]').change(function() {
