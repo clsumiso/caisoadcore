@@ -56,7 +56,7 @@ $route = array(
 	'default_controller' 				=> 'login',
 	"app-verification/(:any)/(:any)"	=>	"applicant/applicantVerification/$1/$2",
 	"app-verification"					=>	"applicant",
-	"grad-admission-verification"		=>	"admission_application/grad_admission_verification",
+	"admission-verification/(:any)"		=>	"admission_application/admission_verification/$1",
 	"app-enrollment-form/(:any)"		=>	"applicant/applicant_form/$1",
 	"app-dl-enrollment-form/(:any)"		=>	"applicant/donwloadEnrollmentForm/$1"
 );

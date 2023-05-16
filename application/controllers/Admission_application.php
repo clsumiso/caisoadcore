@@ -27,18 +27,109 @@ class Admission_application extends CI_Controller
     $this->load->view('application/_js', $data);
   }
 
-  public function reference()
+  public function reference($appID, $referenceEmail)
   {
-    $this->load->view('application/_header');
-    $this->load->view('application/_css');
-    $this->load->view('application/reference_view');
-    $this->load->view('application/_footer');
-    $this->load->view('application/_js');
+    $data = array(
+      "appID"     =>  $appID,
+      "referenceEmail" =>  $referenceEmail,
+      "referenceInfo"   =>  $this->getReferenceInfo($appID, $referenceEmail)
+    );
+    
+    $this->load->view('application/_header', $data);
+    $this->load->view('application/_css', $data);
+    $this->load->view('application/reference_view', $data);
+    $this->load->view('application/_footer', $data);
+    $this->load->view('application/_js', $data);
   }
 
-  public function grad_admission_verification()
+  public function getReferenceInfo($appID, $referenceEmail = "")
   {
-    # code...
+    $referenceData = $this->admission_application->getApplication($appID);
+    $referenceInfo = "";
+    $refereceCtr = 0;
+    $output = array();
+    foreach ($referenceData as $reference) 
+    {
+      $referenceInfo = $reference->reference;
+    }
+
+    for ($i=0; $i < explode("||", $referenceInfo); $i++) 
+    { 
+      if (explode("||", $referenceInfo)[$i] == $referenceEmail)
+      {
+        $refereceCtr = $i;
+        break;
+      }
+    }
+
+    array_push($output, explode("||", $referenceInfo)[$refereceCtr - 1]);
+    array_push($output, explode("||", $referenceInfo)[$refereceCtr - 2]);
+    array_push($output, explode("||", $referenceInfo)[$refereceCtr - 3]);
+    array_push($output, explode("||", $referenceInfo)[$refereceCtr - 4]);
+    array_push($output, explode("||", $referenceInfo)[$refereceCtr + 1]);
+    array_push($output, explode("||", $referenceInfo)[$refereceCtr]);
+
+
+    return $output;
+
+  }
+
+  public function applicantInfo()
+  {
+    $applicantID = $_POST['appID'];
+    $appInfo = array();
+
+    $applicants = $this->admission_application->getApplication($applicantID);
+    foreach ($applicants as $applicant) 
+    {
+      $appInfo = array(
+        "appName"   =>  $applicant->lname.", ".$applicant->fname." ".$applicant->mname,
+        "appEmail"  =>  $applicant->email_address,
+        "program"   =>  $applicant->course_desc
+      );
+    }
+
+    echo json_encode($appInfo);
+  }
+
+  public function admission_verification($applicationID)
+  {
+    $emailLogs = $this->admission_application->getEmailLogs($applicationID);
+    $emailSendStatus = '';
+    $emailSentCtr = 0;
+
+    foreach ($emailLogs as $logs) 
+    {
+      
+
+      $emailSendStatus .= '<tr>';
+        $emailSendStatus .= '<td>'.$logs->email.'</td>';
+        $emailSendStatus .= '<td>'.($logs->status == 0 ? "EMAIL SENDING FAILED" : "EMAIL SENT").'</td>';
+        if ($logs->status == 0)
+        {
+          $emailSendStatus .= '<td>
+                                  <button class="btn btn-lg btn-success waves-effect" onclick="resendReference(\''.$applicationID.'\', \''.(htmlentities($logs->lname).", ".htmlentities($logs->fname)." ".htmlentities($logs->mname)).'\', \''.$logs->email.'\', \''.$logs->reference_name.'\')">RESEND</button>
+                              </td>';
+        }else
+        {
+          $emailSentCtr++;
+          $emailSendStatus .= '<td>...</td>';
+        }
+      $emailSendStatus .= '</tr>';
+    }
+
+    $data = array(
+      "appID"             =>  $applicationID,
+      "emailSendStatus"   =>  $emailSendStatus,
+      "trackTitle"        =>  "List below are the emails of your reference. If status is EMAIL SENDING FAILED, please click RESEND Button",
+      "enrollmentFormBtn" =>  count($emailLogs) == $emailSentCtr ? '<br><button class="btn btn-lg btn-block btn-success waves-effect">FILL-UP ENROLLMENT FORM</button>' : 0
+    );
+    
+    $this->load->view('application/_header', $data);
+    $this->load->view('application/_css', $data);
+    $this->load->view('application/application_verification_view', $data);
+    $this->load->view('application/_footer', $data);
+    $this->load->view('application/_js', $data);
   }
 
   public function courseList()
@@ -68,6 +159,7 @@ class Admission_application extends CI_Controller
     $tor_file = "";
     $gwa_file = "";
     $img_file = "";
+    $proficiency_file = "";
     $referenceEmail = array();
     $referenceName = array();
     $referenceEmailCtr = 4;
@@ -123,6 +215,39 @@ class Admission_application extends CI_Controller
       }
     }
 
+    if(!empty($_FILES['proficiencyAttachement']['name']))
+    {
+      $directoryName = FCPATH.'uploads/graduate_level_requirements/PROFICIENCY';
+      // $downloads = FCPATH.'downloads/graduate_level_/'.$_SESSION['e_id'];
+      //Check if the directory already exists.
+      if(!is_dir($directoryName))
+      {
+        //Directory does not exist, so lets create it.
+        mkdir($directoryName, 0755, true);
+      }
+
+      $_FILES['file']['name'] = $_FILES['proficiencyAttachement']['name'];
+      $_FILES['file']['type'] = $_FILES['proficiencyAttachement']['type'];
+      $_FILES['file']['tmp_name'] = $_FILES['proficiencyAttachement']['tmp_name'];
+      $_FILES['file']['error'] = $_FILES['proficiencyAttachement']['error'];
+      $_FILES['file']['size'] = $_FILES['proficiencyAttachement']['size'];
+
+      $config['upload_path'] = $directoryName; 
+      $config['allowed_types'] = 'jpg|jpeg|JPG|JPEG|png|PNG|pdf|PDF';
+      $config['max_size'] = '10024';
+      $config['file_name'] = $generatedApplicantID;
+
+      $this->upload->initialize($config);
+      if($this->upload->do_upload('file'))
+      {
+        $uploadData = $this->upload->data();
+        $proficiency_file = $uploadData['file_name'];
+        // $filename = $uploadData['file_name'];
+      }
+
+      unset($config);
+    }
+
     $arrData = array(
       "application_id"              =>  $generatedApplicantID,
       "enroll_degree"               =>  $data['question_1'] == "true" ? 1 : 0,
@@ -162,6 +287,8 @@ class Admission_application extends CI_Controller
       "tor_file"                    =>  $tor_file,
       "gwa_file"                    =>  $gwa_file,
       "img_file"                    =>  $img_file,
+      "proficiency_file"            =>  $proficiency_file,
+      "admission_type"              =>  "graduate_level_admission",
       "date_created"                =>  date("Y-m-d H:i:s")
     );
 
@@ -187,56 +314,221 @@ class Admission_application extends CI_Controller
     //   "test"    =>  json_encode($referenceName)
     // );
 
-    $emailStatus = $this->emailRefrence($referenceEmail, htmlentities($data['question_7'].", ".htmlentities($data['question_8'])." ".htmlentities($data['question_6'])), $data['question_16'], $referenceName);
-    $emailCtr = 0;
-    $save = $this->admission_application->save("oad0001", $arrData);
-    if ($save !== false) 
+    $emailVerification = $this->emailVerification($generatedApplicantID, $data['question_16']);
+
+    if ($emailVerification[0]['error'] === true)
     {
-
-      for ($i=0; $i < count($emailStatus); $i++) 
-      { 
-        if ($emailStatus[$i]['error'] === true)
-        {
-          $emailCtr++;
-        }
-        
-        if ($emailStatus[$i]['error'] !== true)
-        {
-          array_push($emailFailed, $emailStatus[$i]['email']);
-        }
-      }
-
-      if ($emailCtr == count($emailStatus))
+      $save = $this->admission_application->save("oad0001", $arrData);
+      if ($save !== false) 
       {
-        $msg = array(
-          "sys_msg"       =>  "success",
-          "msg"           =>  "Applcation submitted successfully",
-          "type"          =>  "success",
-          "emailStatus"   =>  "",
-          "emailFailed"   =>  ""
-        );
+        $applicantCourseInfo = $this->admission_application->getApplication($generatedApplicantID);
+        $courseInfo = "";
+        foreach ($applicantCourseInfo as $course_info) 
+        {
+          $courseInfo = $course_info->course_desc;
+        }
+
+        $emailStatus = $this->emailRefrence($referenceEmail, htmlentities($data['question_7'].", ".htmlentities($data['question_8'])." ".htmlentities($data['question_6'])), $referenceName, $generatedApplicantID, $courseInfo);
+
+
+        $emailCtr = 0;
+        for ($i=0; $i < count($emailStatus); $i++) 
+        { 
+          if ($emailStatus[$i]['error'] === true)
+          {
+            $emailData = array(
+              "application_id"  =>  $generatedApplicantID,
+              "reference_name"  =>  $emailStatus[$i]['referenceName'],
+              "email"           =>  $emailStatus[$i]['email'],
+              "status"          =>  1,
+              "created"         =>  date("Y-m-d H:i:s"),
+              "modified"        =>  date("Y-m-d H:i:s")
+            );
+            
+            $emailLogs = $this->admission_application->save("oad0004", $emailData);
+            $emailCtr++;
+          }
+          
+          if ($emailStatus[$i]['error'] !== true)
+          {
+            $emailData = array(
+              "application_id"  =>  $generatedApplicantID,
+              "reference_name"  =>  $emailStatus[$i]['referenceName'],
+              "email"           =>  $emailStatus[$i]['email'],
+              "status"          =>  0,
+              "created"         =>  date("Y-m-d H:i:s"),
+              "modified"        =>  date("Y-m-d H:i:s")
+            );
+            
+            $emailLogs = $this->admission_application->save("oad0004", $emailData);
+            array_push($emailFailed, $emailStatus[$i]['email']);
+          }
+        }
+
+        if ($emailCtr == count($emailStatus))
+        {
+          $msg = array(
+            "sys_msg"       =>  "success",
+            "msg"           =>  "Application submitted successfully",
+            "type"          =>  "success",
+            "emailStatus"   =>  "success",
+            "emailFailed"   =>  "",
+            "applicationID" =>  $generatedApplicantID,
+            "course"        =>  json_encode($applicantCourseInfo)
+          );
+        }else
+        {
+          $msg = array(
+            "sys_msg"       =>  "failed",
+            "msg"           =>  "Application submitted failed",
+            "type"          =>  "error",
+            "emailStatus"   =>  $emailCtr == count($emailStatus) ? "success" : "failed",
+            "emailFailed"   =>  $emailFailed,
+            "applicationID" =>  $generatedApplicantID
+          );
+        }
       }else
       {
         $msg = array(
-          "sys_msg"       =>  "failed",
-          "msg"           =>  "Applcation submitted failed",
-          "type"          =>  "error",
-          "emailStatus"   =>  $emailCtr == count($emailStatus) ? "success" : "failed",
-          "emailFailed"   =>  $emailFailed
+          "sys_msg" =>  "failed",
+          "msg"     =>  "Application submitted failed, please try again",
+          "type"    =>  "error",
+          "emailStatus"   =>  "",
+          "emailFailed"   =>  "reference",
+          "applicationID" =>  $generatedApplicantID,
+          "course"        =>  json_encode($applicantCourseInfo)
         );
       }
     }else
     {
       $msg = array(
         "sys_msg" =>  "failed",
-        "msg"     =>  "Applcation submitted failed",
+        "msg"     =>  "Application submitted failed, please try again",
+        "type"    =>  "error",
+        "emailStatus"   =>  "",
+        "emailFailed"   =>  "applicant",
+        "applicationID" =>  $generatedApplicantID,
+        "course"        =>  json_encode($applicantCourseInfo)
+      );
+    }
+    
+    echo json_encode($msg);
+  }
+
+  public function submitReference()
+  {
+    $data = $_POST;
+
+    $reference = array(
+      "applicant_id"                         =>  $_POST['applicantID'],
+      "applicant_capacity"                   =>  $this->getArr($_POST['question_1']),
+      "applicant_amplitude"                  =>  $_POST['question_2'],
+      "applicant_scholastic"                 =>  $_POST['question_3'],
+      "applicant_potential_professional"     =>  $_POST['question_4'],
+      "others"                               =>  $_POST['question_5'],
+      "reference_name"                       =>  $_POST['reference_name'],
+      "reference_relationship"               =>  $_POST['reference_relationship'],
+      "reference_affiliation"                =>  $_POST['reference_affiliation'],
+      "reference_position"                   =>  $_POST['reference_position'],
+      "reference_number"                     =>  $_POST['reference_number'],
+      "created"                              =>  date("Y-m-d H:i:s"),
+      "modified"                             =>  date("Y-m-d H:i:s")
+    );
+
+    $save = $this->admission_application->save("oad0002", $reference);
+    if ($save !== false) 
+    {
+
+      $referenceStatusData = array(
+        "application_id"    =>  $_POST['applicantID'],
+        "reference_email"   =>  $_POST['reference_email'],
+        "reference_status"  =>  date("Y-m-d H:i:s"),
+        "reference_remarks" =>  "approve" 
+      );
+
+      $condition = array(
+        "application_id"    =>  $_POST['applicantID'],
+        "reference_email"   =>  $_POST['reference_email']
+      );
+
+      if (count($this->admission_application->checkRequest($_POST['applicantID'], $_POST['reference_email'])) > 0)
+      {
+        $this->admission_application->updateAdmission($referenceStatusData, $condition, array('oad0003'));
+      }else
+      {
+        $this->admission_application->save("oad0003", $referenceStatusData);
+      }
+
+      $emailReference = $this->referenceResponse($reference, $_POST['reference_email']);
+
+      $msg = array(
+        "sys_msg"       =>  "success",
+        "msg"           =>  "Submitted successfully, Thank you!!!",
+        "type"          =>  "success",
+        "emailStatus"   =>  "",
+        "emailFailed"   =>  ""
+      );
+    }else
+    {
+      $msg = array(
+        "sys_msg" =>  "failed",
+        "msg"     =>  "Submit failed",
         "type"    =>  "error",
         "emailStatus"   =>  "",
         "emailFailed"   =>  ""
       );
     }
-    
+
     echo json_encode($msg);
+  }
+
+  public function refuseApplication($applicationID, $referenceEmail)
+  {
+    $referenceStatusData = array(
+      "application_id"    =>  $applicationID,
+      "reference_email"   =>  $referenceEmail,
+      "reference_status"  =>  date("Y-m-d H:i:s"),
+      "reference_remarks" =>  "refuse" 
+    );
+
+    $condition = array(
+      "application_id"    =>  $applicationID,
+      "reference_email"   =>  $referenceEmail
+    );
+
+    if (count($this->admission_application->checkRequest($applicationID, $referenceEmail)) > 0)
+    {
+      $update = $this->admission_application->updateAdmission($referenceStatusData, $condition, array('oad0003'));
+      if ($update !== false)
+      {
+        redirect("https://oad.clsu2.edu.ph/");
+      }else
+      {
+        $data = array(
+          "code"        =>  "501",
+          "msg"         =>  "Something went wrong, please try again",
+          "link"        =>  base_url('/admission_application/refuseApplication/'.$applicantID.'/'.$referenceEmail),
+          "homepageBTN" =>  "REFUSE"
+        );
+        $this->load->view('err/custom_error', $data);
+      }
+    }else
+    {
+      $insert = $this->admission_application->save("oad0003", $referenceStatusData);
+      if ($insert !== false)
+      {
+        redirect("https://oad.clsu2.edu.ph/");
+      }else
+      {
+        $data = array(
+          "code"        =>  "501",
+          "msg"         =>  "Something went wrong, please try again",
+          "link"        =>  base_url('/admission_application/refuseApplication/'.$applicantID.'/'.$referenceEmail),
+          "homepageBTN" =>  "REFUSE"
+        );
+        $this->load->view('err/custom_error', $data);
+      }
+    }
   }
 
   public function uploadFile($directory = "", $fileName = "", $file = "")
@@ -1594,7 +1886,7 @@ class Admission_application extends CI_Controller
     $this->admissionApplicationForm($applicationData);
   }
 
-  public function emailRefrence($emailAddress = array(), $applicantName = "", $applicantEmail = "", $referenceName = array())
+  public function emailRefrence($emailAddress = array(), $applicantName = "", $referenceName = array(), $applicantID = "", $courseInfo = "")
   {
     $mail = new PHPMailer(true);
     $output = array();
@@ -1654,18 +1946,18 @@ class Admission_application extends CI_Controller
   
         //Recipients
         $mail->setFrom('clsuoad.noreply@clsu2.edu.ph', 'OFFICE OF ADMISSIONS');
-        // $mail->addAddress($email);
+        $mail->addAddress($emailAddress[$i]);
         
-        //Set CC address
-        $mail->addCC($applicantEmail, $applicantName);
+        // //Set CC address
+        // $mail->addCC($applicantEmail, $applicantName);
   
         //Set BCC address
-        $mail->addBCC($emailAddress[$i], $referenceName[$i]);
-        $mail->addReplyTo($applicantEmail, $applicantEmail);     //Add a recipient
+        // $mail->addBCC($emailAddress[$i], $referenceName[$i]);
+        // $mail->addReplyTo($applicantEmail, $applicantEmail);     //Add a recipient
   
         //Content
         $mail->isHTML(true);                                  //Set email format to HTML
-        $mail->Subject = 'OAD | Admission Application';
+        $mail->Subject = 'Recommendation letter for '.$applicantName;
   
         $htmlContent  = '
           <html>
@@ -1676,21 +1968,21 @@ class Admission_application extends CI_Controller
                     <h2 style="color: #fff; background-color: #00b894; padding: 10px; text-align: center;">GRADUATE-LEVEL APPLICATION FOR ADMISSION</h2>
                     <p>Dear '.$referenceName[$i].',</p>
                     <p>
-                        I hope this letter finds you well. I am writing to request your assistance as a reference for my job search. As someone who knows me and my work well, I believe that your endorsement could be a valuable asset in helping me secure my application for admission.
-                      </p>
-                    <p>
-                        If you would be willing to serve as a reference for me, please let me know if there is any additional information or documentation that you need from me to make the process smoother.
-                      </p>
-                    <p>
-                        I am grateful for all of the support you have provided me over the years, and I greatly appreciate your willingness to serve as a reference. Please let me know if there is anything that I can do to return the favor in the future.
+                      Mr./Ms. '.$applicantName.' is applying for admission to the <b>'.strtoupper($courseInfo).'</b> in our university.  He/she has identified you in his/her application as a former professor, thesis adviser or work supervisor who can provide us with relevant recommendation.
                     </p>
                     <p>
-                        Thank you for your consideration.
+                      We will appreciate it very much if you can provide us with an assessment of the applicant\'s intellectual capacity, readiness for graduate studies, emotional maturity and potential for success.  After clicking the “Reference Form” button below you will be redirected to the online reference form.
+                    </p>
+                    <p>
+                      If you do not want to be involved in the admission application of Mr./Ms. '.$applicantName.', kindly click the "Refuse" button.
+                    </p>
+                    <p>
+                      Thank you very much.
                     </p>
                     <br>
                     <br>
                     <p>
-                        Sincerely,
+                      Very truly yours,
                     </p>
                     <br>
                     <br>
@@ -1700,9 +1992,9 @@ class Admission_application extends CI_Controller
                     <br>
                     <br>
                     <br>
-                    <h3 style="text-align: center;">'.anchor('javascript:void(0)', 'Reference Form', array('title' => 'Reference Form', 'style' => 'color: #fff; background-color: #00b894; padding: 15px;')).'</h3>
+                    <h3 style="text-align: center;">'.anchor('/admission_application/reference/'.$applicantID.'/'.$emailAddress[$i], 'Reference Form', array('title' => 'Reference Form', 'style' => 'color: #fff; background-color: #00b894; padding: 15px;')).'</h3>
                     <br>
-                    <h3 style="text-align: center;">'.anchor('javascript:void(0)', 'Reject', array('title' => 'Reject', 'style' => 'color: #fff; background-color: #e17055; padding: 15px;')).'</h3>
+                    <h3 style="text-align: center;">'.anchor('/admission_application/refuseApplication/'.$applicantID.'/'.$emailAddress[$i], 'Refuse', array('title' => 'Refuse', 'style' => 'color: #fff; background-color: #e17055; padding: 15px;')).'</h3>
                 </div>
               </div>
             </body>
@@ -1714,7 +2006,8 @@ class Admission_application extends CI_Controller
         $email_sent = $mail->send();
         $msg = array(
           "error" =>  $email_sent,
-          "email" =>  $emailAddress[$i]
+          "email" =>  $emailAddress[$i],
+          "referenceName" =>  $referenceName[$i]
         );
         $mail->clearAddresses();
         
@@ -1722,7 +2015,8 @@ class Admission_application extends CI_Controller
       {
         $msg = array(
           "error" =>  $mail->ErrorInfo,
-          "email" =>  $emailAddress[$i]
+          "email" =>  $emailAddress[$i],
+          "referenceName" =>  $referenceName[$i]
         );
         // $msg .= "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
       }
@@ -1731,9 +2025,318 @@ class Admission_application extends CI_Controller
     }
 
     return $output;
-    
   }
 
+  public function emailVerification($verificationCode = "", $emailAddress = "")
+  {
+    $mail = new PHPMailer(true);
+    $output = array();
+    try 
+    {
+      //Server settings
+      // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+      $mail->isSMTP();                                            //Send using SMTP
+      //$mail->isSendmail();
+      $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+      $mail->SMTPAuth   = true;                     //Set the SMTP server to send through 
+      $mail->Username   = 'clsuoad.noreply@clsu2.edu.ph';                     //SMTP username
+      $mail->Password   = 'AD315510N5';                              //SMTP password
+      $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+      $mail->Port       = 587;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+      //Recipients
+      $mail->setFrom('clsuoad.noreply@clsu2.edu.ph', 'OFFICE OF ADMISSIONS');
+      $mail->addAddress($emailAddress);
+      
+      // //Set CC address
+      // $mail->addCC($applicantEmail, $applicantName);
+
+      //Set BCC address
+      // $mail->addBCC($emailAddress[$i], $referenceName[$i]);
+      // $mail->addReplyTo($applicantEmail, $applicantEmail);     //Add a recipient
+
+      //Content
+      $mail->isHTML(true);                                  //Set email format to HTML
+      $mail->Subject = 'Track Application | Admission Application';
+
+      $htmlContent  = '
+        <html>
+          <body style="margin 0 auto;">
+          
+            <div style="margin: 0 auto; display: flex; justify-content: center; flex-direction: row; font-family: sans-serif; border: 4px dashed #636e72; padding: 10px;">
+              <div>
+                  <h2 style="color: #fff; background-color: #00b894; padding: 10px; text-align: center;">GRADUATE-LEVEL APPLICATION FOR ADMISSION</h2>
+                  <br>
+                  <br>
+                  <h3 style="text-align: center;">'.anchor('/admission-verification/'.$verificationCode, 'Track Application', array('title' => 'Track Application', 'style' => 'color: #fff; background-color: #00b894; padding: 15px;')).'</h3>
+              </div>
+            </div>
+          </body>
+        </html>`
+      ';
+      
+      $mail->Body = $htmlContent;
+          
+      $email_sent = $mail->send();
+      $msg = array(
+        "error" =>  $email_sent,
+        "email" =>  $emailAddress
+      );
+      $mail->clearAddresses();
+      
+    } catch (Exception $e) 
+    {
+      $msg = array(
+        "error" =>  $mail->ErrorInfo,
+        "email" =>  $emailAddress
+      );
+      // $msg .= "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
+    
+    array_push($output, $msg);
+    return $output;
+  }
+
+  public function resendReference()
+  {
+    $referenceEmail = $_POST['referenceEmail'];
+    $applicantName = $_POST['name'];
+    $referenceName = $_POST['referenceName'];
+    $applicantID = $_POST['appID'];
+
+    $mail = new PHPMailer(true);
+    $output = array();
+    $msg = array();
+    $htmlContent = '';
+
+    
+
+    try 
+    {
+      //Server settings
+      // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+      $mail->isSMTP();                                            //Send using SMTP
+      //$mail->isSendmail();
+      $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+      $mail->SMTPAuth   = true;                     //Set the SMTP server to send through 
+      $mail->Username   = 'clsuoad.noreply@clsu2.edu.ph';                     //SMTP username
+      $mail->Password   = 'AD315510N5';                              //SMTP password
+      $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+      $mail->Port       = 587;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+      //Recipients
+      $mail->setFrom('clsuoad.noreply@clsu2.edu.ph', 'OFFICE OF ADMISSIONS');
+      $mail->addAddress($referenceEmail);
+      
+      // //Set CC address
+      // $mail->addCC($applicantEmail, $applicantName);
+
+      //Set BCC address
+      // $mail->addBCC($emailAddress[$i], $referenceName[$i]);
+      // $mail->addReplyTo($applicantEmail, $applicantEmail);     //Add a recipient
+
+      //Content
+      $mail->isHTML(true);                                  //Set email format to HTML
+      $mail->Subject = 'OAD | Admission Application';
+
+      $htmlContent  = '
+        <html>
+          <body style="margin 0 auto;">
+          
+            <div style="margin: 0 auto; display: flex; justify-content: center; flex-direction: row; font-family: sans-serif; border: 4px dashed #636e72; padding: 10px;">
+              <div>
+                  <h2 style="color: #fff; background-color: #00b894; padding: 10px; text-align: center;">GRADUATE-LEVEL APPLICATION FOR ADMISSION</h2>
+                  <p>Dear '.$referenceName.',</p>
+                  <p>
+                    Mr./Ms. '.$applicantName.' is applying for admission to the <program> in our university.  He/she has identified you in his/her application as a former professor, thesis adviser or work supervisor who can provide us with relevant recommendation.
+                  </p>
+                  <p>
+                    We will appreciate it very much if you can provide us with an assessment of the applicant\'s intellectual capacity, readiness for graduate studies, emotional maturity and potential for success.  After clicking the “Reference Form” button below you will be redirected to the online reference form.
+                  </p>
+                  <p>
+                    If you do not want to be involved in the admission application of Mr.Ms. '.$applicantName.', kindly click the "Refuse" button.
+                  </p>
+                  <p>
+                    Thank you very much.
+                  </p>
+                  <br>
+                  <br>
+                  <p>
+                    Very truly yours,
+                  </p>
+                  <br>
+                  <br>
+                  <p>
+                    '.$applicantName.'
+                  </p>
+                  <br>
+                  <br>
+                  <br>
+                  <h3 style="text-align: center;">'.anchor('/admission_application/reference/'.$applicantID.'/'.$referenceEmail, 'Reference Form', array('title' => 'Reference Form', 'style' => 'color: #fff; background-color: #00b894; padding: 15px;')).'</h3>
+                  <br>
+                  <h3 style="text-align: center;">'.anchor('/admission_application/refuseApplication/'.$applicantID.'/'.$referenceEmail, 'Refuse', array('title' => 'Refuse', 'style' => 'color: #fff; background-color: #e17055; padding: 15px;')).'</h3>
+              </div>
+            </div>
+          </body>
+        </html>`
+      ';
+      
+      $mail->Body    = $htmlContent;
+          
+      $email_sent = $mail->send();
+      if ($email_sent === true)
+      {
+        $emailLogsData = array(
+          "status"    =>  1,
+          "modified"  =>  date("Y-m-d H:i:s")
+        );
+
+        $condition = array(
+          "application_id"  =>  $applicantID,
+          "email"           =>  $referenceEmail
+        );
+
+        $this->admission_application->updateAdmission($emailLogsData, $condition, array('oad0004'));
+      }
+      $msg = array(
+        "error" =>  $email_sent,
+        "email" =>  $referenceEmail
+      );
+      $mail->clearAddresses();
+      
+    } catch (Exception $e) 
+    {
+      $msg = array(
+        "error" =>  $mail->ErrorInfo,
+        "email" =>  $referenceEmail
+      );
+      // $msg .= "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
+    
+    array_push($output, $msg);
+
+    echo json_encode($output);
+  }
+
+  public function referenceResponse($data = array(), $referenceEmail = "")
+  {
+    $mail = new PHPMailer(true);
+    $output = array();
+    $msg = array();
+    $htmlContent = '';
+    $htmlTable = "";
+    // $reference = array(
+    //   "applicant_id"                         =>  $_POST['applicantID'],
+    //   "applicant_capacity"                   =>  $this->getArr($_POST['question_1']),
+    //   "applicant_amplitude"                  =>  $_POST['question_2'],
+    //   "applicant_scholastic"                 =>  $_POST['question_3'],
+    //   "applicant_potential_professional"     =>  $_POST['question_4'],
+    //   "others"                               =>  $_POST['question_5'],
+    //   "others"                               =>  $_POST['question_5'],
+    //   "reference_name"                       =>  $_POST['reference_name'],
+    //   "reference_relationship"               =>  $_POST['reference_relationship'],
+    //   "reference_affiliation"                =>  $_POST['reference_affiliation'],
+    //   "reference_position"                   =>  $_POST['reference_position'],
+    //   "reference_number"                     =>  $_POST['reference_number'],
+    //   "created"                              =>  date("Y-m-d H:i:s"),
+    //   "modified"                             =>  date("Y-m-d H:i:s")
+    // );
+
+    $htmlTable .= '<table border="1">';
+    $htmlTable .= '<tbody>';
+    
+      $htmlTable .= '<tr>';
+        $htmlTable .= '<td>'.$data['applicant_capacity'].'</td>';
+      $htmlTable .= '</tr>';
+      
+      $htmlTable .= '<tr>';
+        $htmlTable .= '<td>'.$data['applicant_amplitude'].'</td>';
+      $htmlTable .= '</tr>';
+      
+      $htmlTable .= '<tr>';
+        $htmlTable .= '<td>'.$data['applicant_scholastic'].'</td>';
+      $htmlTable .= '</tr>';
+      
+      $htmlTable .= '<tr>';
+        $htmlTable .= '<td>'.$data['applicant_potential_professional'].'</td>';
+      $htmlTable .= '</tr>';
+
+      $htmlTable .= '<tr>';
+        $htmlTable .= '<td>'.$data['others'].'</td>';
+      $htmlTable .= '</tr>';
+      
+    $htmlTable .= '</tbody>';
+    $htmlTable .= '</table>';
+
+    try 
+    {
+      //Server settings
+      // $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+      $mail->isSMTP();                                            //Send using SMTP
+      //$mail->isSendmail();
+      $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+      $mail->SMTPAuth   = true;                     //Set the SMTP server to send through 
+      $mail->Username   = 'clsuoad.noreply@clsu2.edu.ph';                     //SMTP username
+      $mail->Password   = 'AD315510N5';                              //SMTP password
+      $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+      $mail->Port       = 587;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+      //Recipients
+      $mail->setFrom('clsuoad.noreply@clsu2.edu.ph', 'OFFICE OF ADMISSIONS');
+      $mail->addAddress($referenceEmail);
+      
+      // //Set CC address
+      // $mail->addCC($applicantEmail, $applicantName);
+
+      //Set BCC address
+      // $mail->addBCC($emailAddress[$i], $referenceName[$i]);
+      // $mail->addReplyTo($applicantEmail, $applicantEmail);     //Add a recipient
+
+      //Content
+      $mail->isHTML(true);                                  //Set email format to HTML
+      $mail->Subject = 'OAD | Reference Response';
+
+      $htmlContent  = '
+        <html>
+          <body style="margin 0 auto;">
+          
+            <div style="margin: 0 auto; display: flex; justify-content: center; flex-direction: row; font-family: sans-serif; border: 4px dashed #636e72; padding: 10px;">
+              <div>
+                  <h2 style="color: #fff; background-color: #00b894; padding: 10px; text-align: center;">GRADUATE-LEVEL APPLICATION FOR ADMISSION</h2>
+                  <p>My Response</p>
+                  '.$htmlTable.'
+              </div>
+            </div>
+          </body>
+        </html>`
+      ';
+      
+      $mail->Body    = $htmlContent;
+          
+      $email_sent = $mail->send();
+      if ($email_sent === true)
+      {
+        $msg = array(
+          "error" =>  $email_sent,
+          "email" =>  $referenceEmail
+        );
+      }
+      
+      $mail->clearAddresses();
+      
+    } catch (Exception $e) 
+    {
+      $msg = array(
+        "error" =>  $mail->ErrorInfo,
+        "email" =>  $referenceEmail
+      );
+      // $msg .= "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
+    
+    array_push($output, $msg);
+
+    return $output;
+  }
 }
 
 

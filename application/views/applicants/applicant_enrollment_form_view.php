@@ -398,13 +398,13 @@
                                         <b>High School Grade Average</b><br>
                                         <input name="highSchoolGradeAverage" type="number" step=0.01 value="<?php echo set_value('highSchoolGradeAverage'); ?>" id="highSchoolGradeAverage" class="form-control" placeholder="AVERAGE">
                                     </div>
-                                    <div class="col-sm-12 col-md-3 col-3">
+                                    <div class="col-sm-12 col-md-3 col-3" style="display: none;">
                                         <b>Year of Graduation</b><br>
                                         <select name="highSchoolYearGraduated" class="form-control">
 
                                         </select>
                                     </div>
-                                    <div class="col-sm-12 col-md-3 col-3">
+                                    <div class="col-sm-12 col-md-3 col-3" style="display: none;">
                                         <b>Senior High School Award</b><br>
                                         <input type="text" name="senior_high_school_awards" class="form-control" value="<?php echo set_value('senior_high_school_awards'); ?>" placeholder="(Awards)"></input>
                                     </div>
@@ -743,7 +743,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <p>High Schhol</p>
+                                                        <p>Junior High Schhol</p>
                                                     </td>
                                                     <td>
                                                         <input type="text" class="form-control" name="highSchool_schoolName" value="<?php echo set_value('highSchool_schoolName'); ?>" placeholder=" School Name (do not abbreviate) & Complpete School Address">

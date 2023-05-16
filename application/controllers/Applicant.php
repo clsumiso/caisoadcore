@@ -414,11 +414,6 @@ class Applicant extends CI_Controller
               'rules' => 'required'
       ),
       array(
-              'field' => 'highSchoolYearGraduated',
-              'label' => 'Year of Graduation',
-              'rules' => 'required'
-      ),
-      array(
               'field' => 'father_name',
               'label' => 'Name of Father',
               'rules' => 'required'

@@ -42,9 +42,10 @@ class Admission_application_model extends CI_Model {
   {
     
     $applicantDB = $this->load->database('applicantDB', TRUE);
-    $applicantDB->select("application_id");
+    $applicantDB->select("oad0001.application_id, tbl_course.course_desc");
     $applicantDB->from("oad0001");
-    $applicantDB->where("application_id", $applicationID);
+    $applicantDB->join("tbl_course", "oad0001.field_of_study = tbl_course.course_id", "inner");
+    $applicantDB->where("oad0001.application_id", $applicationID);
     $query = $applicantDB->get();
 
     return $query->result();
@@ -57,6 +58,41 @@ class Admission_application_model extends CI_Model {
     $applicantDB->from("oad0001");
     $applicantDB->join("tbl_course", "oad0001.field_of_study = tbl_course.course_id", "inner");
     $applicantDB->where("oad0001.application_id", $applicationID);
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
+  public function checkReference($applicantID = "")
+  {
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select("*");
+    $applicantDB->from("oad0002");
+    $applicantDB->where("applicant_id", $applicationID);
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
+  public function checkRequest($applicationID, $referenceEmail)
+  {
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select("*");
+    $applicantDB->from("oad0003");
+    $applicantDB->where("application_id", $applicationID);
+    $applicantDB->where("reference_email", $referenceEmail);
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
+  public function getEmailLogs($applicationID = "")
+  {
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select("oad0004.reference_name, oad0004.email, oad0004.status, oad0004.modified, oad0001.lname, oad0001.fname, oad0001.mname, oad0001.reference");
+    $applicantDB->from("oad0004");
+    $applicantDB->join("oad0001", "oad0004.application_id = oad0001.application_id", "inner");
+    $applicantDB->where("oad0004.application_id", $applicationID);
     $query = $applicantDB->get();
 
     return $query->result();
@@ -105,6 +141,30 @@ class Admission_application_model extends CI_Model {
 		    }
         }
         return false;
+	}
+
+	public function updateAdmission($data = array(), $con = array(), $table = array())
+	{
+    
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+		if(!empty($data))
+    {
+			$applicantDB->trans_begin();
+      $applicantDB->trans_strict(TRUE);
+
+      // Insert member data
+      $applicantDB->update($table[0], $data, $con);
+      if ($applicantDB->trans_status() === FALSE) 
+      {
+          $applicantDB->trans_rollback();
+          return false;
+      } else 
+      {
+          $applicantDB->trans_commit();
+          return true;
+      }
+    }
+    return false;
 	}
 	/**
 	 * END OF CRUD

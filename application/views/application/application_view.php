@@ -88,7 +88,7 @@
                                             </div>
                                             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="display: none;" id="question_27_container">
                                                 <label for="question_27">If yes, when</label>   
-                                                <input name="question_27" id="question_27" type="date" class="form-control">
+                                                <input name="question_27" id="question_27" type="text" class="form-control">
                                             </div>
                                         </div>
                                         <div class="row clearfix">
@@ -255,7 +255,7 @@
                                                 <p class="align-center">Dates Attended</p>
                                             </div>
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                                <p class="align-center">Degree Obtained</p>
+                                                <p class="align-center">Degree Obtained or Pursued</p>
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                                 <p class="align-center">GPA</p>
@@ -269,7 +269,7 @@
                                                 <input type="text" name="question_21[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <input type="date" name="question_21[]" class="form-control" />
+                                                <input type="text" name="question_21[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                                                 <input type="text" name="question_21[]" class="form-control" />
@@ -286,7 +286,7 @@
                                                 <input type="text" name="question_21[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <input type="date" name="question_21[]" class="form-control" />
+                                                <input type="text" name="question_21[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                                                 <input type="text" name="question_21[]" class="form-control" />
@@ -303,7 +303,7 @@
                                                 <input type="text" name="question_21[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <input type="date" name="question_21[]" class="form-control" />
+                                                <input type="text" name="question_21[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                                                 <input type="text" name="question_21[]" class="form-control" />
@@ -320,7 +320,7 @@
                                                 <input type="text" name="question_21[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <input type="date" name="question_21[]" class="form-control" />
+                                                <input type="text" name="question_21[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                                                 <input type="text" name="question_21[]" class="form-control" />
@@ -350,7 +350,7 @@
                                                 <p class="align-center">Position/Job Title</p>
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                                                <p class="align-center">Corporate Email Address</p>
+                                                <p class="align-center">Corporate Email Address <span class="col-red">(must be consistent with affiliation)</span></p>
                                             </div>
                                             <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                                 <p class="align-center">Mobile Phone Number</p>
@@ -463,8 +463,23 @@
                                             </div>
                                         </div>
                                         <div class="row clearfix">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <p>
+                                                    b. For foreign- student applicants who come from countries where English is not the medium of instruction
+                                                </p>
+                                                <p>
+                                                    Please upload a copy of the results of TOEFL (Test of English as a Foreign Language) or IELTS (International English Language Testing System) or a copy of the Certificate of English Proficiency or a issued by the CLSU Department of English and Humanities
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <input type="file" class="form-control" name="proficiencyAttachement" id="proficiencyAttachement">
+                                            </div>
+                                        </div>
+                                        <div class="row clearfix">
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                                <p>b. Filipino</p>
+                                                <p>c. Filipino</p>
                                             </div>
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                                                 <input type="text" name="question_25[]" class="form-control" />
@@ -478,7 +493,7 @@
                                         </div>
                                         <div class="row clearfix">
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                                                <p>c. Others</p>
+                                                <p>d. Others</p>
                                             </div>
                                             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                                                 <input type="text" name="question_25[]" class="form-control" />
@@ -512,7 +527,7 @@
                                                 <input type="text" name="question_28[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                                <input type="date" name="question_28[]" class="form-control" />
+                                                <input type="text" name="question_28[]" class="form-control" />
                                             </div>
                                         </div>
                                         <div class="row clearfix">
@@ -523,7 +538,7 @@
                                                 <input type="text" name="question_28[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                                <input type="date" name="question_28[]" class="form-control" />
+                                                <input type="text" name="question_28[]" class="form-control" />
                                             </div>
                                         </div>
                                         <div class="row clearfix">
@@ -534,7 +549,7 @@
                                                 <input type="text" name="question_28[]" class="form-control" />
                                             </div>
                                             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                                <input type="date" name="question_28[]" class="form-control" />
+                                                <input type="text" name="question_28[]" class="form-control" />
                                             </div>
                                         </div>
                                         <hr>
@@ -543,7 +558,7 @@
                                         </p>
                                         <!-- <div class="row clearfix">
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                                <textarea name="question_29" class="form-control" placeholder="(Please elaborate...)"></textarea>
+                                                <textarea name="question_29" class="form-control" placeholder=""></textarea>
                                             </div>
                                         </div> -->
                                         <div class="row clearfix">
@@ -654,7 +669,7 @@
                                         </p>
                                         <div class="row clearfix">
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                                <textarea name="question_31" class="form-control" placeholder="(Please elaborate...)"></textarea>
+                                                <textarea name="question_31" class="form-control" placeholder=""></textarea>
                                             </div>
                                         </div>
                                         <p>
@@ -662,7 +677,7 @@
                                         </p>
                                         <div class="row clearfix">
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                                <textarea name="question_32" class="form-control" placeholder="(Please elaborate...)"></textarea>
+                                                <textarea name="question_32" class="form-control" placeholder=""></textarea>
                                             </div>
                                         </div>
                                         <p>
@@ -724,7 +739,7 @@
                                             </div>
                                         </div>
                                         <p>
-                                            Passport Size Picture, <span class="col-red">please upload JPEG|JPG|PNG file format</span>
+                                            Passport Size Picture, <span class="col-red">please upload JPEG|JPG file format</span>
                                         </p>
                                         <div class="row clearfix">
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
