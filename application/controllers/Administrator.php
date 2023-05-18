@@ -12,10 +12,10 @@ class Administrator extends CI_Controller {
 		$this->load->helper('date');
 		$this->load->model('administrator_model', 'administrator');
 		$this->load->helper('directory');
-		// if (!isset($_SESSION['uid'])) 
-        // {
-        // 	redirect('/');
-        // }
+		if (!isset($_SESSION['uid'])) 
+        {
+        	redirect('/');
+        }
 	}
 
 	public function index()
@@ -135,6 +135,17 @@ class Administrator extends CI_Controller {
 
 		// Get data
 		$data = $this->administrator->getApplicants($postData);
+
+		echo json_encode($data);
+	}
+
+	public function enrollmentList()
+	{
+		// POST data
+		$postData = $this->input->post();
+
+		// Get data
+		$data = $this->administrator->getEnrollment($postData);
 
 		echo json_encode($data);
 	}
@@ -350,6 +361,14 @@ class Administrator extends CI_Controller {
 		echo json_encode(array("data"	=>	$htmlData));
 	}
 	/*End of grades module Functions*/
+
+	/**
+	 * Enrollment Module
+	 */
+
+	/**
+	 * End of Enrollment Module
+	 */
 
 	/**
 	 * CRUD
@@ -1096,9 +1115,9 @@ class Administrator extends CI_Controller {
 			// $sheetData[2]['A'];
 		}
 	}
-	 /**
-	  * END of other functions
-	  */
+	/**
+	 * END of other functions
+	 */
 
 	public function test()
 	{

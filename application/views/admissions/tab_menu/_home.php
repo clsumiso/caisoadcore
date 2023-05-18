@@ -27,116 +27,24 @@
                         </div>
                     </div>
                     <div class="row clearfix">
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" name="studid" id="studid" placeholder="ID NUMBER e.g. 00-0000">
-                        </div>
-                        <div class="col-sm-3">
-                            <button class="btn btn-sm bg-grey waves-effect" onclick="studentEnrollment()">SEARCH</button>
-                        </div>
-                    </div>
-                    <div class="row clearfix">
-                        <div class="col-sm-6">
-                            NAME: <h4 id="name">---</h4>
-                        </div>
-                    </div>
-                    <div class="row clearfix">
-                        <div class="col-sm-2">
-                            <b>COLLEGE</b>
-                            <select class="form-control" id="college" onchange="getCourse(this.value)">
-                                <?php echo $college; ?>
-                            </select>
-                        </div>
-                        <div class="col-sm-3">
-                            <b>COURSE</b>
-                            <select class="form-control" id="course" onchange="getSection(this.value)">
-                                <option value="-1" selected>--- SELECT SECTION ---</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-3">
-                            <b>SECTION</b>
-                            <select class="form-control" id="section">
-                                <option value="-1" selected>--- SELECT SECTION ---</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row clearfix">  
-                        <div class="col-sm-4">
-                            <input type="text" name="subject" id="subject" class="form-control" placeholder="SEARCH SUBJECT HERE">
-                        </div>
-                        <div class="col-sm-3">
-                            <button class="btn btn-md btn-primary waves-effect" onclick="showSubject()">SEARCH</button>
-                        </div>
-                    </div>
-                    <div class="row clearfix">
-                        <div class="col-sm-7">
-                            <h3>LIST OF SUBJECTS</h3>
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <h3>LIST OF APPLICANTS</h3>
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover nowrap js-basic-example dataTable">
+                                <table id='applicantList' class='table table-bordered table-striped table-hover js-basic-example nowrap dataTable'>
                                     <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>...</th>
-                                            <th>SCHEDID</th>
-                                            <th>CAT_NO</th>
-                                            <th>SCHEDULE</th>
-                                            <th>UNITS</th>
-                                            <th>SECTION</th>
-                                            <th>APPROVED</th>
-                                            <th>DECLINED</th>
-                                            <th>PENDING</th>
-                                            <th>TOTAL ENROLLED</th>
+                                            <th>Applicant ID</th>
+                                            <th>Lastname</th>
+                                            <th>Firstname</th>
+                                            <th>Middlename</th>
+                                            <th>Course/Program</th>
+                                            <th>Qualifier Type</th>
+                                            <th>Confirm Status</th>
+                                            <th>Confirm Date</th>
                                         </tr>
                                     </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>...</th>
-                                            <th>SCHEDID</th>
-                                            <th>CAT_NO</th>
-                                            <th>SCHEDULE</th>
-                                            <th>UNITS</th>
-                                            <th>SECTION</th>
-                                            <th>APPROVED</th>
-                                            <th>DECLINED</th>
-                                            <th>PENDING</th>
-                                            <th>TOTAL ENROLLED</th>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody id="subjects">
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-sm-5">
-                            <h3>SUBJECT ENROLLED</h3>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover nowrap js-basic-example dataTable">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>...</th>
-                                            <th>SCHEDID</th>
-                                            <th>CAT_NO</th>
-                                            <th>SCHEDULE</th>
-                                            <th>UNITS</th>
-                                            <th>STATUS</th>
-                                            <th>REASON</th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>...</th>
-                                            <th>SCHEDID</th>
-                                            <th>CAT_NO</th>
-                                            <th>SCHEDULE</th>
-                                            <th>UNITS</th>
-                                            <th>STATUS</th>
-                                            <th>REASON</th>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody id="subjectsEnrolled">
-                                    </tbody>
                                 </table>
                             </div>
                         </div>

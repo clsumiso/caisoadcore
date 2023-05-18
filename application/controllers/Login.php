@@ -351,42 +351,42 @@ class Login extends CI_Controller
                       );
                     }
                     break;
-                    case 'accounting':
-                      
-                      $data = array(
-                        'login_stat'    =>  1,
-                        'login_timestamp' =>  date("Y-m-d H:i:s"),
-                        'login_token'   =>  $token
+                  case 'admissions':
+                    
+                    $data = array(
+                      'login_stat'    =>  1,
+                      'login_timestamp' =>  date("Y-m-d H:i:s"),
+                      'login_token'   =>  $token
+                    );
+  
+                    $condition = array(
+                      'uname' =>  $email,
+                      'upass' =>  $password
+                    );
+  
+                    if ($this->login->update($data, $condition, 'tbl_users') !== false) 
+                    {
+                      $response = array(
+                        'sys_msg'   =>  "SUCCESS",
+                        'redirect'  =>  "admissions",
+                        'msg'       =>  ''
                       );
-    
-                      $condition = array(
-                        'uname' =>  $email,
-                        'upass' =>  $password
-                      );
-    
-                      if ($this->login->update($data, $condition, 'tbl_users') !== false) 
-                      {
-                        $response = array(
-                          'sys_msg'   =>  "SUCCESS",
-                          'redirect'  =>  "admissions",
-                          'msg'       =>  ''
-                        );
-                      }else
-                      {
-                        $response = array(
-                          'sys_msg'   =>  "Something went wrong",
-                          'redirect'  =>  "",
-                          'msg'       =>  'Login failed, please try again!!!'
-                        );
-                      }
-                    break;
-                
-                    default:
+                    }else
+                    {
                       $response = array(
                         'sys_msg'   =>  "Something went wrong",
                         'redirect'  =>  "",
-                        'msg'       =>  'Login failed, please contact service provider.'
+                        'msg'       =>  'Login failed, please try again!!!'
                       );
+                    }
+                  break;
+              
+                  default:
+                    $response = array(
+                      'sys_msg'   =>  "Something went wrong",
+                      'redirect'  =>  "",
+                      'msg'       =>  'Login failed, please contact service provider.'
+                    );
                   break;
               }
               

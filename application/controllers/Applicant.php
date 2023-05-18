@@ -27,6 +27,22 @@ class Applicant extends CI_Controller
     $this->load->view('err/custom_error', $data);
   }
 
+  public function testEncrypt($applicantID = "")
+  {
+    $simple_string = $applicantID;
+    $ciphering = "AES-128-CTR";
+    $iv_length = openssl_cipher_iv_length($ciphering);
+    $options = 0;
+    $encryption_iv = '1234567891011121';
+    $encryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+    $encryption = openssl_encrypt($simple_string, $ciphering,$encryption_key, $options, $encryption_iv);
+    $decryption_iv = '1234567891011121';
+    $decryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+    $decryption=openssl_decrypt ($encryption, $ciphering, $decryption_key, $options, $decryption_iv);
+
+    echo urlencode($encryption);
+  }
+
   public function get_time()
 	{
 		$datestring = '%Y-%m-%d %H:%i:%s';
@@ -133,8 +149,9 @@ class Applicant extends CI_Controller
         }else
         {
           $data = array(
-            "appID"         =>  $applicantID,
-            "letterContent" =>  $this->letterContent($applicantID)
+            "appID"               =>  $applicantID,
+            "letterContent"       =>  $this->letterContent($applicantID),
+            "confirmationStatus"  =>  $this->verifyConfirmation($applicantID)
           );
 
           $view_logs = array(
@@ -165,6 +182,18 @@ class Applicant extends CI_Controller
         );
         $this->load->view('err/custom_error', $data);
       }
+  }
+
+  public function verifyConfirmation($applicantID = "")
+  {
+    $confirmationData = $this->applicant->getConfirmation($applicantID);
+    $confirmationDate = "";
+    foreach ($confirmationData as $confirmation) 
+    {
+      $confirmationDate = $confirmation->confirmation_date;
+    }
+
+    return $confirmationDate;
   }
 
   public function letterContent($applicantID = "")
@@ -201,6 +230,14 @@ class Applicant extends CI_Controller
           
           if (count($confirmationData) > 0)
           {
+            $htmlData .= '
+                <div class="row clearfix" style="border: 5px dashed #27ae60; margin: 20px;">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                      <h2>Application Submitted!</h2>
+                      <p style="color: #2c3e50; font-size: 30px;">Kindly wait for a while; just keep monitoring your CTEC portal. The Admission form and OSA form will be downloadable soon.</p>
+                    </div>
+                </div>
+            ';
             // $htmlData .= '<a href="/office-of-admissions/app-dl-enrollment-form/'.$applicantID.'" class="btn bg-blue-grey btn-lg btn-block waves-effect">DOWNLOAD ENROLLMENT FORM <small>(Date Confirmed: '.$confirmationData[0]->confirmation_date.')</small></a>';
           }else
           {
@@ -853,7 +890,8 @@ class Applicant extends CI_Controller
 
       if ($this->applicant->save("tbl_enrollment_form", $enrollmentFormData) !== false && $this->applicant->save("tbl_confirmation", $confirmationData) !== false) 
       {
-        redirect("https://ctec.clsu2.edu.ph/clsucat/");
+        
+        // redirect("https://ctec.clsu2.edu.ph/clsucat/");
       }else
       {
         $data = array(

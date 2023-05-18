@@ -607,6 +607,114 @@ class Administrator_model extends CI_Model {
 
 		return $response; 
 	}
+
+	public function getEnrollment($postData=null)
+	{
+		$response = array();
+
+		## Read value
+		$draw = $postData['draw'];
+		$start = $postData['start'];
+		$rowperpage = $postData['length']; // Rows display per page
+		$columnIndex = $postData['order'][0]['column']; // Column index
+		if (!in_array($columnIndex, array(0,1,9)))
+		{
+			$columnName = $postData['columns'][$columnIndex]['data']; // Column name
+		}else
+		{
+			$columnName = "";
+		}
+		$columnSortOrder = $postData['order'][0]['dir']; // asc or desc
+		$searchValue = $postData['search']['value']; // Search value
+
+		// Custom search filter 
+		$searchSemester = $postData['semester'];
+		$searchCourse = $postData['course'];
+
+		## Search 
+		$search_arr = array();
+		$searchQuery = "";
+
+		if($searchValue != '')
+		{
+			$search_arr[] = " (tbl_enrollment.user_id like '%".$searchValue."%' OR tbl_profile.fname like '%".$searchValue."%' OR tbl_profile.mname like'%".$searchValue."%' OR tbl_profile.lname like'%".$searchValue."%' ) ";
+		}
+
+		if($searchSemester != '')
+		{
+			$search_arr[] = " tbl_enrollment.semester_id='".$searchSemester."' AND tbl_profile.course_id='".$searchCourse."' ";
+		}
+
+		if(count($search_arr) > 0)
+		{
+			$searchQuery = implode(" AND ",$search_arr);
+		}
+
+		## Total number of records without filtering
+		$this->db->select('count(*) as allcount');
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+		// $this->db->where('tbl_enrollment.semester_id', $searchSemester);
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+		$records = $this->db->get('tbl_enrollment')->result();
+		$totalRecords = $records[0]->allcount;
+
+		## Total number of record with filtering
+		$this->db->select('count(*) as allcount');
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+		$records = $this->db->get('tbl_enrollment')->result();
+		$totalRecordwithFilter = $records[0]->allcount;
+
+		## Fetch records
+
+		$this->db->select('tbl_enrollment.user_id, tbl_semester.semester_name, tbl_profile.lname, tbl_profile.fname, tbl_profile.mname, tbl_course.course_name, tbl_enrollment.section, tbl_semester.semester_id, tbl_semester.semester_year');
+
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+
+		$this->db->order_by($columnName, $columnSortOrder);
+		$this->db->limit($rowperpage, $start);
+		$records = $this->db->get('tbl_enrollment')->result();
+
+		$data = array();
+		$ctr = 1;
+		foreach($records as $record)
+		{
+			$data[] = array( 
+				"numRows"			=>	($ctr++),
+				"action"			=>	'<button type="button" class="btn bg-green waves-effect" onclick="gradeDetails(\''.$record->user_id.'\', \''.$record->semester_id.'\')">
+											<i class="material-icons">assignment</i> view grades
+										</button>',
+				"user_id"			=>	$record->user_id,
+				"semester_name"		=>	$record->semester_name." ".$record->semester_year,
+				"fname"				=>	$record->fname,
+				"mname"				=>	$record->mname,
+				"lname"				=>	$record->lname,
+				"course_name"		=>	$record->course_name,
+				"section"			=>	$record->section
+			); 
+		}
+
+		## Response
+		$response = array(
+			"draw" => intval($draw),
+			"iTotalRecords" => $totalRecords,
+			"iTotalDisplayRecords" => $totalRecordwithFilter,
+			"aaData" => $data
+		);
+
+		return $response; 
+	}
 	// End of DataTable data
 
 	public function getTotal($tableName, $semester, $status, $schedid = "")

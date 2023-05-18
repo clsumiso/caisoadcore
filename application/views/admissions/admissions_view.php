@@ -54,7 +54,7 @@
                                 </ul>
 
                                 <div class="tab-content">
-                                    <?php $this->load->view('encoder/tab_menu/_home.php'); ?>
+                                    <?php $this->load->view('admissions/tab_menu/_home.php'); ?>
                                 </div>
                             </div>
                         </div>

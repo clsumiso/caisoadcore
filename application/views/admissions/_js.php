@@ -37,7 +37,7 @@
     <script src="<?php echo base_url('assets/plugins/jquery-datatable/extensions/export/buttons.print.min.js'); ?>"></script>
 
     <!-- Custom Js -->
-    <script src="<?php echo base_url('assets/pages/encoder.js?sid='.rand()); ?>"></script>
+    <script src="<?php echo base_url('assets/pages/admissions.js?sid='.rand()); ?>"></script>
 
     <!-- Custom Js -->
     <script src="<?php echo base_url('assets/js/admin.js'); ?>"></script>

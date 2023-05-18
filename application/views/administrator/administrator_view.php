@@ -46,6 +46,7 @@
                                     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
                                     <li role="presentation"><a href="#schedule" aria-controls="schedule" role="tab" data-toggle="tab">Class Schedule</a></li>
                                     <li role="presentation"><a href="#classMonitoring" aria-controls="classMonitoring" role="tab" data-toggle="tab">Class Monitoring</a></li>
+                                    <li role="presentation" class="bg-warning"><a href="#dropping" aria-controls="dropping" role="tab" data-toggle="tab">Enrollment</a></li>
                                     <li role="presentation" class="bg-warning"><a href="#applicants" aria-controls="applicants" role="tab" data-toggle="tab">Applicant</a></li>
                                     <li role="presentation" class="bg-warning"><a href="#applicant_setup" aria-controls="applicant_setup" role="tab" data-toggle="tab">Applicant Setup</a></li>
                                     <li role="presentation" class="bg-danger"><a href="#accounting" aria-controls="accounting" role="tab" data-toggle="tab">ACCOUNTING</a></li>
@@ -55,19 +56,21 @@
 
                                 <div class="tab-content">
 
-                                    <?php $this->load->view('administrator/tab_menu/_home.php'); ?>
+                                    <?php $this->load->view('administrator/tab_menu/_home'); ?>
 
-                                    <?php $this->load->view('administrator/tab_menu/_applicants.php'); ?>
+                                    <?php $this->load->view('administrator/tab_menu/_applicants'); ?>
 
-                                    <?php $this->load->view('administrator/tab_menu/_applicants_setup.php'); ?>
+                                    <?php $this->load->view('administrator/tab_menu/_enrollment'); ?>
 
-                                    <?php $this->load->view('administrator/tab_menu/_schedule.php'); ?>
+                                    <?php $this->load->view('administrator/tab_menu/_applicants_setup'); ?>
 
-                                    <?php $this->load->view('administrator/tab_menu/_grade.php'); ?>
+                                    <?php $this->load->view('administrator/tab_menu/_schedule'); ?>
 
-                                    <?php $this->load->view('administrator/tab_menu/_section_monitoring.php'); ?>
+                                    <?php $this->load->view('administrator/tab_menu/_grade'); ?>
 
-                                    <?php $this->load->view('administrator/tab_menu/_accounting.php'); ?>
+                                    <?php $this->load->view('administrator/tab_menu/_section_monitoring'); ?>
+
+                                    <?php $this->load->view('administrator/tab_menu/_accounting'); ?>
                                     
                                 </div>
                             </div>
