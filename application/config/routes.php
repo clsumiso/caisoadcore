@@ -58,5 +58,6 @@ $route = array(
 	"app-verification"					=>	"applicant",
 	"admission-verification/(:any)"		=>	"admission_application/admission_verification/$1",
 	"app-enrollment-form/(:any)"		=>	"applicant/applicant_form/$1",
-	"app-dl-enrollment-form/(:any)"		=>	"applicant/donwloadEnrollmentForm/$1"
+	"app-dl-enrollment-form/(:any)"		=>	"applicant/donwloadEnrollmentForm/$1",
+	"app-dl-osa-form/(:any)/(:any)"		=>	"applicant/donwloadOSAForm/$1/$2"
 );

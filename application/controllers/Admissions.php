@@ -37,9 +37,9 @@ class Admissions extends CI_Controller
 
     $data = array(
 			'name'				=>	$_SESSION['account_name'],
-			'user_type'			=>	strtoupper($_SESSION['utype']),
+			'user_type'		=>	strtoupper($_SESSION['utype']),
 			'email'				=>	$_SESSION['e_id'],
-			'get_time'			=>	$this->get_time()
+			'get_time'		=>	$this->get_time()
 		);
 
     $this->load->view('admissions/_header', $data);

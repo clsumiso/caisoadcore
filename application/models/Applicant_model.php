@@ -54,9 +54,10 @@ class Applicant_model extends CI_Model {
   public function get_applicant_info($applicant_id = "")
   {
     $db2 = $this->load->database('applicantDB', TRUE);
-    $db2->select("tbl_enrollment_form.*, tbl_profile.*, tbl_religion.religion_name, tbl_citizenship.citizenship_name");
+    $db2->select("tbl_enrollment_form.*, tbl_profile.*, tbl_religion.religion_name, tbl_citizenship.citizenship_name, tbl_confirmation.confirmation_date");
     $db2->from('tbl_enrollment_form');
     $db2->join('tbl_profile', 'tbl_enrollment_form.applicant_id = tbl_profile.applicant_id', 'inner');
+    $db2->join('tbl_confirmation', 'tbl_profile.applicant_id = tbl_confirmation.confirmation_id', 'inner');
     $db2->join('tbl_religion', 'tbl_enrollment_form.religion_id = tbl_religion.religion_id', 'inner');
     $db2->join('tbl_citizenship', 'tbl_enrollment_form.citizenship_id = tbl_citizenship.citizenship_code', 'inner');
     $db2->where('tbl_enrollment_form.applicant_id', $applicant_id);

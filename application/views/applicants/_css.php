@@ -23,6 +23,21 @@
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="<?php echo base_url('assets/css/themes/all-themes.css'); ?>" rel="stylesheet" />
     <style>
+
+        table.table-bordered
+        {
+            border:1px solid #2c3e50;
+            margin-top:20px;
+        }
+        table.table-bordered > thead > tr > th
+        {
+            border:1px solid #2c3e50;
+        }
+        table.table-bordered > tbody > tr > td
+        {
+            border:1px solid #2c3e50;
+        }
+
         /* Absolute Center Spinner */
         .fullscreen-loading {
         position: fixed;

@@ -107,23 +107,35 @@ class Admissions_model extends CI_Model {
 
 		$data = array();
 		$ctr = 1;
+
 		foreach($records as $record)
 		{
-      if ($record->program_id != 0)
-      {
-        $data[] = array( 
-          "numRows"				      =>	($ctr++),
-          "action"				      =>	'<a href="/office-of-admissions/app-dl-enrollment-form/'.$record->applicant_id.'" class="btn bg-teal btn-block waves-effect">DOWNLOAD ENROLLMENT FORM</a>',
-          "applicant_id"			  =>	$record->applicant_id,
-          "fname"					      =>	$record->fname,
-          "mname"					      =>	$record->mname,
-          "lname"					      =>	$record->lname,
-          "program_name"			  =>	$record->program_name,
-          "qualifier_type"		  =>	$record->name,
-          "confirmation_status"	=>	$record->confirmation_status,
-          "confirmation_date"		=>	$record->confirmation_date
-        ); 
-      }
+			if ($record->program_id != 0)
+			{
+				$simple_string = $record->applicant_id;
+				$ciphering = "AES-128-CTR";
+				$iv_length = openssl_cipher_iv_length($ciphering);
+				$options = 0;
+				$encryption_iv = '1234567891011121';
+				$encryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+				$encryption = openssl_encrypt($simple_string, $ciphering,$encryption_key, $options, $encryption_iv);
+				$decryption_iv = '1234567891011121';
+				$decryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+				$decryption=openssl_decrypt ($encryption, $ciphering, $decryption_key, $options, $decryption_iv);
+
+				$data[] = array( 
+				"numRows"				      =>	($ctr++),
+				"action"				      =>	'<a href="/office-of-admissions/app-dl-enrollment-form/'.$record->applicant_id.'" class="btn bg-teal waves-effect">DOWNLOAD ENROLLMENT FORM</a> | <a href="/office-of-admissions/app-dl-osa-form/'.$record->applicant_id.'/'.urlencode($encryption).'" class="btn bg-amber waves-effect">DOWNLOAD OSA FORM</a>',
+				"applicant_id"			  =>	$record->applicant_id,
+				"fname"					      =>	$record->fname,
+				"mname"					      =>	$record->mname,
+				"lname"					      =>	$record->lname,
+				"program_name"			  =>	$record->program_name,
+				"qualifier_type"		  =>	$record->name,
+				"confirmation_status"	=>	$record->confirmation_status,
+				"confirmation_date"		=>	$record->confirmation_date
+				); 
+			}
 		}
 
 		## Response

@@ -252,7 +252,7 @@
                                         <label for="gender4">Transgender</label>
                                         <input name="gender" type="radio" id="gender5" value="queer" <?php echo  set_radio('gender', 'queer'); ?> class="with-gap radio-col-primary">
                                         <label for="gender5">Queer</label>
-                                        <input name="gender" type="radio" id="gender9" value="queer" <?php echo  set_radio('gender', 'Prefer not to say'); ?> class="with-gap radio-col-primary">
+                                        <input name="gender" type="radio" id="gender9" value="prefer not to say" <?php echo  set_radio('gender', 'prefer not to say'); ?> class="with-gap radio-col-primary">
                                         <label for="gender9">Prefer not to say</label>
                                         <input name="gender" type="radio" id="gender7" value="other" <?php echo  set_radio('gender', 'other'); ?> class="with-gap radio-col-primary">
                                         <label for="gender7">Others: Pls. specify</label>

@@ -436,11 +436,6 @@ class Applicant extends CI_Controller
               'rules' => 'required'
       ),
       array(
-              'field' => 'street2',
-              'label' => 'Address (while studying in CLSU) (House No., Street Name, Building)',
-              'rules' => 'required'
-      ),
-      array(
               'field' => 'street3',
               'label' => 'Senior High School where Graduated',
               'rules' => 'required'
@@ -614,26 +609,6 @@ class Applicant extends CI_Controller
       array(
               'field' => 'barangay1',
               'label' => 'Permanent Address (Barangay)',
-              'rules' => 'required'
-      ),
-      array(
-              'field' => 'region2',
-              'label' => 'Address (while studying in CLSU) (Region)',
-              'rules' => 'required'
-      ),
-      array(
-              'field' => 'province2',
-              'label' => 'Address (while studying in CLSU) (Province)',
-              'rules' => 'required'
-      ),
-      array(
-              'field' => 'municipality2',
-              'label' => 'Address (while studying in CLSU) (Municipality)',
-              'rules' => 'required'
-      ),
-      array(
-              'field' => 'barangay2',
-              'label' => 'Address (while studying in CLSU) (Barangay)',
               'rules' => 'required'
       ),
       array(
@@ -878,7 +853,8 @@ class Applicant extends CI_Controller
         "mental_health"                 =>  $_POST['mental_health'] == 'yes' ? $_POST['mental_health']."|".$_POST['mental_health_remarks'] : $_POST['mental_health'],
         "guidance_councilor"            =>  $_POST['guidance_councilor'],
         "visit_guidance_councilor"      =>  $_POST['visit_guidance_councilor'],
-        "guidance_councilor_assistance" =>  $_POST['guidance_councilor_assistance']
+        "guidance_councilor_assistance" =>  $_POST['guidance_councilor_assistance'],
+        "working_student"               =>  $_POST['working_student']."|".$_POST['working_student_remarks']
       );
 
       $confirmationData = array(
@@ -931,242 +907,1190 @@ class Applicant extends CI_Controller
     return $delimetedData;
   }
 
-  public function donwloadOSAForm($appID)
+  public function donwloadOSAForm($appID = "", $securityCode = "")
   {
-    // ini_set('memory_limit', '-1');
-    // ini_set('max_execution_time', 0);
-    $defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
-    $fontDirs = $defaultConfig['fontDir'];
 
-    $defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
-    $fontData = $defaultFontConfig['fontdata'];
+    $simple_string = $appID;
+    $ciphering = "AES-128-CTR";
+    $iv_length = openssl_cipher_iv_length($ciphering);
+    $options = 0;
+    $encryption_iv = '1234567891011121';
+    $encryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+    $encryption = openssl_encrypt($simple_string, $ciphering,$encryption_key, $options, $encryption_iv);
+    $decryption_iv = '1234567891011121';
+    $decryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+    $decryption=openssl_decrypt ($encryption, $ciphering, $decryption_key, $options, $decryption_iv);
 
-    $mpdf = new \Mpdf\Mpdf([
-      'mode'          =>  'utf-8',
-      'format'        =>  [215.9, 330.2], //in cm
-      'orientation'   =>  'P',
-      'margin_top'    =>  '6',
-      'margin_left'   =>  '6',
-      'margin_right'  =>  '6',
-      'margin_bottom' =>  '0',
-      'fontDir'       =>  array_merge($fontDirs, [
-                              'custom/font/directory',
-                          ]),
-      'fontdata'      => $fontData + [
-                          'roboto' => [
-                            'R' => 'Roboto-Regular.ttf'
-                          ]
-                        ],
-      'default_font'  => 'roboto'
-     ]
-    );
-
-    $mpdf->showWatermarkImage = true;
-    $mpdf->use_kwt = true;
-
-    $stylesheet = "
-      .right {
-          float: right;
-          width: 40%;
-          margin-right: 60px;
-      }
-
-      .left {
-          float: left;
-          width: 45%;
-      }
-
-      .right1 {
-          float: right;
-        width: 60%;
-      }
-
-      .left1 {
-          float: left;
-          width: 40%;
-      }
-
-      .custom-thumbnail
-      {
-        border: 1px solid #000;
-        border-radius: 60px;
-        height: 2in;
-        width: 2in;
-      }
-    ";
-
-    $applicant_id = $appID;
-    $ctr = 1;
-    $applicant_info = $this->applicant->get_applicant_info($applicant_id);
-    $test = '';
-    foreach ($applicant_info as $applicant) 
+    if (urlencode($encryption)  == $securityCode)
     {
-      $html = '';
-      $program = '';
-      $college = '';
-      $department = '';
-      $clsu2_email = '';
+      // ini_set('memory_limit', '-1');
+      // ini_set('max_execution_time', 0);
+      $defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir'];
 
-      $college_vocational = "";
-      // '.$applicant->vocational_school_address.','.$applicant->vocational_school_year.','.$applicant->vocational_awads.'|'.$applicant->college_school_address.','.$applicant->college_school_year.','.$applicant->college_awards.'
-      if ($applicant->vocational_school_address != "")
-      {
-        $college_vocational .= $applicant->vocational_school_address;
-      }
+      $defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata'];
 
-      if ($applicant->vocational_school_address != "")
-      {
-        $college_vocational .= ",".$applicant->vocational_school_year;
-      }
+      $mpdf = new \Mpdf\Mpdf([
+        'mode'          =>  'utf-8',
+        'format'        =>  "Legal", //in cm
+        'orientation'   =>  'P',
+        'margin_top'    =>  '6',
+        'margin_left'   =>  '6',
+        'margin_right'  =>  '6',
+        'margin_bottom' =>  '20',
+        'fontDir'       =>  array_merge($fontDirs, [
+                                'custom/font/directory',
+                            ]),
+        'fontdata'      => $fontData + [
+                            'roboto' => [
+                              'R' => 'Roboto-Regular.ttf'
+                            ]
+                          ],
+        'default_font'  => 'roboto'
+      ]
+      );
 
-      if ($applicant->vocational_awads != "")
-      {
-        $college_vocational .= ",".$applicant->vocational_awads;
-      }
+      $mpdf->showWatermarkImage = true;
+      $mpdf->use_kwt = true;
 
-      if ($applicant->college_school_address != "")
-      {
-        $college_vocational .= "|".$applicant->college_school_address;
-      }
+      $stylesheet = "
+        .right {
+            float: right;
+            width: 40%;
+            margin-right: 60px;
+        }
 
-      if ($applicant->college_school_year != "")
-      {
-        $college_vocational .= ",".$applicant->college_school_year;
-      }
+        .left {
+            float: left;
+            width: 45%;
+        }
 
-      if ($applicant->college_awards != "")
-      {
-        $college_vocational .= ",".$applicant->college_awards;
-      }
+        .right1 {
+            float: right;
+          width: 60%;
+        }
 
-      $student_info = $this->applicant->get_student_info($applicant_id);
-      foreach ($student_info as $student) 
+        .left1 {
+            float: left;
+            width: 40%;
+        }
+
+        .custom-thumbnail
+        {
+          border: 1px solid #000;
+          border-radius: 60px;
+          height: 2in;
+          width: 2in;
+        }
+      ";
+
+      $applicant_id = $appID;
+      $ctr = 1;
+      $applicant_info = $this->applicant->get_applicant_info($applicant_id);
+      $test = '';
+      foreach ($applicant_info as $applicant) 
       {
-        $program = $student->program_name;
-        $college = $student->college_desc;
-        $clsu2_email = $student->student_email;
-      }
-      
-      /*Header*/
-      $html .=  '
-        <table border="" style="text-align: center; margin: 0 auto;">
-          <tr>
-            <td rowspan="5">
-              <img src="'.base_url('assets/images/logo.bmp').'" width="100"/>
+        $html = '';
+        $program = '';
+        $college = '';
+        $department = '';
+        $clsu2_email = '';
+
+        $college_vocational = "";
+        // '.$applicant->vocational_school_address.','.$applicant->vocational_school_year.','.$applicant->vocational_awads.'|'.$applicant->college_school_address.','.$applicant->college_school_year.','.$applicant->college_awards.'
+        if ($applicant->vocational_school_address != "")
+        {
+          $college_vocational .= $applicant->vocational_school_address;
+        }
+
+        if ($applicant->vocational_school_address != "")
+        {
+          $college_vocational .= ",".$applicant->vocational_school_year;
+        }
+
+        if ($applicant->vocational_awads != "")
+        {
+          $college_vocational .= ",".$applicant->vocational_awads;
+        }
+
+        if ($applicant->college_school_address != "")
+        {
+          $college_vocational .= "|".$applicant->college_school_address;
+        }
+
+        if ($applicant->college_school_year != "")
+        {
+          $college_vocational .= ",".$applicant->college_school_year;
+        }
+
+        if ($applicant->college_awards != "")
+        {
+          $college_vocational .= ",".$applicant->college_awards;
+        }
+
+        $student_info = $this->applicant->get_student_info($applicant_id);
+        foreach ($student_info as $student) 
+        {
+          $program = $student->program_name;
+          $college = $student->college_desc;
+          $clsu2_email = $student->student_email;
+        }
+        
+        /*Header*/
+        $html .=  '
+          <table border="" style="text-align: center; margin: 0 auto;">
+            <tr>
+              <td rowspan="5">
+                <img src="'.base_url('assets/images/logo.bmp').'" width="100"/>
+              </td>
+              <td>
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                    Republic of the Philippines
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="text-align: center; font-family: roboto; font-size: 18px; font-weight: bold;">
+                  CENTRAL LUZON STATE UNIVERSITY
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  Science City of Muñoz, Nueva Ecija
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-top: 30px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px; font-weight: bold;">
+                  OFFICE OF STUDENT AFFAIRS
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="text-align: center; font-family: roboto; font-size: 15px; font-weight: regular;">
+                  Guidance Service Unit
+                </p>
+              </td>
+            </tr>
+            <tr>
+            <td style="padding-top: 30px;">
+              
             </td>
-            <td>
-              <p style="text-align: center; font-family: roboto; font-size: 15px;">
-                  Republic of the Philippines
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p style="text-align: center; font-family: roboto; font-size: 18px; font-weight: bold;">
-                CENTRAL LUZON STATE UNIVERSITY
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p style="text-align: center; font-family: roboto; font-size: 15px;">
-                Science City of Muñoz, Nueva Ecija
-              </p>
-            </td>
-          </tr>
-          <tr>
             <td style="padding-top: 30px;">
               <p style="text-align: center; font-family: roboto; font-size: 15px; font-weight: bold;">
-                OFFICE OF STUDENT AFFAIRS
+                INDIVIDUAL RECORD FORM
               </p>
             </td>
-          </tr>
-          <tr>
-            <td>
-              <p style="text-align: center; font-family: roboto; font-size: 15px; font-weight: regular;">
-                Guidance Service Unit
-              </p>
-            </td>
-          </tr>
-          <tr>
-          <td style="padding-top: 30px;">
-            
-          </td>
-          <td style="padding-top: 30px;">
-            <p style="text-align: center; font-family: roboto; font-size: 15px; font-weight: bold;">
-              INDIVIDUAL RECORD FORM
-            </p>
-          </td>
-          </tr>
-        </table>
-      ';
+            </tr>
+          </table>
+        ';
 
-      /*Sub header*/
-      $html .=  '
-        <table border="" style="margin-top: 20px;">
-          <tr>
-            <td style="width: 20px;">
-              <p style="text-align: center; font-family: roboto; font-size: 15px;">Name:</p>
-            </td>
-            <td style="border-bottom: 1px solid #000;">
-              <p style="text-align: center; font-family: roboto; font-size: 15px;">
-                '.$applicant->lname.', '.$applicant->fname.' '.$applicant->mname.'
-              </p>
-            </td>
-            <td style="width: 20px;">
-              <p style="text-align: center; font-family: roboto; font-size: 15px;">Age:</p>
-            </td>
-            <td style="border-bottom: 1px solid #000; width: 30px;">
-              <p style="text-align: center; font-family: roboto; font-size: 15px;">
-                '.$applicant->age.'
-              </p>
-            </td>
-            <td style="width: 20px;">
-              <p style="text-align: center; font-family: roboto; font-size: 15px;">Sex:</p>
-            </td>
-            <td>
-              <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                <span style="font-size: 8px;'.($applicant->sex == "M" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Male
-                <span style="font-size: 8px;'.($applicant->sex == "F" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Female
-              </p>
-            </td>
-          </tr>
-        </table>
-        
-        <table border="" style="margin-top: 2px;">
-          <tr>
-            <td style="width: 10px;">
-              <p style="text-align: center; font-family: roboto; font-size: 15px;">Home Address:</p>
-            </td>
-            <td style="border-bottom: 1px solid #000;">
-              <p style="text-align: center; font-family: roboto; font-size: 15px;">
-                '.$applicant->permanent_address.', '.str_replace('|', ', ', $applicant->permanent_cluster).'
-              </p>
-            </td>
-          </tr>
-        </table>
-      ';
+        /*Sub header*/
+        $html .=  '
+          <h4 style="margin-top: 20px;">PERSONAL INFORMATION</h4>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 20px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Name:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 500px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->lname.', '.$applicant->fname.' '.$applicant->mname.'
+                </p>
+              </td>
+              <td style="width: 20px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Age:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 30px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->age.'
+                </p>
+              </td>
+              <td style="width: 20px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Sex:</p>
+              </td>
+              <td>
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                  <span style="font-size: 8px;'.($applicant->sex == "M" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Male
+                  <span style="font-size: 8px;'.($applicant->sex == "F" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Female
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="margin-top: 2px; width: 100%;">
+            <tr>
+              <td style="width: 160px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">House Number/Street:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 150px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->permanent_address.'
+                </p>
+              </td>
+              <td style="width: 160px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Barangay/Subdivision/Village:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.(explode("|", $applicant->permanent_cluster)[3]).'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 100px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">City/Municipality:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 190px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.(explode("|", $applicant->permanent_cluster)[2]).'
+                </p>
+              </td>
+              <td style="width: 70px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Province:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.(explode("|", $applicant->permanent_cluster)[1]).'
+                </p>
+              </td>
+              <td style="width: 50px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Region:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.(explode("|", $applicant->permanent_cluster)[0]).'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 110px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">CLSU Address:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->clsu_address.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 95px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Date of Birth:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 160px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.date("F d, Y", strtotime($applicant->date_of_birth)).'
+                </p>
+              </td>
+              <td style="width: 100px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Place of Birth:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->place_of_birth.'
+                </p>
+              </td>
+              <td style="width: 80px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Year Level:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$this->calculateYearLevel(date("y"), $applicant->applicant_id)." Year".'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 20px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Gender:</p>
+              </td>
+              <td>
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                  <span style="font-size: 8px;'.($applicant->gender == "straight" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Straight
+                  <span style="font-size: 8px;'.($applicant->gender == "lesbian" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Lesbian
+                  <span style="font-size: 8px;'.($applicant->gender == "gay" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Gay
+                  <span style="font-size: 8px;'.($applicant->gender == "bisexual" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Bisexual
+                  <span style="font-size: 8px;'.($applicant->gender == "transgender" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Transgender
+                  <span style="font-size: 8px;'.($applicant->gender == "queer" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Queer
+                  <span style="font-size: 8px;'.($applicant->gender == "prefer not to say" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Prefer not to say
+                  <span style="font-size: 8px;'.(explode("|", $applicant->gender)[0] == "other" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Others: '.(explode("|", $applicant->gender)[0] == "other" ? explode("|", $applicant->gender)[1] : "").'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 90px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Civil Status:</p>
+              </td>
+              <td>
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                  <span style="font-size: 8px;'.($applicant->civil_status == "single" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Single
+                  <span style="font-size: 8px;'.($applicant->civil_status == "married" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Married
+                  <span style="font-size: 8px;'.($applicant->civil_status == "single-parent" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Single-Parent
+                  <span style="font-size: 8px;'.(explode("|", $applicant->civil_status)[0] == "other" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Others, Please specify: '.(explode("|", $applicant->civil_status)[0] == "other" ? explode("|", $applicant->civil_status)[1] : "").'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 110px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Telephone No.:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 100px;">
+                <p style="text-align: center; font-family: roboto; font-size: 12px;">
+                  '.$applicant->student_tel_contact.'
+                </p>
+              </td>
+              <td style="width: 115px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Mobile Number:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 100px;">
+                <p style="text-align: center; font-family: roboto; font-size: 12px;">
+                  '.$applicant->student_mobile_contact.'
+                </p>
+              </td>
+              <td style="width: 110px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">E-Mail Address:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 12px;">
+                  '.$applicant->student_email.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 70px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">College Affiliation:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 100px;">
+                <p style="text-align: center; font-family: roboto; font-size: 12px;">
+                  '.$college.'
+                </p>
+              </td>
+              <td style="width: 110px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Degree Program Enrolled in:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 100px;">
+                <p style="text-align: center; font-family: roboto; font-size: 12px;">
+                  '.$program.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 260px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Senior High School where Graduated:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 12px;">
+                '.$applicant->senior_high_address.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 260px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Strand enrolled in Senior High School:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 12px;">
+                '.$applicant->strand.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 120px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">School Address:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 12px;">
+                '.(explode("|", $applicant->permanent_cluster)[3]).' ,'.(explode("|", $applicant->permanent_cluster)[2]).'  ,'.(explode("|", $applicant->permanent_cluster)[1]).'  ,'.(explode("|", $applicant->permanent_cluster)[0]).' 
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 120px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Type of School:</p>
+              </td>
+              <td>
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                  <span style="font-size: 8px;'.($applicant->type_of_school == "public" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Public
+                  <span style="font-size: 8px;'.($applicant->type_of_school == "private" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Private
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 400px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Are you the First-Generation college student in the family? <i>(first to enter college among immediate family members)</i></p>
+              </td>
+              <td>
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                  <span style="font-size: 8px;'.($applicant->first_generation == "yes" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Yes
+                  <span style="font-size: 8px;'.($applicant->first_generation == "no" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> No
+                </p>
+              </td>
+            </tr>
+          </table>
 
-      $mpdf->SetHTMLFooter('<p style="font-size: 10px; font-style: italic;">ACA.OAD.YYY.F.001 (Revision No. 2; March 9, 2020)</p>');
+          <h4 style="margin-top: 20px;">FAMILY BACKGROUND</h4>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 120px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Name of Father:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 500px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->father_name.'
+                </p>
+              </td>
+              <td style="width: 10px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Age:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->father_age.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 90px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Occupation:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->father_occupation.'
+                </p>
+              </td>
+              <td style="width: 170px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Educational Attainment:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->father_education.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 120px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Name of Mother:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 500px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->mother_name.'
+                </p>
+              </td>
+              <td style="width: 10px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Age:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->mother_age.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 90px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Occupation:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->mother_occupation.'
+                </p>
+              </td>
+              <td style="width: 170px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Educational Attainment:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->mother_education.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 150px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Marriage Status of Parents:</p>
+              </td>
+              <td>
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                  <span style="font-size: 8px;'.($applicant->parent_marriage_status == "Living Together" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Living Together
+                  <span style="font-size: 8px;'.($applicant->parent_marriage_status == "Separated because of work" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Separated because of work
+                  <span style="font-size: 8px;'.($applicant->parent_marriage_status == "Separated due to conflict" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Separated due to conflict
+                  <span style="font-size: 8px;'.($applicant->parent_marriage_status == "Widowed/widower" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Widowed/widower
+                  <span style="font-size: 8px;'.($applicant->parent_marriage_status == "Single Parent" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Single Parent
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 170px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Birth Order in the Family:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 12px;">
+                  '.($applicant->birth_order == 0 ? 1 : $applicant->birth_order).'
+                </p>
+              </td>
+              <td style="width: 115px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">No. of Brothers:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 12px;">
+                  '.$applicant->no_brother.'
+                </p>
+              </td>
+              <td style="width: 110px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">No. of Sisters:</p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 12px;">
+                  '.$applicant->no_sister.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 220px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Are you living with your parents?</p>
+              </td>
+              <td>
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                  <span style="font-size: 8px;'.($applicant->living_with_parent == "yes" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Yes
+                  <span style="font-size: 8px;'.(explode("|", $applicant->living_with_parent)[0] == "no" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> No, if "No", Why? '.(explode("|", $applicant->living_with_parent)[0] == "no" ? explode("|", $applicant->living_with_parent)[1] : "").'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 270px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Who are your companions at home?</p>
+              </td>
+              <td>
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">';
+
+                $companions = array("Siblings", "Stepfather", "Stepmother", "Step Sisters/ Step Brothers", "Grandparents", "Relatives", "Other");
+                $isCompanion = false;
+                $isOther = "";
+                
+                for ($x=0; $x < count($companions); $x++) 
+                { 
+                  for ($i=0; $i < count(explode("||", $applicant->companions_at_home)); $i++) 
+                  { 
+                    if (explode("|", explode("||", $applicant->companions_at_home)[$i])[0] == "Other" && $companions[$x] == "Other")
+                    {
+                      $isOther = explode("|", explode("||", $applicant->companions_at_home)[$i])[1];
+                      $isCompanion = true;
+                      break;
+                    }else
+                    {
+                      if (explode("||", $applicant->companions_at_home)[$i] == $companions[$x])
+                      {
+                        $isCompanion = true;
+                        break;
+                      }
+                    }
+                    
+                  }
+
+                  if ($isCompanion === true)
+                  {
+                    $html .= '
+                          <span style="font-size: 8px; border: 1px solid #000; background-color: #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> '.$companions[$x].' '.($isOther != "" ? "(Please Specify: ".$isOther.")" : "").'
+                    ';
+                  }else
+                  {
+                    $html .= '
+                          <span style="font-size: 8px; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> '.$companions[$x].'
+                    ';
+                  }
 
 
-      $ctr++;
-      if ($ctr < count($applicant_info)) 
-      {
-        
+                  $isCompanion = false;
+                }
+            $html .= '
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;"> 
+            <tr>
+              <td style="width: 270px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Annual Family Income: (Please check)</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  <span style="font-size: 10px; border: 1px solid #000;'.($applicant->family_income == "below Php 10,000" ? "background-color: #000;" : "background-color: #fff;").'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> below Php 10,000 &nbsp;&nbsp;
+                  <span style="font-size: 10px; border: 1px solid #000;'.($applicant->family_income == "15,001- Php 30,000" ? "background-color: #000;" : "background-color: #fff;").'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Php15,001- Php 30,000 &nbsp;&nbsp;
+                  <span style="font-size: 10px; border: 1px solid #000;'.($applicant->family_income == "Php 45,001 and above" ? "background-color: #000;" : "background-color: #fff;").'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Php 45,001 and above &nbsp;&nbsp;
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  <span style="font-size: 10px; border: 1px solid #000;'.($applicant->family_income == "Php 10,001- Php 15,000" ? "background-color: #000;" : "background-color: #fff;").'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Php 10,001- Php 15,000 &nbsp;&nbsp;
+                  <span style="font-size: 10px; border: 1px solid #000;'.($applicant->family_income == "Php 30,001- Php 45,000" ? "background-color: #000;" : "background-color: #fff;").'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Php 30,001- Php 45,000 &nbsp;&nbsp;
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 320px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Are you currently a part-time working student?</p>
+              </td>
+              <td>
+                <p style="font-family: roboto; font-size: 15px; font-weight: regular;">
+                  <span style="font-size: 8px;'.(explode("|", $applicant->working_student)[0] == "yes" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Yes
+                  <span style="font-size: 8px;'.(explode("|", $applicant->working_student)[0] == "no" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> No ,If "Yes", kindly indicate the name of the Company and Address (If "NO", write "N/A"): '.explode("|", $applicant->working_student)[1].'
+                </p>
+              </td>
+            </tr>
+          </table>
+
+          <h4 style="margin-top: 20px;">EDUCATIONAL BACKGROUND</h4>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td>
+              </td>
+              <td>
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  School and Address
+                </p>
+              </td>
+              <td>
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  Inclusive Years
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  Elementary
+                </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->elementary_school_address.'
+                </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->elementary_year.'
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  Senior High School
+                </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->senior_high_address.'
+                </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->high_school_grad_year.'
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  Vocational
+                </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->vocational_school_address.'
+                </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->vocational_school_year.'
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  College
+                </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->college_school_address.'
+                </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->college_school_year.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 330px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Co and Extra curricular Activities in High School: </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->extra_curricular.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 360px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Name of Person to be notified in case of emergency: </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->emergency_person.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 70px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Relationship: </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.strtoupper($applicant->emergency_relationship).'
+                </p>
+              </td>
+              <td style="width: 100px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Tel. / Cell No.: </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->emergency_contact.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 70px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Address: </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.strtoupper($applicant->emergency_address).'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 250px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Name of Scholarship (if there\'s any): </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.strtoupper($applicant->scholarship).'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 270px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Who are your companions at home?</p>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td>
+                <p style="font-family: roboto; font-size: 15px; font-weight: regular;">';
+
+                $companions = array("Sports and Activities", "Dancing", "Oration/Declamation/Debate", "Campus Journalism", "Singing", "Campus Musical Band", "Campus Politics", "Campus Politics", "Acting", "Campus Youth Ministry", "Drawing/Painting", "Photography", "Other");
+                $isCompanion = false;
+                $isOther = "";
+                
+                for ($x=0; $x < count($companions); $x++) 
+                { 
+                  for ($i=0; $i < count(explode("||", $applicant->activities)); $i++) 
+                  { 
+                    if (explode("|", explode("||", $applicant->activities)[$i])[0] == "Other" && $companions[$x] == "Other")
+                    {
+                      $isOther = explode("|", explode("||", $applicant->activities)[$i])[1];
+                      $isCompanion = true;
+                      break;
+                    }else
+                    {
+                      if (explode("||", $applicant->activities)[$i] == $companions[$x])
+                      {
+                        $isCompanion = true;
+                        break;
+                      }
+                    }
+                    
+                  }
+
+                  if ($isCompanion === true)
+                  {
+                    $html .= '
+                          <span style="font-size: 12px; border: 1px solid #000; background-color: #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> '.$companions[$x].' '.($isOther != "" ? "(Please Specify: ".$isOther.")" : "").'
+                    ';
+                  }else
+                  {
+                    $html .= '
+                          <span style="font-size: 12px; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> '.$companions[$x].'
+                    ';
+                  }
+
+
+                  $isCompanion = false;
+                }
+                $html .= '
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style="width: 190px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Why did you enroll in CLSU: </p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 100px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.strtoupper($applicant->study_habit).'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style="width: 100px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Health Status: </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 250px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Are you a person with disability?</p>
+              </td>
+              <td>
+                <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
+                  <span style="font-size: 10px;'.($applicant->disability == "yes" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Yes
+                  <span style="font-size: 10px;'.($applicant->disability == "no" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> No
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 170px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">If Yes, Please Specify:</p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 70px;"></td>
+              <td>
+              <table style="font-family: roboto; font-size: 15px; font-weight: regular;">
+                <tr>
+                  <td>
+                    <span style="font-size: 10px;'.($applicant->disability_type == "Total Visual Disability" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Total Visual Disability
+                  </td>
+                  <td>
+                    <span style="font-size: 10px;'.($applicant->disability_type == "Partial Visual Disability" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Partial Visual Disability
+                  </td>
+                  <td>
+                    <span style="font-size: 10px;'.($applicant->disability_type == "Communication Disability (Hearing Impairment)" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Communication Disability (Hearing Impairment)
+                  </td>
+                </tr>
+              </table>
+              <table style="font-family: roboto; font-size: 15px; font-weight: regular;">
+                <tr>
+                  <td>
+                    <span style="font-size: 10px;'.($applicant->disability_type == "Communication Disability (Speech)" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Communication Disability (Speech)
+                  </td>
+                  <td>
+                    <span style="font-size: 10px;'.($applicant->disability_type == "Orthopedic Disability" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Orthopedic Disability
+                  </td>
+                  <td>
+                    <span style="font-size: 10px;'.($applicant->disability_type == "Intellectual Disability" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Intellectual Disability
+                  </td>
+                </tr>
+              </table>
+              <table style="font-family: roboto; font-size: 15px; font-weight: regular;">
+                <tr>
+                  <td>
+                    <span style="font-size: 10px;'.($applicant->disability_type == "Learning Disability" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Learning Disability
+                  </td>
+                  <td>
+                    <span style="font-size: 10px;'.($applicant->disability_type == "Mental Disability" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Mental Disability
+                  </td>
+                  <td>
+                    <span style="font-size: 10px;'.($applicant->disability_type == "Psychosocial Disability" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Psychosocial Disability
+                  </td>
+                </tr>
+              </table>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 150px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Do you have allegies?</p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 70px;"></td>
+              <td>
+                <p style="font-family: roboto; font-size: 15px; font-weight: regular;">
+                  <span style="font-size: 10px;'.((count(explode("|", $applicant->allergy)) > 0 ? (explode("|", $applicant->allergy)[0] == "yes" ? "background-color: #000;" : "background-color: #fff;") : ($applicant->disability == "yes" ? "background-color: #000;" : "background-color: #fff;"))).' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Yes
+                  <span style="font-size: 10px;'.((count(explode("|", $applicant->allergy)) > 0 ? (explode("|", $applicant->allergy)[0] == "no" ? "background-color: #000;" : "background-color: #fff;") : ($applicant->disability == "yes" ? "background-color: #000;" : "background-color: #fff;"))).' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> No, if "YES", please specify: '.(count(explode("|", $applicant->allergy)) > 0 ? explode("|", $applicant->allergy)[1] : "").'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 350px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Do you have an existing mental health condition?</p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 70px;"></td>
+              <td>
+                <p style="font-family: roboto; font-size: 15px; font-weight: regular;">
+                  <span style="font-size: 10px;'.((count(explode("|", $applicant->mental_health)) > 0 ? (explode("|", $applicant->mental_health)[0] == "yes" ? "background-color: #000;" : "background-color: #fff;") : ($applicant->disability == "yes" ? "background-color: #000;" : "background-color: #fff;"))).' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Yes
+                  <span style="font-size: 10px;'.((count(explode("|", $applicant->mental_health)) > 0 ? (explode("|", $applicant->mental_health)[0] == "no" ? "background-color: #000;" : "background-color: #fff;") : ($applicant->disability == "yes" ? "background-color: #000;" : "background-color: #fff;"))).' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> No, if "YES", please specify: '.(count(explode("|", $applicant->mental_health)) > 0 ? explode("|", $applicant->mental_health)[1] : "").'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 170px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Name of Family Doctor: </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->family_doctor.'
+                </p>
+              </td>
+              <td style="width: 120px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Contact Number: </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->family_doctor_contact.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 410px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Do you want to see your guidance counselor for assistance?</p>
+              </td>
+              <td>
+                <p style="font-family: roboto; font-size: 15px; font-weight: regular;">
+                  <span style="font-size: 10px;'.($applicant->guidance_councilor == "yes" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Yes
+                  <span style="font-size: 10px;'.($applicant->guidance_councilor == "no" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> No
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 410px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">When do you plan to visit your guidance counselor?</p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 70px;"></td>
+              <td>
+                <p style="font-family: roboto; font-size: 15px; font-weight: regular;">
+                  <span style="font-size: 10px;'.($applicant->visit_guidance_councilor == "The guidance counselor will send me an invitation during our free time" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The guidance counselor will send me an invitation during our free time
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 70px;"></td>
+              <td>
+                <p style="font-family: roboto; font-size: 15px; font-weight: regular;">
+                  <span style="font-size: 10px;'.($applicant->visit_guidance_councilor == "The guidance counselor will send me an invitation during our free time" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The guidance counselor will send me an invitation during our free time
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 70px;"></td>
+              <td>
+                <p style="font-family: roboto; font-size: 15px; font-weight: regular;">
+                  <span style="font-size: 10px;'.($applicant->visit_guidance_councilor == "I will come voluntary to consult our guidance counselor" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> I will come voluntary to consult our guidance counselor
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 390px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">How do you want to be assisted by a guidance counselor? </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.$applicant->guidance_councilor_assistance.'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%; margin-top: 100px;">
+            <tr>
+              <td style="width: 10px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Signature: </p>
+              </td>
+              <td style="border-bottom: 1px solid #000;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                '.$applicant->fname.', '.$applicant->mname.' '.$applicant->lname.'
+                </p>
+              </td>
+              <td style="width: 200px;"></td>
+              <td style="width: 10px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Date: </p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 150px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.date("F d, Y", strtotime($applicant->confirmation_date)).'
+                </p>
+              </td>
+            </tr>
+          </table>
+        ';
+
+        $mpdf->SetHTMLFooter('<p style="font-size: 10px; font-style: italic;">ACA.OSA.GSU.F.001 (Revision No. 2; March 9, 2020)</p>');
+
+
+        $ctr++;
+        if ($ctr < count($applicant_info)) 
+        {
+          
+        }
+        $mpdf->WriteHTML($stylesheet, 1);
+        $mpdf->WriteHTML($html, 2);
       }
-      $mpdf->WriteHTML($stylesheet, 1);
-      $mpdf->WriteHTML($html, 2);
+
+      ob_clean();
+      header('Content-type: application/pdf');
+      header('Content-Disposition: inline; filename="enrollment_form.pdf"');
+      header('Content-Transfer-Encoding: binary');
+      header('Accept-Ranges: bytes');
+      $mpdf->Output($applicant_id.".pdf", \Mpdf\Output\Destination::DOWNLOAD);
+      // $mpdf->Output($applicant_id.".pdf", "I");
+      ob_end_flush();
+    }else
+    {
+      $data = array(
+        "code"  =>  "401",
+        "msg"   =>  "Unauthorized Access",
+        "link"  =>  "https://ctec.clsu2.edu.ph/clsucat/",
+        "homepageBTN" =>  "GO TO CTEC"
+      );
+      $this->load->view('err/custom_error', $data);
+    }
+  }
+
+  public function calculateYearLevel($year = 0, $studentID = "")
+  {
+    $studentPrefix = explode("-", $studentID)[0];
+    $yearLevel = "";
+    switch ($studentPrefix - intval(date("y"))) 
+    {
+      case 0:
+      $yearLevel = "1<sup>st</sup>";
+      break;
+
+      case 1:
+        $yearLevel = "2<sup>nd</sup>";
+        break;
+  
+      case 2:
+        $yearLevel = "3<sup>rd</sup>";
+        break;
+  
+      case 3:
+        $yearLevel = "4<sup>th</sup>";
+        break;
+  
+      case 4:
+        $yearLevel = "5<sup>th</sup>";
+        break;
+
+      case 5:
+        $yearLevel = "6<sup>th</sup>";
+        break;
+
+      case 6:
+        $yearLevel = "7<sup>th</sup>";
+        break;
+            
+      default:
+        $yearLevel = "";
+        break;
     }
 
-    ob_clean();
-    header('Content-type: application/pdf');
-    header('Content-Disposition: inline; filename="enrollment_form.pdf"');
-    header('Content-Transfer-Encoding: binary');
-    header('Accept-Ranges: bytes');
-    // $mpdf->Output($applicant_id.".pdf", \Mpdf\Output\Destination::DOWNLOAD);
-    $mpdf->Output();
-    ob_end_flush();
+    return $yearLevel;
   }
 
   public function donwloadEnrollmentForm($appID)
@@ -1395,7 +2319,7 @@ class Applicant extends CI_Controller
                 Date of Birth
               </td>
               <td colspan="5" style="font-size: 13px; background-color: #dedede;">
-                '.$applicant->date_of_birth.'
+                '.(date("F d, Y", strtotime($applicant->date_of_birth))).'
               </td>
               <td style="font-size: 12px; font-weight: bold;">
                 Place of Birth
@@ -1435,7 +2359,7 @@ class Applicant extends CI_Controller
                 Home Address
               </td>
               <td colspan="16" style="font-size: 13px; background-color: #dedede;">
-                '.$applicant->permanent_address.'
+                '.$applicant->permanent_address.', '.explode("|", $applicant->permanent_cluster)[3].'
               </td>
             </tr>
 
@@ -1450,7 +2374,7 @@ class Applicant extends CI_Controller
               <td style="font-size: 12px; font-weight: bold;">
               </td>
               <td colspan="16" style="font-size: 13px; background-color: #dedede;">
-                '.$applicant->permanent_cluster.', '.$applicant->zipcode.', '.$applicant->country.'
+                '.(explode("|", $applicant->permanent_cluster)[2].", ".explode("|", $applicant->permanent_cluster)[1].", ".explode("|", $applicant->permanent_cluster)[0]).', '.$applicant->zipcode.', '.$applicant->country.'
               </td>
             </tr>
 
