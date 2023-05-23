@@ -233,7 +233,7 @@ class Applicant extends CI_Controller
             $htmlData .= '
                 <div class="row clearfix" style="border: 5px dashed #27ae60; margin: 20px;">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                      <h2>Application Submitted!</h2>
+                      <h2>You have accepted the offer</h2>
                       <p style="color: #2c3e50; font-size: 30px;">Kindly wait for a while; just keep monitoring your CTEC portal. The Admission form and OSA form will be downloadable soon.</p>
                     </div>
                 </div>

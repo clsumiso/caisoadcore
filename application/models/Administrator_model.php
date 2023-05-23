@@ -846,16 +846,70 @@ class Administrator_model extends CI_Model {
 
 	public function getStudentGrade($userID = "", $semesterID = 0, $cat_no = "")
 	{
-		$this->db->select('tbl_registration.user_id, tbl_registration.schedid, tbl_class_schedule.cat_no, tbl_grades.faculty_id, tbl_grades.grades, tbl_grades.reexam, tbl_grades.remarks, tbl_grades.status');
+		// if ($semesterID == 7)
+		// {
+		// 	$this->db->select('tbl_registration.user_id, tbl_registration.schedid, tbl_class_schedule.cat_no, tbl_teaching_loads.user_id as faculty_id');
+		// 	$this->db->from('tbl_registration');
+		// 	$this->db->join('tbl_class_schedule', 'tbl_registration.schedid = tbl_class_schedule.schedid', 'inner');
+		// 	$this->db->join('tbl_teaching_loads', 'tbl_class_schedule.schedid = tbl_teaching_loads.schedid', 'inner');
+		// 	// $this->db->join('tbl_grades', 'tbl_class_schedule.cat_no = tbl_grades.subject', 'inner');
+		// 	$this->db->where('tbl_registration.user_id', $userID);
+		// 	// $this->db->where('tbl_grades.user_id', $userID);
+		// 	// $this->db->where('tbl_grades.semester_id', $semesterID);
+		// 	$this->db->where('tbl_registration.semester_id', $semesterID);
+		// 	$this->db->where('tbl_class_schedule.semester_id', $semesterID);
+		// 	$this->db->where('tbl_class_schedule.class_type', 1);
+		// 	$this->db->order_by('tbl_registration.schedid', 'ASC');
+		// 	$query = $this->db->get();
+
+		// 	return $query->result();
+		// } else
+		// {
+		// 	$this->db->select('tbl_registration.user_id, tbl_registration.schedid, tbl_class_schedule.cat_no, tbl_grades.faculty_id, tbl_grades.grades, tbl_grades.reexam, tbl_grades.remarks, tbl_grades.status');
+		// 	$this->db->from('tbl_registration');
+		// 	$this->db->join('tbl_class_schedule', 'tbl_registration.schedid = tbl_class_schedule.schedid', 'inner');
+		// 	$this->db->join('tbl_grades', 'tbl_class_schedule.cat_no = tbl_grades.subject', 'inner');
+		// 	$this->db->where('tbl_registration.user_id', $userID);
+		// 	$this->db->where('tbl_grades.user_id', $userID);
+		// 	$this->db->where('tbl_grades.semester_id', $semesterID);
+		// 	$this->db->where('tbl_registration.semester_id', $semesterID);
+		// 	$this->db->where('tbl_class_schedule.semester_id', $semesterID);
+		// 	$this->db->order_by('tbl_registration.schedid', 'ASC');
+		// 	$query = $this->db->get();
+
+		// 	return $query->result();
+		// }
+		$this->db->select('tbl_registration.user_id, tbl_registration.schedid, tbl_class_schedule.cat_no, tbl_teaching_loads.user_id as teaching_faculty_id');
 		$this->db->from('tbl_registration');
 		$this->db->join('tbl_class_schedule', 'tbl_registration.schedid = tbl_class_schedule.schedid', 'inner');
-		$this->db->join('tbl_grades', 'tbl_class_schedule.cat_no = tbl_grades.subject', 'inner');
+		$this->db->join('tbl_teaching_loads', 'tbl_class_schedule.schedid = tbl_teaching_loads.schedid', 'inner');
 		$this->db->where('tbl_registration.user_id', $userID);
-		$this->db->where('tbl_grades.user_id', $userID);
-		$this->db->where('tbl_grades.semester_id', $semesterID);
 		$this->db->where('tbl_registration.semester_id', $semesterID);
 		$this->db->where('tbl_class_schedule.semester_id', $semesterID);
 		$this->db->order_by('tbl_registration.schedid', 'ASC');
+		$query = $this->db->get();
+
+		return $query->result();
+	}
+
+	public function checkGrades($user_id = "", $cat_no = "", $semesterID = "", $faculty_id = "")
+	{
+		$this->db->select('*');
+		$this->db->from('tbl_grades');
+		$this->db->where('user_id', $user_id);
+		$this->db->where('subject', $cat_no);
+		$this->db->where('semester_id', $semesterID);
+		$query = $this->db->get();
+
+		return $query->result();
+	}
+
+	public function checkTeachingLoads($schedid = "", $semesterID = "")
+	{
+		$this->db->select('semester_id, user_id, schedid');
+		$this->db->from('tbl_teaching_loads');
+		$this->db->where('schedid', $schedid);
+		$this->db->where('semester_id', $semesterID);
 		$query = $this->db->get();
 
 		return $query->result();

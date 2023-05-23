@@ -33,6 +33,18 @@ class Admissions extends CI_Controller
     if (!isset($_SESSION['uid'])) 
     {
       redirect('/');
+    }else
+    {
+      if (isset($_SESSION['utype']))
+      {
+        if ($_SESSION['utype'] != "admissions")
+        {
+          redirect('/');
+        }
+      }else
+      {
+        redirect('/');
+      }
     }
 
     $data = array(
@@ -47,6 +59,39 @@ class Admissions extends CI_Controller
     $this->load->view('admissions/admissions_view', $data);
     $this->load->view('admissions/_footer', $data);
     $this->load->view('admissions/_js', $data);
+  }
+
+  public function graduate_level()
+  {
+    if (!isset($_SESSION['uid'])) 
+    {
+      redirect('/');
+    }else
+    {
+      if (isset($_SESSION['utype']))
+      {
+        if ($_SESSION['utype'] != "admissions_graduate")
+        {
+          redirect('/');
+        }
+      }else
+      {
+        redirect('/');
+      }
+    }
+
+    $data = array(
+			'name'				=>	$_SESSION['account_name'],
+			'user_type'		=>	strtoupper($_SESSION['utype']),
+			'email'				=>	$_SESSION['e_id'],
+			'get_time'		=>	$this->get_time()
+		);
+
+    $this->load->view('grad_level_admissions/_header', $data);
+    $this->load->view('grad_level_admissions/_css', $data);
+    $this->load->view('grad_level_admissions/admissions_view', $data);
+    $this->load->view('grad_level_admissions/_footer', $data);
+    $this->load->view('grad_level_admissions/_js', $data);
   }
 
   public function get_time()
