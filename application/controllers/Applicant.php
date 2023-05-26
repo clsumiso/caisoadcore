@@ -112,6 +112,165 @@ class Applicant extends CI_Controller
     $this->load->view('applicants/_js', $data);
   }
 
+  public function update_applicant_form($appID, $securityCode)
+  {
+    $simple_string = $appID;
+    $ciphering = "AES-128-CTR";
+    $iv_length = openssl_cipher_iv_length($ciphering);
+    $options = 0;
+    $encryption_iv = '1234567891011121';
+    $encryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+    $encryption = openssl_encrypt($simple_string, $ciphering,$encryption_key, $options, $encryption_iv);
+    $decryption_iv = '1234567891011121';
+    $decryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+    $decryption=openssl_decrypt ($encryption, $ciphering, $decryption_key, $options, $decryption_iv);
+    $data = array();
+
+    if (urlencode($encryption)  == $securityCode)
+    {
+      $applicant_id = $appID;
+      $ctr = 1;
+      $applicant_info = $this->applicant->get_applicant_info($applicant_id);
+      $test = '';
+      foreach ($applicant_info as $applicant) 
+      {
+        $html = '';
+        $program = '';
+        $college = '';
+        $department = '';
+        $clsu2_email = '';
+
+        $college_vocational = "";
+        // '.$applicant->vocational_school_address.','.$applicant->vocational_school_year.','.$applicant->vocational_awads.'|'.$applicant->college_school_address.','.$applicant->college_school_year.','.$applicant->college_awards.'
+        if ($applicant->vocational_school_address != "")
+        {
+          $college_vocational .= $applicant->vocational_school_address;
+        }
+
+        if ($applicant->vocational_school_address != "")
+        {
+          $college_vocational .= ",".$applicant->vocational_school_year;
+        }
+
+        if ($applicant->vocational_awads != "")
+        {
+          $college_vocational .= ",".$applicant->vocational_awads;
+        }
+
+        if ($applicant->college_school_address != "")
+        {
+          $college_vocational .= "|".$applicant->college_school_address;
+        }
+
+        if ($applicant->college_school_year != "")
+        {
+          $college_vocational .= ",".$applicant->college_school_year;
+        }
+
+        if ($applicant->college_awards != "")
+        {
+          $college_vocational .= ",".$applicant->college_awards;
+        }
+
+        $student_info = $this->applicant->get_student_info($applicant_id);
+        foreach ($student_info as $student) 
+        {
+          $program = $student->program_name;
+          $college = $student->college_desc;
+          $clsu2_email = $student->student_email;
+        }
+
+        $data = array(
+          "applicant_id"                  =>  $applicant_id, 
+          "lastname"                      =>  $applicant->lname, 
+          "firstname"                     =>  $applicant->fname, 
+          "middlename"                    =>  $applicant->mname, 
+          "age"                           =>  $applicant->age, 
+          "permanent_address"             =>  $applicant->permanent_address, 
+          "zipcode"                       =>  $applicant->zipcode, 
+          "country"                       =>  $applicant->country, 
+          "date_of_birth"                 =>  $applicant->date_of_birth, 
+          "place_of_birth"                =>  $applicant->place_of_birth, 
+          "course_program"                =>  $program, 
+          "gender"                        =>  $applicant->gender, 
+          "civil_status"                  =>  $applicant->civil_status, 
+          "student_tel_contact"           =>  $applicant->student_tel_contact, 
+          "student_mobile_contact"        =>  $applicant->student_mobile_contact, 
+          "student_email"                 =>  $clsu2_email, 
+          "clsu_address"                  =>  $applicant->clsu_address,
+          "senior_high_address"           =>  $applicant->senior_high_address,
+          "type_of_school"                =>  $applicant->type_of_school, 
+          "high_school_grad_year"         =>  $applicant->high_school_grad_year, 
+          "father_name"                   =>  $applicant->father_name, 
+          "father_age"                    =>  $applicant->father_age, 
+          "father_occupation"             =>  $applicant->father_occupation, 
+          "father_education"              =>  $applicant->father_education, 
+          "mother_name"                   =>  $applicant->mother_name, 
+          "mother_age"                    =>  $applicant->mother_age, 
+          "mother_occupation"             =>  $applicant->mother_occupation, 
+          "mother_education"              =>  $applicant->mother_education, 
+          "birth_order"                   =>  $applicant->birth_order, 
+          "no_brother"                    =>  $applicant->no_brother, 
+          "no_sister"                     =>  $applicant->no_sister, 
+          "family_income"                 =>  $applicant->family_income, 
+          "elementary_school_address"     =>  $applicant->elementary_school_address, 
+          "elementary_year"               =>  $applicant->elementary_year, 
+          "high_school_address"           =>  $applicant->high_school_address, 
+          "high_school_year"              =>  $applicant->high_school_year, 
+          "vocational_school_address"     =>  $applicant->vocational_school_address, 
+          "vocational_school_year"        =>  $applicant->vocational_school_year, 
+          "college_school_address"        =>  $applicant->college_school_address, 
+          "college_school_year"           =>  $applicant->college_school_year, 
+          "extra_curricular"              =>  $applicant->extra_curricular, 
+          "emergency_person"              =>  $applicant->emergency_person, 
+          "emergency_relationship"        =>  $applicant->emergency_relationship, 
+          "emergency_contact"             =>  $applicant->emergency_contact, 
+          "emergency_address"             =>  $applicant->emergency_address, 
+          "scholarship"                   =>  $applicant->scholarship, 
+          "first_generation"              =>  $applicant->first_generation, 
+          "disability"                    =>  $applicant->disability, 
+          "family_doctor"                 =>  $applicant->family_doctor,
+          "family_doctor_contact"         =>  $applicant->family_doctor_contact,
+          "senior_high_school_awards"     =>  $applicant->senior_high_school_awards,
+          "father_contact"                =>  $applicant->father_contact,
+          "mother_contact"                =>  $applicant->mother_contact,
+          "father_address"                =>  $applicant->father_address,
+          "mother_address"                =>  $applicant->mother_address,
+          "elem_awards"                   =>  $applicant->elem_awards,
+          "high_school_awards"            =>  $applicant->high_school_awards,
+          "vocational_awads"              =>  $applicant->vocational_awads,
+          "college_awards"                =>  $applicant->college_awards,
+          "guardian_name"                 =>  $applicant->guardian_name,
+          "guardian_age"                  =>  $applicant->guardian_age,
+          "guardian_occupation"           =>  $applicant->guardian_occupation,
+          "guardian_education"            =>  $applicant->guardian_education,
+          "guardian_contact"              =>  $applicant->guardian_contact,
+          "guardian_address"              =>  $applicant->guardian_address,
+          "four_p"                        =>  $applicant->four_p,
+          "listahanan"                    =>  $applicant->listahanan,
+          "strand"                        =>  $applicant->strand,
+          "parent_marriage_status"        =>  $applicant->parent_marriage_status,
+          "guardian_relationship"         =>  $applicant->guardian_relationship,
+          "guardian_email"                =>  $applicant->guardian_email,
+          "study_habit"                   =>  $applicant->study_habit,
+          "study_habit_hours"             =>  $applicant->study_habit_hours,
+          "reason_to_enroll"              =>  $applicant->reason_to_enroll,
+          "vision_health"                 =>  $applicant->vision_health,
+          "allergy"                       =>  $applicant->allergy,
+          "medicine_take"                 =>  $applicant->medicine_take,
+          "guidance_councilor"            =>  $applicant->guidance_councilor,
+          "visit_guidance_councilor"      =>  $applicant->visit_guidance_councilor,
+          "guidance_councilor_assistance" =>  $applicant->guidance_councilor_assistance
+        );
+      }
+      $this->load->view('applicants/_header', $data);
+      $this->load->view('applicants/_css', $data);
+      $this->load->view('applicants/update_applicant_enrollment_form_view', $data);
+      $this->load->view('applicants/_footer', $data);
+      $this->load->view('applicants/_js', $data);
+    }
+  }
+
   public function applicantVerification($applicantID = "", $securityCode = "")
   {
       $simple_string = $applicantID;
@@ -209,6 +368,16 @@ class Applicant extends CI_Controller
       $releaseData = $this->applicant->getReleaseDate($appType);
       if (count($releaseData) > 0)
       {
+        $simple_string = $applicantID;
+        $ciphering = "AES-128-CTR";
+        $iv_length = openssl_cipher_iv_length($ciphering);
+        $options = 0;
+        $encryption_iv = '1234567891011121';
+        $encryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+        $encryption = openssl_encrypt($simple_string, $ciphering,$encryption_key, $options, $encryption_iv);
+        $decryption_iv = '1234567891011121';
+        $decryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+        $decryption=openssl_decrypt ($encryption, $ciphering, $decryption_key, $options, $decryption_iv);
 
         // if (strtotime($releaseData[0]->release_date) >= strtotime("2023-04-28 16:11:44"))
         // {
@@ -225,31 +394,104 @@ class Applicant extends CI_Controller
 
           foreach ($letterData as $letter) 
           {
-            $htmlData = $letter->content;
+            // $htmlData = $letter->content;
           }
           
           if (count($confirmationData) > 0)
           {
+            // $htmlData .= '
+            //     <div class="row clearfix" style="border: 5px dashed #27ae60; margin: 20px;">
+            //         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            //           <h2>You have accepted the offer</h2>
+            //           <p style="color: #2c3e50; font-size: 30px;">Kindly wait for a while; just keep monitoring your CTEC portal. The Admission form and OSA form will be downloadable soon.</p>
+            //         </div>
+            //     </div>
+            // ';
             $htmlData .= '
-                <div class="row clearfix" style="border: 5px dashed #27ae60; margin: 20px;">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                      <h2>You have accepted the offer</h2>
-                      <p style="color: #2c3e50; font-size: 30px;">Kindly wait for a while; just keep monitoring your CTEC portal. The Admission form and OSA form will be downloadable soon.</p>
-                    </div>
-                </div>
-            ';
-            // $htmlData .= '<a href="/office-of-admissions/app-dl-enrollment-form/'.$applicantID.'" class="btn bg-blue-grey btn-lg btn-block waves-effect">DOWNLOAD ENROLLMENT FORM <small>(Date Confirmed: '.$confirmationData[0]->confirmation_date.')</small></a>';
+              <a href="javascript:void(0)" class="btn bg-blue-grey btn-lg btn-block waves-effect" onclick="updateIndividualForm(\''.$applicantID.'\', \''.urlencode($encryption).'\')">UPDATE INDIVIDUAL RECORD FORM</a>
+
+              <a href="/office-of-admissions/app-dl-enrollment-form/'.$applicantID.'" class="btn bg-green btn-lg btn-block waves-effect">DOWNLOAD ENROLLMENT FORM <small>(Date Confirmed: '.$confirmationData[0]->confirmation_date.')</small></a>
+
+              <a href="/office-of-admissions/app-dl-osa-form/'.$applicantID.'/'.urlencode($encryption).'" class="btn bg-amber btn-lg btn-block waves-effect">DOWNLOAD OSA FORM <small>(Date Confirmed: '.$confirmationData[0]->confirmation_date.')</small></a>';
           }else
           {
             if (strtotime($this->get_time()) >= strtotime($releaseData[0]->release_date) && strtotime($this->get_time()) <= strtotime($releaseData[0]->release_date_to))
             {
-              if ($appType != 9)
+              if ($appType == 1)
               {
                 $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\')">ACCEPT</a>';
+              }
+
+              if ($appType == 2)
+              {
+                $max = 0;
+                $min = 0;
+                $ctr = 0;
+                if (count($this->applicant->checkTotalEnroll($profileData[0]->program_id)) < $this->applicant->checkSlot($profileData[0]->program_id)[0]->slot) 
+                {
+                  $letterData = $this->applicant->getLetterContent($applicantID, 15);
+
+                  foreach ($letterData as $letter) 
+                  {
+                    $htmlData = $letter->content;
+                  }
+
+                  $topRank = $this->applicant->checkSlot($profileData[0]->program_id)[0]->slot - count($this->applicant->checkTotalEnroll($profileData[0]->program_id));
+                  
+                  $rankings = $this->applicant->getApplicantRank($profileData[0]->program_id);
+                  foreach ($rankings as $rank) 
+                  {
+                    if ($ctr == 0) 
+                    {
+                      $max = $rank->percentile_rank;
+                    }
+                    
+                    $topRank--;
+                    if ($topRank == 0)
+                    {
+                      $min = $rank->percentile_rank;
+                      break;
+                    }
+                    $ctr++;
+                  }
+
+                  $applicantPercentileRank = $this->applicant->getApplicantIndividualRank($applicantID);
+                  if (count($applicantPercentileRank) > 0)
+                  {
+                    if (floatval($applicantPercentileRank[0]->percentile_rank) >= $min)
+                    {
+                      $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\')">ACCEPT</a>';
+                    }else
+                    {
+                      // Not qualified in the top ranks
+                      $letterData = $this->applicant->getLetterContent($applicantID, 14);
+
+                      foreach ($letterData as $letter) 
+                      {
+                        $htmlData = $letter->content;
+                      }
+                    }
+                  }else
+                  {
+                    $htmlData = "profile_not_found";
+                  }
+                  
+                  // $htmlData = '<p>'.$max.'</p>|<p>'.$min.'</p>|<p>'.$topRank.'</p>';
+                }else
+                {
+                  // $htmlData = "profile_not_found";
+                  $letterData = $this->applicant->getLetterContent($applicantID, 14);
+
+                  foreach ($letterData as $letter) 
+                  {
+                    $htmlData = $letter->content;
+                  }
+                }
               }
             }else
             {
               // Write something if non
+              $htmlData = "not_scheduled_today";
             }
           }
           
@@ -334,12 +576,18 @@ class Applicant extends CI_Controller
     {
       if (in_array($program->program_id, explode("|", $applicantProgram[0]->program_id)))
       {
+        // $topRank = $this->applicant->checkSlot($program->program_id)[0]->slot - count($this->applicant->checkTotalEnroll($program->program_id));
         if (strtotime($this->get_time()) >= strtotime($applicantProgram[0]->release_date) && strtotime($this->get_time()) <= strtotime($applicantProgram[0]->release_date_to))
         {
-          $htmlData .= '<li>'.$program->program_name.' <button class="btn bg-teal">ACCEPT</button></li>';
+          // ' <button class="btn bg-teal">ACCEPT</button></li>'
+          if (count($this->applicant->checkTotalEnroll($program->program_id)) <= $this->applicant->checkSlot($program->program_id)[0]->slot)
+          {
+            $htmlData .= '<li>'.$program->program_name.'</li>';
+          }
+          
         }else
         {
-          $htmlData .= '<li>'.$program->program_name.'</li>';
+          // $htmlData .= '<li>'.$program->program_name.'</li>';  
         }
         
       }
@@ -816,7 +1064,7 @@ class Applicant extends CI_Controller
         "indigenous"                    =>  $_POST['indigenous'] == "yes" ? $_POST['indigenous']."|".$_POST['indigenousType'] : $_POST['indigenous'], 
         "first_generation"              =>  $_POST['firstGeneration'], 
         "disability"                    =>  $_POST['disability'], 
-        "disability_type"               =>  $this->getArr($_POST['disabilityType']),
+        "disability_type"               =>  isset($_POST['disabilityType']) ? $this->getArr($_POST['disabilityType']) : "",
         "family_doctor"                 =>  $_POST['family_doctor'],
         "family_doctor_contact"         =>  $_POST['family_doctor_contact'],
         "senior_high_school_awards"     =>  $_POST['senior_high_school_awards'],
@@ -868,6 +1116,13 @@ class Applicant extends CI_Controller
       {
         
         // redirect("https://ctec.clsu2.edu.ph/clsucat/");
+        $data = array(
+          "confirmationStatus"  =>  "You have accepted the offer",
+          "msg"                 =>  "You can now download the OSA Form and Enrollment Form. Go to CTEC Portal and click View Result Button.",
+          "link"                =>  "https://ctec.clsu2.edu.ph/clsucat/",
+          "homepageBTN" =>  "GO TO CTEC"
+        );
+        $this->load->view('custom_confirmation/confirmation', $data);
       }else
       {
         $data = array(
@@ -877,6 +1132,553 @@ class Applicant extends CI_Controller
         $this->load->view('applicants/_header', $data);
         $this->load->view('applicants/_css', $data);
         $this->load->view('applicants/applicant_enrollment_form_view', $data);
+        $this->load->view('applicants/_footer', $data);
+        $this->load->view('applicants/_js', $data);
+      }
+    }
+  }
+
+  public function checkSuccess()
+  {
+    $data = array(
+      "confirmationStatus"  =>  "Updated Successfully",
+      "msg"                 =>  "You can now download the OSA Form and Enrollment Form. Go to CTEC Portal and click View Result Button.",
+      "link"                =>  "https://ctec.clsu2.edu.ph/clsucat/",
+      "homepageBTN" =>  "GO TO CTEC"
+    );
+    $this->load->view('custom_confirmation/confirmation', $data);
+  }
+
+  public function updateEnrollmentForm()
+  {
+    if ($_POST['applicantID'] == "")
+    {
+      redirect("https://ctec.clsu2.edu.ph/clsucat/");
+    }
+    $config = array(
+      array(
+              'field' => 'applicantID',
+              'label' => 'APPLICANT ID',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'lastname',
+              'label' => 'LASTNAME',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'firstname',
+              'label' => 'FIRSTNAME',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'middlename',
+              'label' => 'MIDDLENAME',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'age',
+              'label' => 'AGE',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'sex',
+              'label' => 'SEX',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'religion',
+              'label' => 'RELIGION',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'citizenship',
+              'label' => 'CITIZENSHIP',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'street1',
+              'label' => 'Permanent Address (House No., Street Name, Building)',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'date_of_birth',
+              'label' => 'DATE OF BIRTH',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'course_year',
+              'label' => 'COURSE & YEAR',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'gender',
+              'label' => 'GENDER',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'civilStatus',
+              'label' => 'CIVIL STATUS',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'tel_no',
+              'label' => 'TELEPHONE NUMBER',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'mobile_no',
+              'label' => 'MOBILE NUMBER',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'email_address',
+              'label' => 'EMAIL ADDRESS',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'street3',
+              'label' => 'Senior High School where Graduated',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'schoolType',
+              'label' => 'Type of School',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'father_name',
+              'label' => 'Name of Father',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'father_age',
+              'label' => 'Age of Father',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'father_occupation',
+              'label' => 'Occupation of Father',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'father_education',
+              'label' => 'Educational Attainment of Father',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'mother_name',
+              'label' => 'Name of Mother',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'mother_age',
+              'label' => 'Age of Mother',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'mother_occupation',
+              'label' => 'Occupation of Mother',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'mother_education',
+              'label' => 'Educational Attainment of Mother',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'birth_order',
+              'label' => 'Birth Order in the Family',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'number_of_brother',
+              'label' => 'No. of Brothers',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'number_of_sister',
+              'label' => 'No. of Sisters',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'familyIncome',
+              'label' => 'Annual Family Income',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'elementary_schoolName',
+              'label' => 'Elementary School and Address',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'elementary_year',
+              'label' => 'Elementary Inclusive Years',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'highSchool_schoolName',
+              'label' => 'High School and Address',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'highSchool_year',
+              'label' => 'High School and Address',
+              'label' => 'High School Inclusive Years',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'emergency_person',
+              'label' => 'Name of Person to be notified in case of emergency',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'emergency_relationship',
+              'label' => 'Relationship',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'emergency_contact',
+              'label' => 'Emergency Tel. / Cell No',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'emergency_address',
+              'label' => 'Emergency Person Address',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'indigenous',
+              'label' => 'indigenous groups',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'firstGeneration',
+              'label' => 'First Generation College Student',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'disability',
+              'label' => 'disability',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'zipcode',
+              'label' => 'Postal/Zip Code',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'country',
+              'label' => 'Country',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'father_contact',
+              'label' => 'Father Contact',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'father_address',
+              'label' => 'Father Address',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'mother_contact',
+              'label' => 'Mother Contact',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'mother_address',
+              'label' => 'Mother Address',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'region1',
+              'label' => 'Permanent Address (Region)',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'province1',
+              'label' => 'Permanent Address (Province)',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'municipality1',
+              'label' => 'Permanent Address (Municipality)',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'barangay1',
+              'label' => 'Permanent Address (Barangay)',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'region3',
+              'label' => 'Senior High School where Graduated (Region)',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'province3',
+              'label' => 'Senior High School where Graduated (Province)',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'municipality3',
+              'label' => 'Senior High School where Graduated (Municipality)',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'barangay3',
+              'label' => 'Senior High School where Graduated (Barangay)',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'signatories',
+              'label' => 'Signatories',
+              'rules' => (isset($_POST['signatories'])) ? "" : "required"
+      ),
+      array(
+              'field' => 'four_p',
+              'label' => '4P\'s',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'listahanan',
+              'label' => 'Listahanan',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'strand',
+              'label' => 'Strand',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'parent_marriage_status',
+              'label' => 'Parents marriage status',
+              'rules' => 'required'
+      ),
+      array(
+              'field' => 'living_with_parent',
+              'label' => 'Living with your parents',
+              'rules' => 'required' 
+      ),
+      array(
+              'field' => 'living_with_parent_remarks',
+              'label' => 'Reason why your not Living with your parents',
+              'rules' => (isset($_POST['living_with_parent'])) ? $_POST['living_with_parent'] == "no" ? 'required' : '' : ''
+      ),
+      array(
+              'field' => 'companions_at_home',
+              'label' => 'Companions at home',
+              'rules' => (isset($_POST['companions_at_home'])) ? "" : "required"
+      ),
+      array(
+              'field' =>  'working_student',
+              'label' =>  'Part-time working student',
+              'rules' =>  'required'
+      ),
+      array(
+              'field' =>  'working_student_remarks',
+              'label' =>  'Part-time working student',
+              'rules' =>  'required'
+      ),
+      array(
+              'field' =>  'guardian_relationship',
+              'label' =>  'Relationship to your guardian',
+              'rules' =>  'required'
+      ),
+      array(
+              'field' =>  'guardian_email',
+              'label' =>  'Email Address of your Guardian',
+              'rules' =>  'required'
+      ),
+      array(
+              'field' =>  'study_habit',
+              'label' =>  'Study habit',
+              'rules' =>  'required'
+      ),
+      array(
+              'field' =>  'current_event',
+              'label' =>  'Current events?',
+              'rules' => (isset($_POST['current_event'])) ? "" : "required"
+      ),
+      array(
+              'field' =>  'reason_to_enroll',
+              'label' =>  'Why did you enroll in CLSU',
+              'rules' =>  'required'
+      ),
+      array(
+              'field' =>  'allergy',
+              'label' =>  'Allergy',
+              'rules' =>  'required'
+      ),
+      array(
+              'field' =>  'medicine_take',
+              'label' =>  'Medicine for maintenance of health condition',
+              'rules' =>  'required'
+      ),
+      array(
+              'field' =>  'mental_health',
+              'label' =>  'Existing mental health condition',
+              'rules' =>  'required'
+      ),
+      array(
+              'field' =>  'guidance_councilor',
+              'label' =>  'Guidance counselor for assistance',
+              'rules' =>  'required'
+      ),
+      array(
+              'field' =>  'visit_guidance_councilor',
+              'label' =>  'Plan to visit your guidance counselor',
+              'rules' =>  'required'
+      ),
+      array(
+              'field' =>  'guidance_councilor_assistance',
+              'label' =>  'Guidance counselor assistance',
+              'rules' =>  'required'
+      )
+    );
+
+    $this->form_validation->set_rules($config);
+
+    if ($this->form_validation->run() == FALSE)
+    {
+
+      $data = array(
+        'applicantProgram'  =>  $this->applicantProgram()
+      );
+  
+      $this->load->view('applicants/_header', $data);
+      $this->load->view('applicants/_css', $data);
+      $this->load->view('applicants/update_applicant_enrollment_form_view', $data);
+      $this->load->view('applicants/_footer', $data);
+      $this->load->view('applicants/_js', $data);
+    }
+    else
+    {
+      $enrollmentFormData = array(
+        "applicant_id"                  =>  $_POST['applicantID'], 
+        "lastname"                      =>  $_POST['lastname'], 
+        "firstname"                     =>  $_POST['firstname'], 
+        "middlename"                    =>  $_POST['middlename'], 
+        "age"                           =>  $_POST['age'], 
+        "sex"                           =>  $_POST['sex'], 
+        "religion_id"                   =>  $_POST['religion'], 
+        "citizenship_id"                =>  $_POST['citizenship'], 
+        "multiple_citizenship_id"       =>  $_POST['multi_citizenship'], 
+        "permanent_address"             =>  $_POST['street1'], 
+        "permanent_cluster"             =>  $_POST['region1']."|".$_POST['province1']."|".$_POST['municipality1']."|".$_POST['barangay1'], 
+        "zipcode"                       =>  $_POST['zipcode'], 
+        "country"                       =>  $_POST['country'], 
+        "date_of_birth"                 =>  $_POST['date_of_birth'], 
+        "place_of_birth"                =>  $_POST['place_of_birth'], 
+        "course_program"                =>  $_POST['course_year'], 
+        "gender"                        =>  $_POST['gender'] == "other" ? $_POST['gender']>"|".$_POST['gender6'] : $_POST['gender'], 
+        "civil_status"                  =>  $_POST['civilStatus'] == "other" ? $_POST['civilStatus']>"|".$_POST['civilStatus4'] : $_POST['civilStatus'], 
+        "student_tel_contact"           =>  $_POST['tel_no'], 
+        "student_mobile_contact"        =>  $_POST['mobile_no'], 
+        "student_email"                 =>  $_POST['email_address'], 
+        "clsu_address"                  =>  $_POST['street2'], 
+        "clsu_cluster"                  =>  $_POST['region2']."|".$_POST['province2']."|".$_POST['municipality2']."|".$_POST['barangay2'], 
+        "senior_high_address"           =>  $_POST['street3'], 
+        "senior_high_cluster"           =>  $_POST['region3']."|".$_POST['province3']."|".$_POST['municipality3']."|".$_POST['barangay3'],  
+        "type_of_school"                =>  $_POST['schoolType'], 
+        "high_school_grad_year"         =>  $_POST['highSchoolYearGraduated'], 
+        "father_name"                   =>  $_POST['father_name'], 
+        "father_age"                    =>  $_POST['father_age'], 
+        "father_occupation"             =>  $_POST['father_occupation'], 
+        "father_education"              =>  $_POST['father_education'], 
+        "mother_name"                   =>  $_POST['mother_name'], 
+        "mother_age"                    =>  $_POST['mother_age'], 
+        "mother_occupation"             =>  $_POST['mother_occupation'], 
+        "mother_education"              =>  $_POST['mother_education'], 
+        "birth_order"                   =>  $_POST['birth_order'], 
+        "no_brother"                    =>  $_POST['number_of_brother'], 
+        "no_sister"                     =>  $_POST['number_of_sister'], 
+        "family_income"                 =>  $_POST['familyIncome'], 
+        "elementary_school_address"     =>  $_POST['elementary_schoolName'], 
+        "elementary_year"               =>  $_POST['elementary_year'], 
+        "high_school_address"           =>  $_POST['highSchool_schoolName'], 
+        "high_school_year"              =>  $_POST['highSchool_year'], 
+        "vocational_school_address"     =>  $_POST['vocational_schoolName'], 
+        "vocational_school_year"        =>  $_POST['vocational_year'], 
+        "college_school_address"        =>  $_POST['college_schoolName'], 
+        "college_school_year"           =>  $_POST['college_year'], 
+        "extra_curricular"              =>  $_POST['extra_curricular'], 
+        "emergency_person"              =>  $_POST['emergency_person'], 
+        "emergency_relationship"        =>  $_POST['emergency_relationship'], 
+        "emergency_contact"             =>  $_POST['emergency_contact'], 
+        "emergency_address"             =>  $_POST['emergency_address'], 
+        "clsu_cat"                      =>  $_POST['admission_test'], 
+        "scholarship"                   =>  $_POST['scholarship_name'], 
+        "program_id"                    =>  $_POST['intendedProgram'], 
+        "activities"                    =>  (isset($_POST['participateActivity'])) ? $this->getArr($_POST['participateActivity']).($_POST['participateActivityOther'] != "" ? "|".$_POST['participateActivityOther'] : "") : "", 
+        "indigenous"                    =>  $_POST['indigenous'] == "yes" ? $_POST['indigenous']."|".$_POST['indigenousType'] : $_POST['indigenous'], 
+        "first_generation"              =>  $_POST['firstGeneration'], 
+        "disability"                    =>  $_POST['disability'], 
+        "disability_type"               =>  isset($_POST['disabilityType']) ? $this->getArr($_POST['disabilityType']) : "",
+        "family_doctor"                 =>  $_POST['family_doctor'],
+        "family_doctor_contact"         =>  $_POST['family_doctor_contact'],
+        "senior_high_school_awards"     =>  $_POST['senior_high_school_awards'],
+        "father_contact"                =>  $_POST['father_contact'],
+        "mother_contact"                =>  $_POST['mother_contact'],
+        "father_address"                =>  $_POST['father_address'],
+        "mother_address"                =>  $_POST['mother_address'],
+        "elem_awards"                   =>  $_POST['elem_awards'],
+        "high_school_awards"            =>  $_POST['high_school_awards'],
+        "vocational_awads"              =>  $_POST['vocational_awads'],
+        "college_awards"                =>  $_POST['college_awards'],
+        "guardian_name"                 =>  $_POST['guardian_name'],
+        "guardian_age"                  =>  $_POST['guardian_age'],
+        "guardian_occupation"           =>  $_POST['guardian_occupation'],
+        "guardian_education"            =>  $_POST['guardian_education'],
+        "guardian_contact"              =>  $_POST['guardian_contact'],
+        "guardian_address"              =>  $_POST['guardian_address'],
+        "signatories"                   =>  $this->getArr($_POST['signatories']),
+        "four_p"                        =>  $_POST['four_p'],
+        "listahanan"                    =>  $_POST['listahanan'],
+        "strand"                        =>  $_POST['strand'],
+        "parent_marriage_status"        =>  $_POST['parent_marriage_status'],
+        "living_with_parent"            =>  $_POST['living_with_parent'] == 'yes' ? $_POST['living_with_parent'] : $_POST['living_with_parent']."|".$_POST['living_with_parent_remarks'],
+        "companions_at_home"            =>  (isset($_POST['companions_at_home'])) ? $this->getArr($_POST['companions_at_home']).($_POST['companions_at_home_other'] != "" ? "|".$_POST['companions_at_home_other'] : "") : "",
+        "guardian_relationship"         =>  $_POST['guardian_relationship'],
+        "guardian_email"                =>  $_POST['guardian_email'],
+        "study_habit"                   =>  $_POST['study_habit'],
+        "study_habit_hours"             =>  $_POST['study_habit_hours'],
+        "current_event"                 =>  (isset($_POST['current_event'])) ? $this->getArr($_POST['current_event']).($_POST['current_event_other'] != "" ? "|".$_POST['current_event_other'] : "") : "",
+        "reason_to_enroll"              =>  $_POST['reason_to_enroll'],
+        "vision_health"                 =>  $_POST['vision_health'],
+        "allergy"                       =>  $_POST['allergy'] == 'yes' ? $_POST['allergy']."|".$_POST['allergy_remarks'] : $_POST['allergy'],
+        "medicine_take"                 =>  $_POST['medicine_take'],
+        "mental_health"                 =>  $_POST['mental_health'] == 'yes' ? $_POST['mental_health']."|".$_POST['mental_health_remarks'] : $_POST['mental_health'],
+        "guidance_councilor"            =>  $_POST['guidance_councilor'],
+        "visit_guidance_councilor"      =>  $_POST['visit_guidance_councilor'],
+        "guidance_councilor_assistance" =>  $_POST['guidance_councilor_assistance'],
+        "working_student"               =>  $_POST['working_student']."|".$_POST['working_student_remarks']
+      );
+
+      $con = array(
+        "applicant_id"  =>  $_POST['applicantID']
+      );
+
+      if ($this->applicant->updateForm($enrollmentFormData, $con, array("tbl_enrollment_form")) !== false) 
+      {
+        $data = array(
+          "confirmationStatus"  =>  "Updated Successfully",
+          "msg"                 =>  "You can now download the OSA Form and Enrollment Form. Go to CTEC Portal and click View Result Button.",
+          "link"                =>  "https://ctec.clsu2.edu.ph/clsucat/",
+          "homepageBTN" =>  "GO TO CTEC"
+        );
+        $this->load->view('custom_confirmation/confirmation', $data);
+      }else
+      {
+        $data = array(
+          'applicantProgram'  =>  $this->applicantProgram()
+        );
+    
+        $this->load->view('applicants/_header', $data);
+        $this->load->view('applicants/_css', $data);
+        $this->load->view('applicants/update_applicant_enrollment_form_view', $data);
         $this->load->view('applicants/_footer', $data);
         $this->load->view('applicants/_js', $data);
       }
@@ -1324,7 +2126,7 @@ class Applicant extends CI_Controller
               </td>
               <td style="border-bottom: 1px solid #000;">
                 <p style="text-align: center; font-family: roboto; font-size: 12px;">
-                '.(explode("|", $applicant->permanent_cluster)[3]).' ,'.(explode("|", $applicant->permanent_cluster)[2]).'  ,'.(explode("|", $applicant->permanent_cluster)[1]).'  ,'.(explode("|", $applicant->permanent_cluster)[0]).' 
+                '.(explode("|", $applicant->senior_high_cluster)[3]).' ,'.(explode("|", $applicant->senior_high_cluster)[2]).'  ,'.(explode("|", $applicant->senior_high_cluster)[1]).'  ,'.(explode("|", $applicant->senior_high_cluster)[0]).' 
                 </p>
               </td>
             </tr>
@@ -1740,7 +2542,7 @@ class Applicant extends CI_Controller
           <table border="" style="width: 100%;">
             <tr>
               <td style="width: 270px;">
-                <p style="text-align: center; font-family: roboto; font-size: 15px;">Who are your companions at home?</p>
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">What activities do you want to participate in? (Please check)</p>
               </td>
             </tr>
           </table>
@@ -1796,11 +2598,91 @@ class Applicant extends CI_Controller
           <table>
             <tr>
               <td style="width: 190px;">
-                <p style="text-align: center; font-family: roboto; font-size: 15px;">Why did you enroll in CLSU: </p>
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Do you have a study habit?: </p>
               </td>
-              <td style="border-bottom: 1px solid #000; width: 100px;">
+              <td style="border-bottom: 1px solid #000; width: 300px;">
                 <p style="text-align: center; font-family: roboto; font-size: 15px;">
                   '.strtoupper($applicant->study_habit).'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style="width: 190px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">How many hours in a day do you study?: </p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 300px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.strtoupper($applicant->study_habit_hours).'
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table border="" style="width: 100%;">
+            <tr>
+              <td style="width: 270px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">How do you update yourself with the current events?</p>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td>
+                <p style="font-family: roboto; font-size: 15px; font-weight: regular;">';
+
+                $companions = array("Televsion", "Radio", "Newspaper", "Magazines", "Singing", "Other");
+                $isCompanion = false;
+                $isOther = "";
+                
+                for ($x=0; $x < count($companions); $x++) 
+                { 
+                  for ($i=0; $i < count(explode("||", $applicant->current_event)); $i++) 
+                  { 
+                    if (explode("|", explode("||", $applicant->current_event)[$i])[0] == "Other" && $companions[$x] == "Other")
+                    {
+                      $isOther = explode("|", explode("||", $applicant->current_event)[$i])[1];
+                      $isCompanion = true;
+                      break;
+                    }else
+                    {
+                      if (explode("||", $applicant->current_event)[$i] == $companions[$x])
+                      {
+                        $isCompanion = true;
+                        break;
+                      }
+                    }
+                    
+                  }
+
+                  if ($isCompanion === true)
+                  {
+                    $html .= '
+                          <span style="font-size: 12px; border: 1px solid #000; background-color: #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> '.$companions[$x].' '.($isOther != "" ? "(Please Specify: ".$isOther.")" : "").'
+                    ';
+                  }else
+                  {
+                    $html .= '
+                          <span style="font-size: 12px; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> '.$companions[$x].'
+                    ';
+                  }
+
+
+                  $isCompanion = false;
+                }
+                $html .= '
+                </p>
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style="width: 190px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">Why did you enroll in CLSU: </p>
+              </td>
+              <td style="border-bottom: 1px solid #000; width: 300px;">
+                <p style="text-align: center; font-family: roboto; font-size: 15px;">
+                  '.strtoupper($applicant->reason_to_enroll).'
                 </p>
               </td>
             </tr>
@@ -1969,7 +2851,7 @@ class Applicant extends CI_Controller
               <td style="width: 70px;"></td>
               <td>
                 <p style="font-family: roboto; font-size: 15px; font-weight: regular;">
-                  <span style="font-size: 10px;'.($applicant->visit_guidance_councilor == "The guidance counselor will send me an invitation during our free time" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The guidance counselor will send me an invitation during our free time
+                  <span style="font-size: 10px;'.($applicant->visit_guidance_councilor == "My college guidance coordinator will refer me to consult our guidance counselor" ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> The My college guidance coordinator will refer me to consult our guidance counselor
                 </p>
               </td>
             </tr>
@@ -2739,7 +3621,7 @@ class Applicant extends CI_Controller
     //   mkdir($directoryName, 0755, true);
     // }
     // $mpdf->Output('enrollment_form.pdf', \Mpdf\Output\Destination::FILE);
-    }
+  }
 
 }
 

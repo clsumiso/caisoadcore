@@ -322,36 +322,37 @@ class Login extends CI_Controller
                     );
                   }
                   break;
-                  case 'accounting':
-                    
-                    $data = array(
-                      'login_stat'    =>  1,
-                      'login_timestamp' =>  date("Y-m-d H:i:s"),
-                      'login_token'   =>  $token
+                case 'accounting':
+                  
+                  $data = array(
+                    'login_stat'    =>  1,
+                    'login_timestamp' =>  date("Y-m-d H:i:s"),
+                    'login_token'   =>  $token
+                  );
+
+                  $condition = array(
+                    'uname' =>  $email,
+                    'upass' =>  $password
+                  );
+
+                  if ($this->login->update($data, $condition, 'tbl_users') !== false) 
+                  {
+                    $response = array(
+                      'sys_msg'   =>  "SUCCESS",
+                      'redirect'  =>  "accounting",
+                      'msg'       =>  ''
                     );
-  
-                    $condition = array(
-                      'uname' =>  $email,
-                      'upass' =>  $password
+                  }else
+                  {
+                    $response = array(
+                      'sys_msg'   =>  "Something went wrong",
+                      'redirect'  =>  "",
+                      'msg'       =>  'Login failed, please try again!!!'
                     );
-  
-                    if ($this->login->update($data, $condition, 'tbl_users') !== false) 
-                    {
-                      $response = array(
-                        'sys_msg'   =>  "SUCCESS",
-                        'redirect'  =>  "accounting",
-                        'msg'       =>  ''
-                      );
-                    }else
-                    {
-                      $response = array(
-                        'sys_msg'   =>  "Something went wrong",
-                        'redirect'  =>  "",
-                        'msg'       =>  'Login failed, please try again!!!'
-                      );
-                    }
-                    break;
-                  case 'admissions':
+                  }
+                  break;
+					  
+				        case 'admissions':
                     
                     $data = array(
                       'login_stat'    =>  1,
@@ -380,13 +381,71 @@ class Login extends CI_Controller
                       );
                     }
                   break;
-              
-                  default:
+                  
+                  $data = array(
+                    'login_stat'    =>  1,
+                    'login_timestamp' =>  date("Y-m-d H:i:s"),
+                    'login_token'   =>  $token
+                  );
+
+                  $condition = array(
+                    'uname' =>  $email,
+                    'upass' =>  $password
+                  );
+
+                  if ($this->login->update($data, $condition, 'tbl_users') !== false) 
+                  {
+                    $response = array(
+                      'sys_msg'   =>  "SUCCESS",
+                      'redirect'  =>  "accounting",
+                      'msg'       =>  ''
+                    );
+                  }else
+                  {
                     $response = array(
                       'sys_msg'   =>  "Something went wrong",
                       'redirect'  =>  "",
-                      'msg'       =>  'Login failed, please contact service provider.'
+                      'msg'       =>  'Login failed, please try again!!!'
                     );
+                  }
+                  break;
+					  
+				        case 'admissions_graduate':
+                    
+                    $data = array(
+                      'login_stat'    =>  1,
+                      'login_timestamp' =>  date("Y-m-d H:i:s"),
+                      'login_token'   =>  $token
+                    );
+  
+                    $condition = array(
+                      'uname' =>  $email,
+                      'upass' =>  $password
+                    );
+  
+                    if ($this->login->update($data, $condition, 'tbl_users') !== false) 
+                    {
+                      $response = array(
+                        'sys_msg'   =>  "SUCCESS",
+                        'redirect'  =>  "admissions/graduate_level",
+                        'msg'       =>  ''
+                      );
+                    }else
+                    {
+                      $response = array(
+                        'sys_msg'   =>  "Something went wrong",
+                        'redirect'  =>  "",
+                        'msg'       =>  'Login failed, please try again!!!'
+                      );
+                    }
+                  break;
+                
+                default:
+                  $response = array(
+                    'sys_msg'   =>  "Something went wrong",
+                    'redirect'  =>  "",
+                    'msg'       =>  'Login failed, please contact service provider.'
+                  );
                   break;
               }
               
@@ -407,6 +466,249 @@ class Login extends CI_Controller
           );
         }
         /* END Call recaptcha */
+        // switch ($this->session->userdata('utype')) 
+        // {
+        //   case 'faculty':
+            
+        //     $data = array(
+        //       'login_stat'    =>  1,
+        //       'login_timestamp' =>  date("Y-m-d H:i:s"),
+        //       'login_token'   =>  $token
+        //     );
+
+        //     $condition = array(
+        //       'uname' =>  $email,
+        //       'upass' =>  $password
+        //     );
+
+        //     if ($this->login->update($data, $condition, 'tbl_users') !== false) 
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "SUCCESS",
+        //         'redirect'  =>  "faculty",
+        //         'msg'       =>  ''
+        //       );
+        //     }else
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "Something went wrong",
+        //         'redirect'  =>  "",
+        //         'msg'       =>  'Login failed, please try again!!!'
+        //       );
+        //     }
+        //     break;
+        //   case 'student':
+            
+        //     $data = array(
+        //       'login_stat'    =>  1,
+        //       'login_timestamp' =>  date("Y-m-d H:i:s"),
+        //       'login_token'   =>  $token
+        //     );
+
+        //     $condition = array(
+        //       'uname' =>  $email,
+        //       'upass' =>  $password
+        //     );
+
+        //     if ($this->login->update($data, $condition, 'tbl_users') !== false) 
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "SUCCESS",
+        //         'redirect'  =>  "students",
+        //         'msg'       =>  ''
+        //       );
+        //     }else
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "Something went wrong",
+        //         'redirect'  =>  "",
+        //         'msg'       =>  'Login failed, please try again!!!'
+        //       );
+        //     }
+        //     break;
+        //   case 'department head':
+            
+        //     $data = array(
+        //       'login_stat'    =>  1,
+        //       'login_timestamp' =>  date("Y-m-d H:i:s"),
+        //       'login_token'   =>  $token
+        //     );
+
+        //     $condition = array(
+        //       'uname' =>  $email,
+        //       'upass' =>  $password
+        //     );
+
+        //     if ($this->login->update($data, $condition, 'tbl_users') !== false) 
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "SUCCESS",
+        //         'redirect'  =>  "department_head",
+        //         'msg'       =>  ''
+        //       );
+        //     }else
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "Something went wrong",
+        //         'redirect'  =>  "",
+        //         'msg'       =>  'Login failed, please try again!!!'
+        //       );
+        //     }
+        //     break;
+        //   case 'dean':
+            
+        //     $data = array(
+        //       'login_stat'    =>  1,
+        //       'login_timestamp' =>  date("Y-m-d H:i:s"),
+        //       'login_token'   =>  $token
+        //     );
+
+        //     $condition = array(
+        //       'uname' =>  $email,
+        //       'upass' =>  $password
+        //     );
+
+        //     if ($this->login->update($data, $condition, 'tbl_users') !== false) 
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "SUCCESS",
+        //         'redirect'  =>  "dean",
+        //         'msg'       =>  ''
+        //       );
+        //     }else
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "Something went wrong",
+        //         'redirect'  =>  "",
+        //         'msg'       =>  'Login failed, please try again!!!'
+        //       );
+        //     }
+        //     break;
+        //   case 'ric':
+            
+        //     $data = array(
+        //       'login_stat'    =>  1,
+        //       'login_timestamp' =>  date("Y-m-d H:i:s")/*,
+        //       'login_token'   =>  $token*/
+        //     );
+
+        //     $condition = array(
+        //       'uname' =>  $email,
+        //       'upass' =>  $password
+        //     );
+
+        //     if ($this->login->update($data, $condition, 'tbl_users') !== false) 
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "SUCCESS",
+        //         'redirect'  =>  "records_in_charge",
+        //         'msg'       =>  ''
+        //       );
+        //     }else
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "Something went wrong",
+        //         'redirect'  =>  "",
+        //         'msg'       =>  'Login failed, please try again!!!'
+        //       );
+        //     }
+        //     break;
+        //   case 'admin':
+            
+        //     $data = array(
+        //       'login_stat'    =>  1,
+        //       'login_timestamp' =>  date("Y-m-d H:i:s"),
+        //       'login_token'   =>  $token
+        //     );
+
+        //     $condition = array(
+        //       'uname' =>  $email,
+        //       'upass' =>  $password
+        //     );
+
+        //     if ($this->login->update($data, $condition, 'tbl_users') !== false) 
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "SUCCESS",
+        //         'redirect'  =>  "administrator",
+        //         'msg'       =>  ''
+        //       );
+        //     }else
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "Something went wrong",
+        //         'redirect'  =>  "",
+        //         'msg'       =>  'Login failed, please try again!!!'
+        //       );
+        //     }
+        //     break;
+        //   case 'registration adviser':
+            
+        //     $data = array(
+        //       'login_stat'    =>  1,
+        //       'login_timestamp' =>  date("Y-m-d H:i:s"),
+        //       'login_token'   =>  $token
+        //     );
+
+        //     $condition = array(
+        //       'uname' =>  $email,
+        //       'upass' =>  $password
+        //     );
+
+        //     if ($this->login->update($data, $condition, 'tbl_users') !== false) 
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "SUCCESS",
+        //         'redirect'  =>  "registration_adviser",
+        //         'msg'       =>  ''
+        //       );
+        //     }else
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "Something went wrong",
+        //         'redirect'  =>  "",
+        //         'msg'       =>  'Login failed, please try again!!!'
+        //       );
+        //     }
+        //     break;
+        //   case 'infirmary':
+            
+        //     $data = array(
+        //       'login_stat'    =>  1,
+        //       'login_timestamp' =>  date("Y-m-d H:i:s"),
+        //       'login_token'   =>  $token
+        //     );
+
+        //     $condition = array(
+        //       'uname' =>  $email,
+        //       'upass' =>  $password
+        //     );
+
+        //     if ($this->login->update($data, $condition, 'tbl_users') !== false) 
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "SUCCESS",
+        //         'redirect'  =>  "clsu_infirmary",
+        //         'msg'       =>  ''
+        //       );
+        //     }else
+        //     {
+        //       $response = array(
+        //         'sys_msg'   =>  "Something went wrong",
+        //         'redirect'  =>  "",
+        //         'msg'       =>  'Login failed, please try again!!!'
+        //       );
+        //     }
+        //     break;
+          
+        //   default:
+        //     $response = array(
+        //       'sys_msg'   =>  "Something went wrong",
+        //       'redirect'  =>  "",
+        //       'msg'       =>  'Login failed, please contact service provider.'
+        //     );
+        //     break;
+        // }
       }else
       {
         // Invalid credentials
@@ -462,7 +764,7 @@ class Login extends CI_Controller
       }
       else
       {
-        return "Wrong username or password, please try again.";
+        return "Wrong username/email or password, please try again.";
       }
   }
 }

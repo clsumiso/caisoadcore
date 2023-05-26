@@ -23,7 +23,7 @@
 
 <body class="four-zero-four">
     <div class="four-zero-four-container">
-        <div class="error-code"><?php echo isset($confirmationStatus) ? $confirmationStatus : "" ?></div>
+        <div class="error-code" style="font-size: 36px; padding: 20px;"><?php echo isset($confirmationStatus) ? $confirmationStatus : "" ?></div>
         <div class="error-message"><?php echo isset($msg) ? $msg : "" ?></div>
         <div class="button-place">
             <a href="<?php echo isset($link) ? $link : "javascript:void(0)" ?>" class="btn bg-teal btn-lg waves-effect"><?php echo $homepageBTN; ?></a>

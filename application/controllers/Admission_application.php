@@ -138,7 +138,7 @@ class Admission_application extends CI_Controller
     $htmlData = "";
     foreach ($courseData as $data) 
     {
-      if (!in_array($data->course_id, array(78, 172)))
+      if (!in_array($data->course_id, array(78, 172, 143)))
       {
         $htmlData .= '<option value='.$data->course_id.'>'.strtoupper($data->course_desc).' ('.$data->course_name.')</option>';
       }

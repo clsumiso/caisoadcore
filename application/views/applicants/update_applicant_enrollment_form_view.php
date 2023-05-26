@@ -41,14 +41,14 @@
                             </div>
                         <?php endif ?>
                             
-                        <?php echo form_open('applicant/enrollmentForm'); ?>
+                        <?php echo form_open('applicant/updateEnrollmentForm'); ?>
                             <div class="body">
                                 <h2>INDIVIDUAL RECORD FORM</h2>
                                 <hr>
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-3 col-lg-3">
                                         <b>Applicant ID <span class="col-red">*not editable</span></b>
-                                        <input type="text" name="applicantID" value="<?php if (isset($appID)) { echo $appID; } else { echo set_value('applicantID'); } ?>" class="form-control" placeholder="APPLICANT ID" readonly>
+                                        <input type="text" name="applicantID" value="<?php if (isset($applicant_id)) { echo $applicant_id; } else { echo set_value('applicantID'); } ?>" class="form-control" placeholder="APPLICANT ID" readonly>
                                     </div>
                                 </div>
                                 <div class="row clearfix">
@@ -68,7 +68,7 @@
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-1 col-lg-1">
                                         <b>Age</b>
-                                        <input type="text" name="age" value="<?php echo set_value('age'); ?>" class="form-control" placeholder="AGE">
+                                        <input type="text" name="age" value="<?php if (isset($age)) { echo $age; } else { echo set_value('age'); } ?>" class="form-control" placeholder="AGE">
                                     </div>
                                     <div class="col-sm-12 col-md-2 col-lg-2">
                                         <b>Sex</b><br>
@@ -178,7 +178,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                         <h4>Address</h4>
                                         <b>(House No., Street Name, Building)</b>
-                                        <input type="text" name="street1" value="<?php echo set_value('street1'); ?>"  class="form-control" placeholder="(House No., Street Name, Building)"></input>
+                                        <input type="text" name="street1" value="<?php if (isset($permanent_address)) { echo $permanent_address; } else { echo set_value('street1'); } ?>"  class="form-control" placeholder="(House No., Street Name, Building)"></input>
                                     </div>
                                     <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
                                         <h4>&nbsp</h4>
@@ -216,25 +216,25 @@
                                 <div class="row clearfix">
                                     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                                         <b>Postal/Zip Code</b>
-                                        <input type="text" name="zipcode" value="<?php echo set_value('zipcode'); ?>"  class="form-control" placeholder="(Postal/Zip Code)"></input>
+                                        <input type="text" name="zipcode" value="<?php if (isset($zipcode)) { echo $zipcode; } else { echo set_value('zipcode'); } ?>"  class="form-control" placeholder="(Postal/Zip Code)"></input>
                                     </div>
                                     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                                         <b>Country</b>
-                                        <input type="text" name="country" value="<?php echo set_value('country'); ?>"  class="form-control" placeholder="(e.g Philippines)"></input>
+                                        <input type="text" name="country" value="<?php if (isset($country)) { echo $country; } else { echo set_value('country'); } ?>"  class="form-control" placeholder="(e.g Philippines)"></input>
                                     </div>
                                 </div>
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-4 col-lg-4">
                                         <b>Date of Birth</b>
-                                        <input type="date" name="date_of_birth" value="<?php echo set_value('date_of_birth'); ?>" class="form-control">
+                                        <input type="date" name="date_of_birth" value="<?php if (isset($date_of_birth)) { echo $date_of_birth; } else { echo set_value('date_of_birth'); } ?>" class="form-control">
                                     </div>
                                     <div class="col-sm-12 col-md-4 col-lg-4">
                                         <b>Place of Birth</b>
-                                        <input type="text" name="place_of_birth" value="<?php echo set_value('place_of_birth'); ?>" class="form-control">
+                                        <input type="text" name="place_of_birth" value="<?php if (isset($place_of_birth)) { echo $place_of_birth; } else { echo set_value('place_of_birth'); } ?>" class="form-control">
                                     </div>
                                     <div class="col-sm-12 col-md-4 col-lg-4">
                                         <b>Course & Year <span class="col-red">*not editable</span></b>
-                                        <input type="text" name="course_year" value="<?php if (isset($program)) { echo $program; } else { echo set_value('course_year'); } ?>" class="form-control" readonly>
+                                        <input type="text" name="course_year" value="<?php if (isset($course_program)) { echo $course_program; } else { echo set_value('course_year'); } ?>" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="row clearfix">
@@ -276,22 +276,22 @@
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-4 col-lg-4">
                                         <b>Telephone No</b>
-                                        <input type="text" name="tel_no" class="form-control" value="<?php echo set_value('tel_no'); ?>" placeholder="Telephone Number">
+                                        <input type="text" name="tel_no" class="form-control" value="<?php if (isset($student_tel_contact)) { echo $student_tel_contact; } else { echo set_value('tel_no'); } ?>" placeholder="Telephone Number">
                                     </div>
                                     <div class="col-sm-12 col-md-4 col-lg-4">
                                         <b>Mobile No</b>
-                                        <input type="text" name="mobile_no" class="form-control" value="<?php echo set_value('mobile_no'); ?>" placeholder="Mobile Number">
+                                        <input type="text" name="mobile_no" class="form-control" value="<?php if (isset($student_mobile_contact)) { echo $student_mobile_contact; } else { echo set_value('mobile_no'); } ?>" placeholder="Mobile Number">
                                     </div>
                                     <div class="col-sm-12 col-md-4 col-lg-4">
                                         <b>Email Address</b>
-                                        <input type="email" name="email_address" class="form-control" value="<?php echo set_value('email_address'); ?>" placeholder="Email Address">
+                                        <input type="email" name="email_address" class="form-control" value="<?php if (isset($student_email)) { echo $student_email; } else { echo set_value('email_address'); } ?>" placeholder="Email Address">
                                     </div>
                                 </div>
                                 <div class="row clearfix">
                                     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                         <h4>Address (while studying in CLSU)</h4>
                                         <b>(House No., Street Name, Building)</b>
-                                        <input type="text" name="street2" class="form-control" value="<?php echo set_value('street2'); ?>" placeholder="(House No., Street Name, Building)"></input>
+                                        <input type="text" name="street2" class="form-control" value="<?php if (isset($clsu_address)) { echo $clsu_address; } else { echo set_value('street2'); } ?>" placeholder="(House No., Street Name, Building)"></input>
                                     </div>
                                     <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
                                         <h4>&nbsp</h4>
@@ -330,7 +330,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-4">
                                         <h4>Senior High School where Graduated</h4>
                                         <b>&nbsp;</b>
-                                        <input type="text" name="street3" class="form-control" value="<?php echo set_value('street3'); ?>" placeholder="School Name"></input>
+                                        <input type="text" name="street3" class="form-control" value="<?php if (isset($senior_high_address)) { echo $senior_high_address; } else { echo set_value('street3'); } ?>" placeholder="School Name"></input>
                                     </div>
                                     <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
                                         <h4>School Address</h4>
@@ -412,7 +412,7 @@
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Name of Father</b>
-                                        <input type="text" name="father_name" value="<?php echo set_value('father_name'); ?>" class="form-control" placeholder="NAME">
+                                        <input type="text" name="father_name" value="<?php if (isset($father_name)) { echo $father_name; } else { echo set_value('father_name'); } ?>" class="form-control" placeholder="NAME">
                                     </div>
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Age</b>
@@ -427,6 +427,7 @@
                                             <option value="56 years old to 60 years old" <?php echo set_select('father_age','56 years old to 60 years old', ( !empty($data) && $data == "56 years old to 60 years old" ? TRUE : FALSE )); ?>>56 years old to 60 years old</option>
                                             <option value="61 years old and above" <?php echo set_select('father_age','61 years old and above', ( !empty($data) && $data == "61 years old and above" ? TRUE : FALSE )); ?>>61 years old and above</option>
                                             <option value="n/a" <?php echo set_select('father_age','n/a', ( !empty($data) && $data == "n/a" ? TRUE : FALSE )); ?>>n/a</option>
+                                        
                                         </select>
                                     </div>
                                     <div class="col-sm-12 col-md-3 col-3">
@@ -461,11 +462,11 @@
                                     </div>
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Father Contact</b>
-                                        <input type="text" name="father_contact" value="<?php echo set_value('father_contact'); ?>" class="form-control" placeholder="CONTACT">
+                                        <input type="text" name="father_contact" value="<?php if (isset($father_contact)) { echo $father_contact; } else { echo set_value('father_contact'); } ?>" class="form-control" placeholder="CONTACT">
                                     </div>
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Father Address</b>
-                                        <input type="text" name="father_address" value="<?php echo set_value('father_address'); ?>" class="form-control" placeholder="ADDRESS">
+                                        <input type="text" name="father_address" value="<?php if (isset($father_address)) { echo $father_address; } else { echo set_value('father_address'); } ?>" class="form-control" placeholder="ADDRESS">
                                     </div>
                                     <div class="col-sm-12 col-md-5 col-5">
                                         <input type="checkbox" name="signatories[]" id="signatories1" class="filled-in chk-col-green" value="father" <?php echo set_checkbox('signatories[]', 'father'); ?>>
@@ -475,7 +476,7 @@
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Name of Mother</b>
-                                        <input type="text" name="mother_name" value="<?php echo set_value('mother_name'); ?>" class="form-control" placeholder="NAME">
+                                        <input type="text" name="mother_name" value="<?php if (isset($mother_name)) { echo $mother_name; } else { echo set_value('mother_name'); } ?>" class="form-control" placeholder="NAME">
                                     </div>
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Age</b>
@@ -524,11 +525,11 @@
                                     </div>
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Mother Contact</b>
-                                        <input type="text" name="mother_contact" value="<?php echo set_value('mother_contact'); ?>" class="form-control" placeholder="CONTACT">
+                                        <input type="text" name="mother_contact" value="<?php if (isset($mother_contact)) { echo $mother_contact; } else { echo set_value('mother_contact'); } ?>" class="form-control" placeholder="CONTACT">
                                     </div>
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Mother Address</b>
-                                        <input type="text" name="mother_address" value="<?php echo set_value('mother_address'); ?>" class="form-control" placeholder="ADDRESS">
+                                        <input type="text" name="mother_address" value="<?php if (isset($mother_address)) { echo $mother_address; } else { echo set_value('mother_address'); } ?>" class="form-control" placeholder="ADDRESS">
                                     </div>
                                     <div class="col-sm-12 col-md-5 col-5">
                                         <input type="checkbox" name="signatories[]" id="signatories2" class="filled-in chk-col-green" value="mother" <?php echo set_checkbox('signatories[]', 'mother'); ?>>
@@ -538,11 +539,11 @@
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Name of Guardian</b>
-                                        <input type="text" name="guardian_name" value="<?php echo set_value('guardian_name'); ?>" class="form-control" placeholder="NAME">
+                                        <input type="text" name="guardian_name" value="<?php if (isset($guardian_name)) { echo $guardian_name; } else { echo set_value('guardian_name'); } ?>" class="form-control" placeholder="NAME">
                                     </div>
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Relationship to your guardian</b>
-                                        <input type="text" name="guardian_relationship" value="<?php echo set_value('guardian_relationship'); ?>" class="form-control" placeholder="Relationship">
+                                        <input type="text" name="guardian_relationship" value="<?php if (isset($guardian_relationship)) { echo $guardian_relationship; } else { echo set_value('guardian_relationship'); } ?>" class="form-control" placeholder="Relationship">
                                     </div>
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Age</b>
@@ -586,20 +587,21 @@
                                             <option value="Masters Degree Graduate" <?php echo set_select('guardian_education','Masters Degree Graduate', ( !empty($data) && $data == "Masters Degree Graduate" ? TRUE : FALSE )); ?>>Master's Degree Graduate</option>
                                             <option value="Doctorate Level" <?php echo set_select('guardian_education','Doctorate Level', ( !empty($data) && $data == "Doctorate Level" ? TRUE : FALSE )); ?>>Doctorate Level</option>
                                             <option value="Doctorate Degree Graduate" <?php echo set_select('guardian_education','Doctorate Degree Graduate', ( !empty($data) && $data == "Doctorate Degree Graduate" ? TRUE : FALSE )); ?>>Doctorate Degree Graduate</option>
-                                            <option value="n/a" <?php echo set_select('guardian_education','n/a', (!empty($data) && $data == "n/a" ? TRUE : FALSE )); ?>>Not Applicable</option>
+                                            <option value="n/a" <?php echo set_select('guardian_education','n/a', ( !empty($data) && $data == "n/a" ? TRUE : FALSE )); ?>>Not Applicable</option>
+                                            <option value="n/a" <?php echo set_select('guardian_education','n/a', ( !empty($data) && $data == "n/a" ? TRUE : FALSE )); ?>>n/a</option>
                                         </select>
                                     </div>
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Guardian Contact</b>
-                                        <input type="text" name="guardian_contact" value="<?php echo set_value('guardian_contact'); ?>" class="form-control" placeholder="CONTACT">
+                                        <input type="text" name="guardian_contact" value="<?php if (isset($guardian_contact)) { echo $guardian_contact; } else { echo set_value('guardian_contact'); } ?>" class="form-control" placeholder="CONTACT">
                                     </div>
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Email Address of your Guardian</b>
-                                        <input type="text" name="guardian_email" value="<?php echo set_value('guardian_email'); ?>" class="form-control" placeholder="Email Address">
+                                        <input type="text" name="guardian_email" value="<?php if (isset($guardian_email)) { echo $guardian_email; } else { echo set_value('guardian_email'); } ?>" class="form-control" placeholder="Email Address">
                                     </div>
                                     <div class="col-sm-12 col-md-3 col-3">
                                         <b>Guardian Address</b>
-                                        <input type="text" name="guardian_address" value="<?php echo set_value('guardian_address'); ?>" class="form-control" placeholder="ADDRESS">
+                                        <input type="text" name="guardian_address" value="<?php if (isset($guardian_address)) { echo $guardian_address; } else { echo set_value('guardian_address'); } ?>" class="form-control" placeholder="ADDRESS">
                                     </div>
                                     <div class="col-sm-12 col-md-5 col-5">
                                         <input type="checkbox" name="signatories[]" id="signatories3" class="filled-in chk-col-green" value="guardian" <?php echo set_checkbox('signatories[]', 'guardian'); ?>>
@@ -646,11 +648,11 @@
                                     </div>
                                     <div class="col-sm-12 col-md-2 col-2">
                                         <b>No. of Brothers</b>
-                                        <input type="number" name="number_of_brother" value="<?php echo set_value('number_of_brother'); ?>" class="form-control" placeholder="BROTHERS">
+                                        <input type="number" name="number_of_brother" value="<?php if (isset($no_brother)) { echo $no_brother; } else { echo set_value('number_of_brother'); } ?>" class="form-control" placeholder="BROTHERS">
                                     </div>
                                     <div class="col-sm-12 col-md-2 col-2">
                                         <b>No. of Sisters</b>
-                                        <input type="number" name="number_of_sister" value="<?php echo set_value('number_of_sister'); ?>" class="form-control" placeholder="SISTERS">
+                                        <input type="number" name="number_of_sister" value="<?php if (isset($no_sister)) { echo $no_sister; } else { echo set_value('number_of_sister'); } ?>" class="form-control" placeholder="SISTERS">
                                     </div>
                                 </div>
                                 <div class="row clearfix">
@@ -738,13 +740,13 @@
                                                         <p>Elementary</p>
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="elementary_schoolName" value="<?php echo set_value('elementary_schoolName'); ?>" placeholder=" School Name (do not abbreviate) & Complpete School Address">
+                                                        <input type="text" class="form-control" name="elementary_schoolName" value="<?php if (isset($elementary_school_address)) { echo $elementary_school_address; } else { echo set_value('elementary_schoolName'); } ?>" placeholder=" School Name (do not abbreviate) & Complpete School Address">
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="elementary_year" value="<?php echo set_value('elementary_year'); ?>" placeholder="(e.g 2000-2001)">
+                                                        <input type="text" class="form-control" name="elementary_year" value="<?php if (isset($elementary_year)) { echo $elementary_year; } else {  echo set_value('elementary_year'); } ?><?php ?>" placeholder="(e.g 2000-2001)">
                                                     </td> 
                                                     <td>
-                                                        <input type="text" name="elem_awards" class="form-control" value="<?php echo set_value('elem_awards'); ?>" placeholder="(Awards)"></input>
+                                                        <input type="text" name="elem_awards" class="form-control" value="<?php if (isset($elem_awards)) { echo $elem_awards; } else { echo set_value('elem_awards'); } ?>" placeholder="(Awards)"></input>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -752,13 +754,13 @@
                                                         <p>Junior High Schhol</p>
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="highSchool_schoolName" value="<?php echo set_value('highSchool_schoolName'); ?>" placeholder=" School Name (do not abbreviate) & Complpete School Address">
+                                                        <input type="text" class="form-control" name="highSchool_schoolName" value="<?php if (isset($high_school_address)) { echo $high_school_address; } else { echo set_value('highSchool_schoolName'); } ?>" placeholder=" School Name (do not abbreviate) & Complpete School Address">
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="highSchool_year" value="<?php echo set_value('highSchool_year'); ?>" placeholder="(e.g 2000-2001)">
+                                                        <input type="text" class="form-control" name="highSchool_year" value="<?php if (isset($high_school_year)) { echo $high_school_year; } else { echo set_value('highSchool_year'); } ?>" placeholder="(e.g 2000-2001)">
                                                     </td>
                                                     <td>
-                                                        <input type="text" name="high_school_awards" class="form-control" value="<?php echo set_value('high_school_awards'); ?>" placeholder="(Awards)"></input>
+                                                        <input type="text" name="high_school_awards" class="form-control" value="<?php if (isset($high_school_awards)) { echo $high_school_awards; } else { echo set_value('high_school_awards'); } ?>" placeholder="(Awards)"></input>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -766,13 +768,13 @@
                                                         <p>Vocational</p>
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="vocational_schoolName" value="<?php echo set_value('vocational_schoolName'); ?>" placeholder=" School Name (do not abbreviate) & Complpete School Address">
+                                                        <input type="text" class="form-control" name="vocational_schoolName" value="<?php if (isset($vocational_school_address)) { echo $vocational_school_address; } else { echo set_value('vocational_schoolName'); } ?>" placeholder=" School Name (do not abbreviate) & Complpete School Address">
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="vocational_year" value="<?php echo set_value('vocational_year'); ?>" placeholder="(e.g 2000-2001)">
+                                                        <input type="text" class="form-control" name="vocational_year" value="<?php if (isset($vocational_school_year)) { echo $vocational_school_year; } else { echo set_value('vocational_year'); } ?>" placeholder="(e.g 2000-2001)">
                                                     </td>
                                                     <td>
-                                                        <input type="text" name="vocational_awads" class="form-control" value="<?php echo set_value('vocational_awads'); ?>" placeholder="(Awards)"></input>
+                                                        <input type="text" name="vocational_awads" class="form-control" value="<?php if (isset($vocational_awads)) { echo $vocational_awads; } else { echo set_value('vocational_awads'); } ?>" placeholder="(Awards)"></input>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -780,13 +782,13 @@
                                                         <p>College</p>
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="college_schoolName"  value="<?php echo set_value('college_schoolName'); ?>" placeholder=" School Name (do not abbreviate) & Complpete School Address">
+                                                        <input type="text" class="form-control" name="college_schoolName"  value="<?php if (isset($college_school_address)) { echo $college_school_address; } else { echo set_value('college_schoolName'); } ?>" placeholder=" School Name (do not abbreviate) & Complpete School Address">
                                                     </td>
                                                     <td>
-                                                        <input type="text" class="form-control" name="college_year"  value="<?php echo set_value('college_year'); ?>" placeholder="(e.g 2000-2001)">
+                                                        <input type="text" class="form-control" name="college_year"  value="<?php if (isset($college_school_year)) { echo $college_school_year; } else { echo set_value('college_year'); } ?>" placeholder="(e.g 2000-2001)">
                                                     </td>
                                                     <td>
-                                                        <input type="text" name="college_awards" class="form-control" value="<?php echo set_value('college_awards'); ?>" placeholder="(Awards)"></input>
+                                                        <input type="text" name="college_awards" class="form-control" value="<?php if (isset($college_awards)) { echo $college_awards; } else { echo set_value('college_awards'); } ?>" placeholder="(Awards)"></input>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -796,7 +798,7 @@
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-12 col-12">
                                         <b>Co and Extra curricular Activities in High School</b>
-                                        <textarea class="form-control" name="extra_curricular" placeholder="(optional)"></textarea>
+                                        <textarea class="form-control" name="extra_curricular" placeholder="(optional)"><?php if (isset($extra_curricular)) { echo $extra_curricular; } else { echo set_value('extra_curricular'); } ?></textarea>
                                     </div>
                                     <div class="col-sm-12 col-md-4 col-4">
                                         <b>Do you have study habit?</b>
@@ -848,13 +850,13 @@
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-4 col-4">
                                         <b>Why did you enroll in CLSU</b>
-                                        <input type="text" name="reason_to_enroll" class="form-control" value="<?php echo set_value('reason_to_enroll'); ?>" placeholder="Reason">
+                                        <input type="text" name="reason_to_enroll" class="form-control" value="<?php if (isset($reason_to_enroll)) { echo $reason_to_enroll; } else { echo set_value('reason_to_enroll'); } ?>" placeholder="Reason">
                                     </div>
                                 </div>
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-4 col-4">
                                         <b>Name of Person to be notified in case of emergency</b>
-                                        <input type="text" name="emergency_person" class="form-control" value="<?php echo set_value('emergency_person'); ?>" placeholder="NAME">
+                                        <input type="text" name="emergency_person" class="form-control" value="<?php if (isset($emergency_person)) { echo $emergency_person; } else { echo set_value('emergency_person'); } ?>" placeholder="NAME">
                                     </div>
                                     <div class="col-sm-12 col-md-4 col-4">
                                         <b>Relationship</b>
@@ -873,13 +875,13 @@
                                     </div>
                                     <div class="col-sm-12 col-md-4 col-4">
                                         <b>Tel. / Cell No</b>
-                                        <input type="text" name="emergency_contact" value="<?php echo set_value('emergency_contact'); ?>" class="form-control" placeholder="Emergency Contact">
+                                        <input type="text" name="emergency_contact" value="<?php if (isset($emergency_contact)) { echo $emergency_contact; } else { echo set_value('emergency_contact'); } ?>" class="form-control" placeholder="Emergency Contact">
                                     </div>
                                 </div>
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-12 col-12">
                                         <b>Address</b>
-                                        <textarea class="form-control" name="emergency_address" placeholder="Emergency Person Address"><?php echo set_value('emergency_address'); ?></textarea>
+                                        <textarea class="form-control" name="emergency_address" placeholder="Emergency Person Address"><?php if (isset($emergency_address)) { echo $emergency_address; } else { echo set_value('emergency_address'); } ?></textarea>
                                     </div>
                                 </div>
                                 <div class="row clearfix" style="display: none;">
@@ -891,7 +893,7 @@
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-4 col-4">
                                         <b>Name of Scholarship (if there's any)</b>
-                                        <input type="text" name="scholarship_name" class="form-control" placeholder="(Name of Scholarship)">
+                                        <input type="text" name="scholarship_name" class="form-control" placeholder="(Name of Scholarship)" value="<?php if (isset($scholarship)) { echo $scholarship; } ?>">
                                     </div>
                                 </div>
                                 <div class="row clearfix" style="display: none;">
@@ -1174,8 +1176,8 @@
                                         <b>When do you plan to visit your guidance counselor?</b><br>
                                         <input name="visit_guidance_councilor" type="radio" id="visit_guidance_councilor1" value="The guidance counselor will send me an invitation during our free time" <?php echo  set_radio('visit_guidance_councilor', 'The guidance counselor will send me an invitation during our free time'); ?> class="with-gap radio-col-primary">
                                         <label for="visit_guidance_councilor1">The guidance counselor will send me an invitation during our free time</label>
-                                        <input name="visit_guidance_councilor" type="radio" id="visit_guidance_councilor2" value=" The My college guidance coordinator will refer me to consult our guidance counselor" <?php echo  set_radio('visit_guidance_councilor', ' The My college guidance coordinator will refer me to consult our guidance counselor'); ?> class="with-gap radio-col-primary">
-                                        <label for="visit_guidance_councilor2"> The My college guidance coordinator will refer me to consult our guidance counselor</label>
+                                        <input name="visit_guidance_councilor" type="radio" id="visit_guidance_councilor2" value="The My college guidance coordinator will refer me to consult our guidance counselor" <?php echo  set_radio('visit_guidance_councilor', 'The My college guidance coordinator will refer me to consult our guidance counselor'); ?> class="with-gap radio-col-primary">
+                                        <label for="visit_guidance_councilor2">The My college guidance coordinator will refer me to consult our guidance counselor</label>
                                         <input name="visit_guidance_councilor" type="radio" id="visit_guidance_councilor3" value="I will come voluntary to consult our guidance counselor" <?php echo  set_radio('visit_guidance_councilor', 'I will come voluntary to consult our guidance counselor'); ?> class="with-gap radio-col-primary">
                                         <label for="visit_guidance_councilor3">I will come voluntary to consult our guidance counselor</label>
                                     </div>
@@ -1183,7 +1185,7 @@
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-12 col-12">
                                         <b>How do you want to be assisted by a guidance counselor?</b>
-                                        <textarea class="form-control" name="guidance_councilor_assistance" placeholder="(write something...)"><?php echo set_value('guidance_councilor_assistance'); ?></textarea>
+                                        <textarea class="form-control" name="guidance_councilor_assistance" placeholder="(write something...)"><?php if (isset($guidance_councilor_assistance)) { echo $guidance_councilor_assistance; } else { echo set_value('guidance_councilor_assistance'); } ?></textarea>
                                     </div>
                                 </div>
 
@@ -1191,11 +1193,11 @@
                                 <div class="row clearfix">
                                     <div class="col-sm-12 col-md-4 col-4">
                                         <b>Name of Family Doctor</b>
-                                        <input type="text" name="family_doctor" value="<?php echo set_value('family_doctor'); ?>" class="form-control" placeholder="FAMILY DOCTOR (optional)">
+                                        <input type="text" name="family_doctor" value="<?php if (isset($family_doctor)) { echo $family_doctor; } else { echo set_value('family_doctor'); } ?>" class="form-control" placeholder="FAMILY DOCTOR (optional)">
                                     </div>
                                     <div class="col-sm-12 col-md-4 col-4">
                                         <b>Contact Number</b>
-                                        <input type="text" name="family_doctor_contact" value="<?php echo set_value('family_doctor_contact'); ?>" class="form-control" placeholder="CONTACT NUMBER (optional)">
+                                        <input type="text" name="family_doctor_contact" value="<?php if (isset($family_doctor_contact)) { echo $family_doctor_contact; } else { echo set_value('family_doctor_contact'); } ?>" class="form-control" placeholder="CONTACT NUMBER (optional)">
                                     </div>
                                 </div>
 

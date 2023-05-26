@@ -47,6 +47,30 @@ function getApplicantInfo(appID)
     });
 }
 
+function updateIndividualForm(appID, securityCode)
+{
+    swal({
+        title: 'Important Notice',
+        text: '<h3>Please do review and update your profile information. Kindly fill-out all the required fields. Thank you.</h3>',
+        type: "info",
+        html: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        confirmButtonText: "PROCEED TO UPDATE",
+        cancelButtonText: "CANCEL",
+        showCancelButton: true,
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        closeOnConfirm: false
+    }, function (isConfirm) 
+    {
+        if (isConfirm) 
+        {
+            window.open(window.location.origin + "/office-of-admissions/app-update-form/"+appID+"/"+securityCode, "_SELF");
+        }
+    });
+}
+
 $("#signatories1").change(function() {
     if(this.checked) 
     {

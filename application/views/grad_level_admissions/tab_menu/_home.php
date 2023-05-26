@@ -28,13 +28,13 @@
                     </div>
                     <div class="row clearfix">
                         <div class="col-sm-12 col-md-12 col-lg-12">
-                            <h3>LIST OF APPLICANTS</h3>
+                            <h3>LIST OF GRADUATE LEVEL APPLICANTS</h3>
                             <div class="table-responsive">
                                 <table id='applicantList' class='table table-bordered table-striped table-hover js-basic-example nowrap dataTable'>
                                     <thead>
                                         <tr>
                                             <th colspan="8"></th>
-                                            <th colspan="3  ">APPLICATION STATUS</th>
+                                            <th colspan="3" style="text-align: center;">APPLICATION STATUS</th>
                                         </tr>
                                         <tr>
                                             <th>#</th>

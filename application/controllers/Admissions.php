@@ -94,6 +94,17 @@ class Admissions extends CI_Controller
     $this->load->view('grad_level_admissions/_js', $data);
   }
 
+  public function graduateLevelList()
+  {
+    // POST data
+		$postData = $this->input->post();
+
+		// Get data
+		$data = $this->admissions->getSchedule($postData);
+
+		echo json_encode($data);
+  }
+
   public function get_time()
 	{
 		$datestring = '%F, %d %Y';

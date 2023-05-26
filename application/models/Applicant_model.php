@@ -39,6 +39,59 @@ class Applicant_model extends CI_Model {
     return $query->result();
   }
 
+  public function checkSlot($programID = 0)
+  {
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select('*');
+    $applicantDB->from('tbl_program');
+    $applicantDB->where('program_id', $programID);
+
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
+  public function checkTotalEnroll($programID)
+  {
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select('tbl_enrollment_form.applicant_id');
+    $applicantDB->from('tbl_enrollment_form');
+    $applicantDB->join('tbl_profile', 'tbl_enrollment_form.applicant_id = tbl_profile.applicant_id', 'inner');
+    $applicantDB->where('tbl_profile.program_id', $programID);
+
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
+  public function getApplicantRank($programID)
+  {
+    /**
+     * SELECT tbl_applicant_ranking.percentile_rank FROM tbl_applicant_ranking INNER JOIN tbl_profile ON tbl_applicant_ranking.applicant_id = tbl_profile.applicant_id WHERE tbl_profile.program_id = 4 ORDER BY tbl_applicant_ranking.percentile_rank DESC; 
+     */
+
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select('tbl_applicant_ranking.percentile_rank');
+    $applicantDB->from('tbl_applicant_ranking');
+    $applicantDB->join('tbl_profile', 'tbl_applicant_ranking.applicant_id = tbl_profile.applicant_id', 'inner');
+    $applicantDB->where('tbl_profile.program_id', $programID);
+
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
+  public function getApplicantIndividualRank($applicantID = "")
+  {
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select('percentile_rank');
+    $applicantDB->from('tbl_applicant_ranking');
+    $applicantDB->where('applicant_id', $applicantID);
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
   public function getReleaseDate($applicantType = "")
   {
     $applicantDB = $this->load->database('applicantDB', TRUE);
@@ -126,6 +179,28 @@ class Applicant_model extends CI_Model {
         $applicantDB->trans_commit();
         return true;
     }
+	}
+
+  public function updateForm($data = array(), $con = array(), $table = array())
+	{
+		$applicantDB = $this->load->database('applicantDB', TRUE);
+		if(!empty($data)){
+			$applicantDB->trans_begin();
+	    	$applicantDB->trans_strict(TRUE);
+
+            // Insert member data
+           	$applicantDB->update($table[0], $data, $con);
+            if ($applicantDB->trans_status() === FALSE) 
+            {
+		        $applicantDB->trans_rollback();
+		        return false;
+		    } else 
+		    {
+		        $applicantDB->trans_commit();
+		        return true;
+		    }
+        }
+        return false;
 	}
 
   // ------------------------------------------------------------------------

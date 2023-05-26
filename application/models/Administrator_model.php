@@ -39,7 +39,7 @@ class Administrator_model extends CI_Model {
 			$this->db->select('course_id, course_name, course_desc');
 			$this->db->from('tbl_course');
 			$this->db->where('college_id', $college);
-			$this->db->where_in('course_type', array('BS', 'B', 'C', 'D', 'MS', 'PhD'));
+			$this->db->where_in('course_type', array('BS', 'BA', 'B', 'C', 'D', 'MS', 'PhD'));
 			$this->db->order_by('course_name', 'asc');
 			$query = $this->db->get();
 		}else if ($enrollmentType == "incoming_freshmen")
@@ -61,7 +61,7 @@ class Administrator_model extends CI_Model {
 		$this->db->select('course_id, course_name, course_desc');
         $this->db->from('tbl_course');
 		$this->db->where('college_id', $college);
-		$this->db->where_in('course_type', array('BS', 'B', 'C', 'D', 'MS', 'PhD'));
+		$this->db->where_in('course_type', array('BS', 'BA', 'B', 'C', 'D', 'MS', 'PhD'));
 		$this->db->order_by('course_name', 'asc');
         $query = $this->db->get();
 
@@ -886,6 +886,7 @@ class Administrator_model extends CI_Model {
 		$this->db->where('tbl_registration.user_id', $userID);
 		$this->db->where('tbl_registration.semester_id', $semesterID);
 		$this->db->where('tbl_class_schedule.semester_id', $semesterID);
+		$this->db->where('tbl_class_schedule.class_type !=', 2);
 		$this->db->order_by('tbl_registration.schedid', 'ASC');
 		$query = $this->db->get();
 
