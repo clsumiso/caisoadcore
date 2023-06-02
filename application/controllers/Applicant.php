@@ -737,6 +737,17 @@ class Applicant extends CI_Controller
     $applicantProgram = $this->applicant->getReleaseDate($qualifier_type);;
     $htmlData = '';
 
+    $simple_string = $applicantID;
+    $ciphering = "AES-128-CTR";
+    $iv_length = openssl_cipher_iv_length($ciphering);
+    $options = 0;
+    $encryption_iv = '1234567891011121';
+    $encryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+    $encryption = openssl_encrypt($simple_string, $ciphering,$encryption_key, $options, $encryption_iv);
+    $decryption_iv = '1234567891011121';
+    $decryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+    $decryption=openssl_decrypt ($encryption, $ciphering, $decryption_key, $options, $decryption_iv);
+
     foreach ($programData as $program) 
     {
       if (in_array($program->program_id, explode("|", $applicantProgram[0]->program_id)))
@@ -761,12 +772,12 @@ class Applicant extends CI_Controller
                 {
                   if ($initialProgram[0]->program_id == $newProgram[0]->program_id)
                   {
-                    $htmlData .= '<li>'.$program->program_name.' | <button class="btn bg-teal" onclick="acceptChoiceProgram(\''.$program->program_id.'\', \''.$program->program_name.'\', \''.$applicantID.'\')">ACCEPT</button></li>';
+                    $htmlData .= '<li>'.$program->program_name.' | <button class="btn bg-teal" onclick="acceptChoiceProgram(\''.$program->program_id.'\', \''.$program->program_name.'\', \''.$applicantID.'\', \''.urlencode($encryption).'\')">ACCEPT</button></li>';
                   }else
                   {
                     if ($newProgram[0]->program_id == $program->program_id)
                     {
-                      $htmlData .= '<li>'.$program->program_name.' | <button class="btn bg-teal" onclick="acceptChoiceProgram(\''.$program->program_id.'\', \''.$program->program_name.'\', \''.$applicantID.'\')">GO TO INDIVIDUAL RECORD FORM</button></li>';
+                      $htmlData .= '<li>'.$program->program_name.' | <button class="btn bg-teal" onclick="acceptChoiceProgram(\''.$program->program_id.'\', \''.$program->program_name.'\', \''.$applicantID.'\', \''.urlencode($encryption).'\')">GO TO INDIVIDUAL RECORD FORM</button></li>';
                     }
                   }
                 }
