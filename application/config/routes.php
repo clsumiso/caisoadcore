@@ -53,12 +53,13 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route = array(
-	'default_controller' 				=> 'login',
-	"app-verification/(:any)/(:any)"	=>	"applicant/applicantVerification/$1/$2",
-	"app-verification"					=>	"applicant",
-	"admission-verification/(:any)"		=>	"admission_application/admission_verification/$1",
-	"app-enrollment-form/(:any)"		=>	"applicant/applicant_form/$1",
-	"app-dl-enrollment-form/(:any)"		=>	"applicant/donwloadEnrollmentForm/$1",
-	"app-dl-osa-form/(:any)/(:any)"		=>	"applicant/donwloadOSAForm/$1/$2",
-	"app-update-form/(:any)/(:any)"		=>	"applicant/update_applicant_form/$1/$2"
+	'default_controller' 						=> 'login',
+	"app-verification/(:any)/(:any)"			=>	"applicant/applicantVerification/$1/$2",
+	"app-verification"							=>	"applicant",
+	"admission-verification/(:any)"				=>	"admission_application/admission_verification/$1",
+	"app-enrollment-form/(:any)/(:any)"				=>	"applicant/applicant_form/$1/$2",
+	"app-dl-enrollment-form/(:any)"				=>	"applicant/donwloadEnrollmentForm/$1",
+	"app-dl-osa-form/(:any)/(:any)"				=>	"applicant/donwloadOSAForm/$1/$2",
+	"app-update-form/(:any)/(:any)"				=>	"applicant/update_applicant_form/$1/$2",
+	"app-grad-requirements/(:any)/(:any)"		=>	"admissions/downloadRequirements/$1/$2"
 );

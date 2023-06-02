@@ -393,7 +393,7 @@ let applicantData = $('#applicantList').DataTable({
     {
         extend: 'excelHtml5',
         exportOptions: {
-            columns: [1,2,3,4,5,6,7]
+            columns: [2,3,4,5,6,7, 8, 9]
         },
         filename: 'CLSU | Office of Admissions',
         "action": newexportaction
@@ -405,7 +405,7 @@ let applicantData = $('#applicantList').DataTable({
         messageTop: 'Office of Admissions Copy',
         title: 'OFFICE OF ADMISSIONS',
         exportOptions: {
-            columns: [1,2,3,4,5,6,7]
+            columns: [2,3,4,5,6,7, 8, 9]
         },
         "action": newexportaction
     },
@@ -414,7 +414,7 @@ let applicantData = $('#applicantList').DataTable({
         messageTop: 'Office of Admissions Copy',
         title: 'OFFICE OF ADMISSIONS',
         exportOptions: {
-            columns: [1,2,3,4,5,6,7]
+            columns: [2,3,4,5,6,7, 8, 9]
         },
         "action": newexportaction,
         customize: function(win)

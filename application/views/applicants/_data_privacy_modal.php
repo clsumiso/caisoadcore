@@ -39,7 +39,7 @@
                 <p>For data privacy concerns, please contact us at <br> oad-privacy@clsu2.edu.ph.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn bg-teal waves-effect" onclick="submitDataPrivacy('<?php echo $appID; ?>')">Confirm & Continue</button>
+                <button type="button" class="btn bg-teal waves-effect" onclick="submitDataPrivacy('<?php echo $appID; ?>', '<?php echo $securityCode; ?>')">Confirm & Continue</button>
                 <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
             </div>
         </div>

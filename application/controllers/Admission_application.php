@@ -95,13 +95,14 @@ class Admission_application extends CI_Controller
   public function admission_verification($applicationID)
   {
     $emailLogs = $this->admission_application->getEmailLogs($applicationID);
+    $requiredAttachment = $this->admission_application->getRequiredAttachment($applicationID);
+    $requiredAttachmentHTML = "";
+
     $emailSendStatus = '';
     $emailSentCtr = 0;
 
     foreach ($emailLogs as $logs) 
     {
-      
-
       $emailSendStatus .= '<tr>';
         $emailSendStatus .= '<td>'.$logs->email.'</td>';
         $emailSendStatus .= '<td>'.($logs->status == 0 ? "EMAIL SENDING FAILED" : "EMAIL SENT").'</td>';
@@ -118,10 +119,38 @@ class Admission_application extends CI_Controller
       $emailSendStatus .= '</tr>';
     }
 
+    foreach ($requiredAttachment as $attachment) 
+    {
+      $requiredAttachmentHTML .= '<tr>';
+        $requiredAttachmentHTML .= '<td>GWA</td>';
+        $requiredAttachmentHTML .= '<td>'.($attachment->gwa_file == "" ? "No attachment found, please upload" : "complete").'</td>';
+        $requiredAttachmentHTML .= '<td><form><input type="file" class="form-control"><input type="submit" class="btn btn-sm bg-blue-grey waves-effect" value="UPLOAD"></form></td>';
+      $requiredAttachmentHTML .= '</tr>';
+
+      $requiredAttachmentHTML .= '<tr>';
+        $requiredAttachmentHTML .= '<td>PICTURE</td>';
+        $requiredAttachmentHTML .= '<td>'.($attachment->img_file == "" ? "No attachment found, please upload" : "complete").'</td>';
+        $requiredAttachmentHTML .= '<td><form><input type="file" class="form-control"><input type="submit" class="btn btn-sm bg-blue-grey waves-effect" value="UPLOAD"></form></td>';
+      $requiredAttachmentHTML .= '</tr>';
+
+      $requiredAttachmentHTML .= '<tr>';
+        $requiredAttachmentHTML .= '<td>PROFICIENCY (optional)</td>';
+        $requiredAttachmentHTML .= '<td></td>';
+        $requiredAttachmentHTML .= '<td></td>';
+      $requiredAttachmentHTML .= '</tr>';
+
+      $requiredAttachmentHTML .= '<tr>';
+        $requiredAttachmentHTML .= '<td>TOR</td>';
+        $requiredAttachmentHTML .= '<td>'.($attachment->tor_file == "" ? "No attachment found, please upload" : "complete").'</td>';
+        $requiredAttachmentHTML .= '<td><form><input type="file" class="form-control"><input type="submit" class="btn btn-sm bg-blue-grey waves-effect" value="UPLOAD"></form></td>';
+      $requiredAttachmentHTML .= '</tr>';
+    }
+
     $data = array(
       "appID"             =>  $applicationID,
       "emailSendStatus"   =>  $emailSendStatus,
-      "trackTitle"        =>  "List below are the emails of your reference. If status is EMAIL SENDING FAILED, please click RESEND Button",
+      "requiredAttachment"=>  $requiredAttachmentHTML,
+      "trackTitle"        =>  "List below are the emails of your reference. If status is EMAIL SENDING FAILED, please click RESEND BUTTON",
       "enrollmentFormBtn" =>  count($emailLogs) == $emailSentCtr ? '<br><button class="btn btn-lg btn-block btn-success waves-effect">FILL-UP ENROLLMENT FORM</button>' : 0
     );
     
@@ -699,7 +728,7 @@ class Admission_application extends CI_Controller
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">Science City of Muñoz, Nueva Ecija</p>
               </td>
               <td style="text-align: right; width: 20%;">
-                <img src="assets/images/passport-photo.png" style="width: 1.3in; height; 1.7in; border: 1px solid #000;" />
+                <img src="uploads/graduate_level_requirements/IMG/'.$data[0]->img_file.'" style="width: 1.2in; height; 1.6in; border: 1px solid #000;" />
               </td>
             </tr>
           </table>
@@ -1419,7 +1448,7 @@ class Admission_application extends CI_Controller
             </tr>
           </table>
 
-          <table class="table table-bordered">
+          <table class="table">
             <tr>
               <td colspan="5" style="padding-top: 10px;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
@@ -1645,57 +1674,57 @@ class Admission_application extends CI_Controller
             <tr>
               <td style="padding-top: 10px; text-align: center; border-bottom: 1px solid #000;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                '.($this->getParseDelimetedData($data[0]->academic, 0)).'
                 </p>
               </td>
               <td></td>
               <td style="padding-top: 10px; text-align: center; border-bottom: 1px solid #000;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                '.($this->getParseDelimetedData($data[0]->academic, 1)).'
                 </p>
               </td>
               <td></td>
               <td style="padding-top: 10px; text-align: center; border-bottom: 1px solid #000;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                '.($this->getParseDelimetedData($data[0]->academic, 2)).'
                 </p>
               </td>
             </tr>
             <tr>
               <td style="text-align: center; border-bottom: 1px solid #000;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                '.($this->getParseDelimetedData($data[0]->academic, 3)).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                '.($this->getParseDelimetedData($data[0]->academic, 4)).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                '.($this->getParseDelimetedData($data[0]->academic, 5)).'
                 </p>
               </td>
             </tr>
             <tr>
               <td style="text-align: center; border-bottom: 1px solid #000;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                '.($this->getParseDelimetedData($data[0]->academic, 6)).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                '.($this->getParseDelimetedData($data[0]->academic, 7)).'
                 </p>
               </td>
               <td></td>
               <td style="text-align: center; border-bottom: 1px solid #000;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                '.($this->getParseDelimetedData($data[0]->academic, 8)).'
                 </p>
               </td>
             </tr>
@@ -1709,7 +1738,7 @@ class Admission_application extends CI_Controller
             <tr>
               <td colspan="5" style="border-bottom: 1px solid #000;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular; width: 100%;">
-                  Test    
+                  '.$data[0]->future_plan.'    
                 </p>
               </td>
             </tr>
@@ -1723,7 +1752,7 @@ class Admission_application extends CI_Controller
             <tr>
               <td colspan="5" style="border-bottom: 1px solid #000;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular; width: 100%;">
-                  Test              
+                  '.$data[0]->expected_source.'               
                 </p>
               </td>
             </tr>
@@ -1740,23 +1769,18 @@ class Admission_application extends CI_Controller
             <tr>
               <td style="width: 10%;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular; width: 100%;">
-                  School Year:               
-                </p>
-              </td>
-              <td style="border-bottom: 1px solid #000;">
-                <p style="font-family: roboto; font-size: 11px; font-weight: regular; width: 100%;">
-                  Test            
+                  School Year:  '.$data[0]->school_year.'             
                 </p>
               </td>
             </tr>
             <tr>
-              <td style="text-align: left; padding-bottom: 20px;">
+              <td style="text-align: left; padding-bottom: 20px; width: 50%;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
                   Semester:
                 </p>
                 <p style="font-family: roboto; font-size: 11px;">
-                  <span style="font-size: 8px;background-color: #000; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 1<sup>st</sup> Semester
-                  <span style="font-size: 8px;background-color: #fff; border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 2<sup>nd</sup> Semester
+                  <span style="font-size: 8px;'.($data[0]->semester == 1 ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 1<sup>st</sup> Semester
+                  <span style="font-size: 8px;'.($data[0]->semester == 2 ? "background-color: #000;" : "background-color: #fff;").' border: 1px solid #000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 2<sup>nd</sup> Semester
                 </p>
               </td>
               <td></td>
@@ -1791,7 +1815,7 @@ class Admission_application extends CI_Controller
               </td>
               <td colspan="2" style="border-bottom: 1px solid #000; padding-top: 20px; text-align: center;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                  '.strtoupper($data[0]->fname).' '.strtoupper($data[0]->mname).' '.strtoupper($data[0]->lname).'
                 </p>
               </td>
             </tr>
@@ -1835,7 +1859,7 @@ class Admission_application extends CI_Controller
               </td>
               <td colspan="2" style="border-bottom: 1px solid #000; padding-top: 20px; text-align: center;">
                 <p style="font-family: roboto; font-size: 11px; font-weight: regular;">
-                  Test
+                '.strtoupper(date("F j, Y", strtotime($data[0]->date_created))).'
                 </p>
               </td>
             </tr>
@@ -1868,15 +1892,15 @@ class Admission_application extends CI_Controller
     $mpdf->SetHTMLFooter('
       <table width="100%">
           <tr>
-              <td style="font-family: roboto; font-size: 8px; font-style: italic;">ACA.OAD.YYY.F.133 (Revision No. 0; January 5, 2023)</td>
+              <td style="font-family: roboto; font-size: 8px; font-style: italic;">ACA.OAD.YYY.F.133 (Revision No. 1; May 23, 2023)</td>
           </tr>
       </table>
     ');
     
     $mpdf->WriteHTML($stylesheet, 1); // CSS Script goes here.
     $mpdf->WriteHTML($html); //HTML Content goes here.
-    // $mpdf->Output('application-form.pdf', 'D');
-    $mpdf->Output();
+    $mpdf->Output('application-form.pdf', 'I');
+    // $mpdf->Output();
   }
 
   public function applicationInfo($applicationID = "")

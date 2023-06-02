@@ -220,6 +220,25 @@
                 </div>
             <?php endif ?>
 
+            <div class="row clearfix">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <h1 class="text-center">REQUIRED ATTACHMENT</h1>
+                </div>
+            </div>
+            <div class="row clearfix">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <table>
+                        <thead>
+                            <th>ATTACHMENT TYPE</th>
+                            <th>STATUS</th>
+                            <th>...</th>
+                        </thead>
+                        <tbody>
+                            <?php echo $requiredAttachment; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             
             <?php if ($enrollmentFormBtn != 0): ?>
                 <?php //echo $enrollmentFormBtn; ?>

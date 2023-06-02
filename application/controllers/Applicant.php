@@ -92,24 +92,48 @@ class Applicant extends CI_Controller
     }
 	}
 
-  public function applicant_form($applicantID = "")
+  public function applicant_form($applicantID, $securityCode)
   {
-    $profileData = $this->applicant->getApplicantInfo($applicantID);
+    $simple_string = $applicantID;
+    $ciphering = "AES-128-CTR";
+    $iv_length = openssl_cipher_iv_length($ciphering);
+    $options = 0;
+    $encryption_iv = '1234567891011121';
+    $encryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+    $encryption = openssl_encrypt($simple_string, $ciphering,$encryption_key, $options, $encryption_iv);
+    $decryption_iv = '1234567891011121';
+    $decryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+    $decryption=openssl_decrypt ($encryption, $ciphering, $decryption_key, $options, $decryption_iv);
+    if (urlencode($encryption)  == $securityCode)
+    {
+      $profileData = $this->applicant->getApplicantInfo($applicantID);
 
-    $data = array(
-      'appID'             =>  $applicantID,
-      'lastname'          =>  count($profileData) > 0 ? $profileData[0]->lname : "",
-      'firstname'         =>  count($profileData) > 0 ? $profileData[0]->fname : "",
-      'middlename'        =>  count($profileData) > 0 ? $profileData[0]->mname : "",
-      'program'           =>  count($profileData) > 0 ? $profileData[0]->program_name : "",
-      'applicantProgram'  =>  $this->applicantProgram()
-    );
+      $data = array(
+        'appID'             =>  $applicantID,
+        'lastname'          =>  count($profileData) > 0 ? $profileData[0]->lname : "",
+        'firstname'         =>  count($profileData) > 0 ? $profileData[0]->fname : "",
+        'middlename'        =>  count($profileData) > 0 ? $profileData[0]->mname : "",
+        'program'           =>  count($profileData) > 0 ? $profileData[0]->program_name : "",
+        'applicantProgram'  =>  $this->applicantProgram()
+      );
 
-    $this->load->view('applicants/_header', $data);
-    $this->load->view('applicants/_css', $data);
-    $this->load->view('applicants/applicant_enrollment_form_view', $data);
-    $this->load->view('applicants/_footer', $data);
-    $this->load->view('applicants/_js', $data);
+      $this->load->view('applicants/_header', $data);
+      $this->load->view('applicants/_css', $data);
+      $this->load->view('applicants/applicant_enrollment_form_view', $data);
+      $this->load->view('applicants/_footer', $data);
+      $this->load->view('applicants/_js', $data);
+    }else
+    {
+      $data = array(
+        "code"  =>  "OFFICE OF ADMISSIONS",
+        "msg"   =>  "Forbidden Access",
+        "link"  =>  "https://ctec.clsu2.edu.ph/clsucat/",
+        "homepageBTN" =>  "GO TO CTEC"
+      );
+      $this->load->view('err/custom_error', $data);
+    }
+
+    
   }
 
   public function update_applicant_form($appID, $securityCode)
@@ -268,6 +292,15 @@ class Applicant extends CI_Controller
       $this->load->view('applicants/update_applicant_enrollment_form_view', $data);
       $this->load->view('applicants/_footer', $data);
       $this->load->view('applicants/_js', $data);
+    }else
+    {
+      $data = array(
+        "code"  =>  "OFFICE OF ADMISSIONS",
+        "msg"   =>  "Forbidden Access",
+        "link"  =>  "https://ctec.clsu2.edu.ph/clsucat/",
+        "homepageBTN" =>  "GO TO CTEC"
+      );
+      $this->load->view('err/custom_error', $data);
     }
   }
 
@@ -290,7 +323,7 @@ class Applicant extends CI_Controller
         if ($this->letterContent($applicantID) == "not_scheduled_today")
         {
           $data = array(
-            "code"  =>  "401",
+            "code"  =>  "OFFICE OF ADMISSIONS",
             "msg"   =>  "You are not scheduled today",
             "link"  =>  "https://ctec.clsu2.edu.ph/clsucat/",
             "homepageBTN" =>  "GO TO CTEC"
@@ -299,7 +332,7 @@ class Applicant extends CI_Controller
         }else if ($this->letterContent($applicantID) == "profile_not_found")
         {
           $data = array(
-            "code"  =>  "404",
+            "code"  =>  "OFFICE OF ADMISSIONS",
             "msg"   =>  "Profile not found, please contact CLSU Testing and Evaluation Center (CTEC)",
             "link"  =>  "https://ctec.clsu2.edu.ph/clsucat/",
             "homepageBTN" =>  "GO TO CTEC"
@@ -309,6 +342,7 @@ class Applicant extends CI_Controller
         {
           $data = array(
             "appID"               =>  $applicantID,
+            "securityCode"        =>  $securityCode,
             "letterContent"       =>  $this->letterContent($applicantID),
             "confirmationStatus"  =>  $this->verifyConfirmation($applicantID)
           );
@@ -394,7 +428,7 @@ class Applicant extends CI_Controller
 
           foreach ($letterData as $letter) 
           {
-            // $htmlData = $letter->content;
+            $htmlData = $letter->content;
           }
           
           if (count($confirmationData) > 0)
@@ -407,6 +441,80 @@ class Applicant extends CI_Controller
             //         </div>
             //     </div>
             // ';
+
+            if ($appType == 2)
+            {
+              $max = 0;
+              $min = 0;
+              $ctr = 0;
+
+              $initialProgram = $this->applicant->getInitialProgram($applicantID);
+              // $newProgram = $this->applicant->getNewProgram($applicantID);
+              $applicantProgramID = count($initialProgram) > 0 ? $initialProgram[0]->program_id : $profileData[0]->program_id;
+
+              if (count($this->applicant->checkTotalEnroll($applicantProgramID)) < $this->applicant->checkSlot($applicantProgramID)[0]->slot) 
+              {
+                $letterData = $this->applicant->getLetterContent($applicantID, 15);
+
+                foreach ($letterData as $letter) 
+                {
+                  $htmlData = $letter->content;
+                }
+
+                // $topRank = $this->applicant->checkSlot($applicantProgramID)[0]->slot - count($this->applicant->checkTotalEnroll($applicantProgramID));
+
+                $topRank = count($this->applicant->getRemainingSlot($applicantProgramID)) > 0 ? intval($this->applicant->getRemainingSlot($applicantProgramID)[0]->remaining_slot) : 0;
+                
+                $rankings = $this->applicant->getApplicantRank($applicantProgramID);
+                foreach ($rankings as $rank) 
+                {
+                  if ($ctr == 0) 
+                  {
+                    $max = $rank->percentile_rank;
+                  }
+                  
+                  $topRank--;
+                  if ($topRank == 0)
+                  {
+                    $min = $rank->percentile_rank;
+                    break;
+                  }
+                  $ctr++;
+                }
+
+                $applicantPercentileRank = $this->applicant->getApplicantIndividualRank($applicantID);
+                if (count($applicantPercentileRank) > 0)
+                {
+                  if (floatval($applicantPercentileRank[0]->percentile_rank) >= $min)
+                  {
+                    // $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\')">ACCEPT</a>';
+                  }else
+                  {
+                    // Not qualified in the top ranks
+                    $letterData = $this->applicant->getLetterContent($applicantID, 17);
+
+                    foreach ($letterData as $letter) 
+                    {
+                      $htmlData = $letter->content;
+                    }
+                  }
+                }else
+                {
+                  $htmlData = "profile_not_found";
+                }
+                
+                // $htmlData = '<p>'.$max.'</p>|<p>'.$min.'</p>|<p>'.$topRank.'</p>';
+              }else
+              {
+                // $htmlData = "profile_not_found";
+                $letterData = $this->applicant->getLetterContent($applicantID, 14);
+
+                foreach ($letterData as $letter) 
+                {
+                  $htmlData = $letter->content;
+                }
+              }
+            }
             $htmlData .= '
               <a href="javascript:void(0)" class="btn bg-blue-grey btn-lg btn-block waves-effect" onclick="updateIndividualForm(\''.$applicantID.'\', \''.urlencode($encryption).'\')">UPDATE INDIVIDUAL RECORD FORM</a>
 
@@ -415,11 +523,11 @@ class Applicant extends CI_Controller
               <a href="/office-of-admissions/app-dl-osa-form/'.$applicantID.'/'.urlencode($encryption).'" class="btn bg-amber btn-lg btn-block waves-effect">DOWNLOAD OSA FORM <small>(Date Confirmed: '.$confirmationData[0]->confirmation_date.')</small></a>';
           }else
           {
-            if (strtotime($this->get_time()) >= strtotime($releaseData[0]->release_date) && strtotime($this->get_time()) <= strtotime($releaseData[0]->release_date_to))
+            if (strtotime($this->get_time()) >= strtotime($releaseData[0]->date_from) && strtotime($this->get_time()) <= strtotime($releaseData[0]->date_to))
             {
               if ($appType == 1)
               {
-                $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\')">ACCEPT</a>';
+                // $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\', \''.urlencode($encryption).'\')">ACCEPT</a>';
               }
 
               if ($appType == 2)
@@ -427,7 +535,11 @@ class Applicant extends CI_Controller
                 $max = 0;
                 $min = 0;
                 $ctr = 0;
-                if (count($this->applicant->checkTotalEnroll($profileData[0]->program_id)) < $this->applicant->checkSlot($profileData[0]->program_id)[0]->slot) 
+                $initialProgram = $this->applicant->getInitialProgram($applicantID);
+                // $newProgram = $this->applicant->getNewProgram($applicantID);
+                $applicantProgramID = count($initialProgram) > 0 ? $initialProgram[0]->program_id : $profileData[0]->program_id;
+
+                if (count($this->applicant->checkTotalEnroll($applicantProgramID)) < $this->applicant->checkSlot($applicantProgramID)[0]->slot) 
                 {
                   $letterData = $this->applicant->getLetterContent($applicantID, 15);
 
@@ -436,9 +548,11 @@ class Applicant extends CI_Controller
                     $htmlData = $letter->content;
                   }
 
-                  $topRank = $this->applicant->checkSlot($profileData[0]->program_id)[0]->slot - count($this->applicant->checkTotalEnroll($profileData[0]->program_id));
+                  // $topRank = $this->applicant->checkSlot($applicantProgramID)[0]->slot - count($this->applicant->checkTotalEnroll($applicantProgramID));
+
+                  $topRank = count($this->applicant->getRemainingSlot($applicantProgramID)) > 0 ? intval($this->applicant->getRemainingSlot($applicantProgramID)[0]->remaining_slot) : 0;
                   
-                  $rankings = $this->applicant->getApplicantRank($profileData[0]->program_id);
+                  $rankings = $this->applicant->getApplicantRank($applicantProgramID);
                   foreach ($rankings as $rank) 
                   {
                     if ($ctr == 0) 
@@ -460,11 +574,11 @@ class Applicant extends CI_Controller
                   {
                     if (floatval($applicantPercentileRank[0]->percentile_rank) >= $min)
                     {
-                      $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\')">ACCEPT</a>';
+                      $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\', \''.urlencode($encryption).'\')">ACCEPT</a>';
                     }else
                     {
                       // Not qualified in the top ranks
-                      $letterData = $this->applicant->getLetterContent($applicantID, 14);
+                      $letterData = $this->applicant->getLetterContent($applicantID, 17);
 
                       foreach ($letterData as $letter) 
                       {
@@ -566,9 +680,60 @@ class Applicant extends CI_Controller
     echo json_encode(array("profile"  =>  $output));
   }
 
+  public function changeProgram()
+  {
+    
+    $applicantID = $_POST['appID'];
+    $programID = $_POST['programID'];
+    $msg = array();
+
+    $simple_string = $applicantID;
+    $ciphering = "AES-128-CTR";
+    $iv_length = openssl_cipher_iv_length($ciphering);
+    $options = 0;
+    $encryption_iv = '1234567891011121';
+    $encryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+    $encryption = openssl_encrypt($simple_string, $ciphering,$encryption_key, $options, $encryption_iv);
+    $decryption_iv = '1234567891011121';
+    $decryption_key = "c3ntr411uz0n5t4t3un1v3rs1ty";
+    $decryption=openssl_decrypt ($encryption, $ciphering, $decryption_key, $options, $decryption_iv);
+
+    $data = array(
+      "program_id"  =>  $programID
+    );
+
+    $condition = array(
+      "applicant_id"  =>  $applicantID
+    );
+
+    $updateProgram = $this->applicant->updateForm($data, $condition, array("tbl_profile"));
+    if ($updateProgram !== false)
+    {
+      $msg = array(
+        "sys_msg"       =>  "success",
+        "msg"           =>  "",
+        "securityCode"  =>  urlencode($encryption)
+      );
+    }else
+    {
+      $msg = array(
+        "sys_msg"       =>  "failed",
+        "msg"           =>  "Something went wrong, please try again",
+        "securityCode"  =>  urlencode($encryption)
+      );
+    }
+
+    echo json_encode($msg);
+  }
+
   public function nonQoutaPrograms($applicantID, $qualifier_type)
   {
     $programData = $this->applicant->getProgram(0);
+
+    $initialProgram = $this->applicant->getInitialProgram($applicantID);
+    $newProgram = $this->applicant->getNewProgram($applicantID);
+
+    $confirmationData = $this->applicant->getConfirmation($applicantID);
     $applicantProgram = $this->applicant->getReleaseDate($qualifier_type);;
     $htmlData = '';
 
@@ -582,7 +747,31 @@ class Applicant extends CI_Controller
           // ' <button class="btn bg-teal">ACCEPT</button></li>'
           if (count($this->applicant->checkTotalEnroll($program->program_id)) <= $this->applicant->checkSlot($program->program_id)[0]->slot)
           {
-            $htmlData .= '<li>'.$program->program_name.'</li>';
+            if (count($initialProgram) > 0)
+            {
+              if ($initialProgram[0]->program_id != $program->program_id)
+              {
+                if (count($confirmationData) > 0)
+                {
+                  if ($newProgram[0]->program_id == $program->program_id)
+                  {
+                    $htmlData .= '<li>'.$program->program_name.'</li>';
+                  }
+                }else
+                {
+                  if ($initialProgram[0]->program_id == $newProgram[0]->program_id)
+                  {
+                    $htmlData .= '<li>'.$program->program_name.' | <button class="btn bg-teal" onclick="acceptChoiceProgram(\''.$program->program_id.'\', \''.$program->program_name.'\', \''.$applicantID.'\')">ACCEPT</button></li>';
+                  }else
+                  {
+                    if ($newProgram[0]->program_id == $program->program_id)
+                    {
+                      $htmlData .= '<li>'.$program->program_name.' | <button class="btn bg-teal" onclick="acceptChoiceProgram(\''.$program->program_id.'\', \''.$program->program_name.'\', \''.$applicantID.'\')">GO TO INDIVIDUAL RECORD FORM</button></li>';
+                    }
+                  }
+                }
+              }
+            }
           }
           
         }else
@@ -2070,7 +2259,7 @@ class Applicant extends CI_Controller
               </td>
               <td style="border-bottom: 1px solid #000;">
                 <p style="text-align: center; font-family: roboto; font-size: 12px;">
-                  '.$applicant->student_email.'
+                  '.$clsu2_email.'
                 </p>
               </td>
             </tr>

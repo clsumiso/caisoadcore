@@ -1,6 +1,61 @@
 const clusters = _clusters_data();
 let year = new Date().getFullYear();
 
+function acceptChoiceProgram(programID, programName, applicantID, securityCode)
+{
+    swal({
+        title: 'Important Notice',
+        text: '<p>Make sure that your decision on course choice is <b>FINAL</b>. Changing of course choice is <b>NOT ALLOWED</b> once acepptance of admission offer to <b>'+programName+'</b> is confirmed.</p>',
+        type: "info",
+        html: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        confirmButtonText: "CONFIRMED",
+        cancelButtonText: "CANCEL",
+        showCancelButton: true,
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        closeOnConfirm: true
+    }, function (isConfirm) 
+    {
+        if (isConfirm) 
+        {
+            $.ajax({
+                url: window.location.origin + '/office-of-admissions/applicant/changeProgram',
+                type: "POST",
+                data: { appID: applicantID, programID: programID },
+                dataType: "JSON",
+                success: function (response)
+                {
+                    // data_privacy(applicantID) 
+                    if (response.sys_msg == "success")
+                    {
+                        getApplicantInfo(applicantID);
+                        data_privacy(applicantID, securityCode);
+                    }else
+                    {
+                        swal({
+                            title: "Office of Admissions",
+                            text: response.sys_msg,
+                            type: "warning"
+                        });
+                    }
+                },
+                complete: function () {
+    
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    swal({
+                        title: "Office of Admissions",
+                        text: "Something went wrong, please try again.",
+                        type: "info"
+                    });
+                }
+            });
+        }
+    });
+}
+
 function getApplicantInfo(appID)
 {
     $.ajax({
@@ -511,7 +566,7 @@ function _barangay3()
     $('.barangay3').html(html_content);
 }
 
-function data_privacy(applicantID) 
+function data_privacy(applicantID, securityCode) 
 {
     $.ajax({
         url: window.location.origin + '/office-of-admissions/applicant/check_data_privacy',
@@ -531,7 +586,7 @@ function data_privacy(applicantID)
                 'show');
             }else
             {
-                window.open(window.location.origin + "/office-of-admissions/app-enrollment-form/"+applicantID, "_self");
+                window.open(window.location.origin + "/office-of-admissions/app-enrollment-form/"+applicantID+"/"+securityCode, "_self");
             }
         },
         complete: function () 
@@ -628,7 +683,7 @@ function data_privacy(applicantID)
     //   });
 }
 
-function submitDataPrivacy(applicantID)
+function submitDataPrivacy(applicantID, securityCode)
 {
     if ($("#chkDataPrivacy1").is(":checked"))
     {
@@ -639,7 +694,7 @@ function submitDataPrivacy(applicantID)
             dataType: "JSON",
             success: function (privacy_data){
                 // console.log(privacy_data); 
-                window.open(window.location.origin + "/office-of-admissions/app-enrollment-form/"+applicantID, "_self");
+                window.open(window.location.origin + "/office-of-admissions/app-enrollment-form/"+applicantID+"/"+securityCode, "_self");
             },
             complete: function () {
 

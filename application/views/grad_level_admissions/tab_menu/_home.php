@@ -30,7 +30,7 @@
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <h3>LIST OF GRADUATE LEVEL APPLICANTS</h3>
                             <div class="table-responsive">
-                                <table id='applicantList' class='table table-bordered table-striped table-hover js-basic-example nowrap dataTable'>
+                                <table id='applicantList' class='table table-bordered table-striped table-hover js-basic-example dataTable'>
                                     <thead>
                                         <tr>
                                             <th colspan="8"></th>
@@ -39,13 +39,14 @@
                                         <tr>
                                             <th>#</th>
                                             <th>...</th>
+                                            <th>Requirements</th>
                                             <th>Lastname</th>
                                             <th>Firstname</th>
                                             <th>Middlename</th>
                                             <th>Degree Program</th>
                                             <th>Level Applied</th>
                                             <th>Date Applied</th>
-                                            <th>Reference</th>
+                                            <th style="text-align: center;">Reference <br> (Reference 1|Reference 2|Reference 3)</th>
                                             <th>Department Head</th>
                                             <th>Dean</th>
                                         </tr>

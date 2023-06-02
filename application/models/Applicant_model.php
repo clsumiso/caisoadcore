@@ -64,6 +64,30 @@ class Applicant_model extends CI_Model {
     return $query->result();
   }
 
+  public function getInitialProgram($applicantID = "")
+  {
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select('program_id');
+    $applicantDB->from('tbl_firstchoice');
+    $applicantDB->where('applicant_id', $applicantID);
+
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
+  public function getNewProgram($applicantID = "")
+  {
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select('program_id');
+    $applicantDB->from('tbl_profile');
+    $applicantDB->where('applicant_id', $applicantID);
+
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
   public function getApplicantRank($programID)
   {
     /**
@@ -75,6 +99,18 @@ class Applicant_model extends CI_Model {
     $applicantDB->from('tbl_applicant_ranking');
     $applicantDB->join('tbl_profile', 'tbl_applicant_ranking.applicant_id = tbl_profile.applicant_id', 'inner');
     $applicantDB->where('tbl_profile.program_id', $programID);
+
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
+  public function getRemainingSlot($programID = 0)
+  {
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select('remaining_slot');
+    $applicantDB->from('tbl_program');
+    $applicantDB->where('program_id', $programID);
 
     $query = $applicantDB->get();
 

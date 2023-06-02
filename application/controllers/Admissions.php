@@ -25,6 +25,7 @@ class Admissions extends CI_Controller
   {
     parent::__construct();
 		$this->load->helper('date');
+    $this->load->helper('download');
     $this->load->model('admissions_model', 'admissions');
   }
 
@@ -100,7 +101,7 @@ class Admissions extends CI_Controller
 		$postData = $this->input->post();
 
 		// Get data
-		$data = $this->admissions->getSchedule($postData);
+		$data = $this->admissions->getGraduateApplicants($postData);
 
 		echo json_encode($data);
   }
@@ -122,6 +123,44 @@ class Admissions extends CI_Controller
 
 		echo json_encode($data);
 	}
+
+  public function downloadRequirements($directory = "", $filename = "")
+  {
+    force_download('/uploads/graduate_level_requirements/'.$directory.'/'.$filename, NULL);
+  }
+
+  public function departmentEndorse()
+  {
+    $applicationID = $_POST['appID'];
+    $msg = array();
+
+    $data = array(
+      "department_remarks" =>  "pending"
+    );
+
+    $condition = array(
+      "application_id"  =>  $applicationID
+    );
+
+    $endorse = $this->admissions->update($data, $condition, array("oad0003"));
+    if ($endorse !== false)
+    {
+      $msg = array(
+        "sys_msg" =>  "success",
+        "msg"     =>  "Application forwarded successfully",
+        "type"    =>  "success"
+      );
+    }else
+    {
+      $msg = array(
+        "sys_msg" =>  "failed",
+        "msg"     =>  "Application forwarding failed",
+        "type"    =>  "error"
+      );
+    }
+
+    echo json_encode($msg);
+  }
 
 }
 

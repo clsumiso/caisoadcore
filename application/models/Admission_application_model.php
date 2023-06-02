@@ -98,6 +98,17 @@ class Admission_application_model extends CI_Model {
     return $query->result();
   }
 
+  public function getRequiredAttachment($applicationID = "")
+  {
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select("tor_file, gwa_file, img_file, proficiency_file");
+    $applicantDB->from("oad0001");
+    $applicantDB->where("application_id", $applicationID);
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
   // ------------------------------------------------------------------------
   /**
 	 * CRUD
