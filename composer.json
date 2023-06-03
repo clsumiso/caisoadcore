@@ -16,7 +16,8 @@
 		"ezyang/htmlpurifier": "^4.16",
 		"phpoffice/phpspreadsheet": "^1.25",
 		"box/spout": "^3.3",
-		"mpdf/mpdf": "*"
+		"mpdf/mpdf": "*",
+		"phpoffice/phpword": "*"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
