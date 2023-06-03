@@ -124,16 +124,16 @@ class Admissions_model extends CI_Model {
 				$decryption=openssl_decrypt ($encryption, $ciphering, $decryption_key, $options, $decryption_iv);
 
 				$data[] = array( 
-				"numRows"				      =>	($ctr++),
-				"action"				      =>	'<a href="/office-of-admissions/app-dl-enrollment-form/'.$record->applicant_id.'" class="btn bg-teal waves-effect">DOWNLOAD ENROLLMENT FORM</a> | <a href="/office-of-admissions/app-dl-osa-form/'.$record->applicant_id.'/'.urlencode($encryption).'" class="btn bg-amber waves-effect">DOWNLOAD OSA FORM</a>',
-				"applicant_id"			  =>	$record->applicant_id,
-				"fname"					      =>	$record->fname,
-				"mname"					      =>	$record->mname,
-				"lname"					      =>	$record->lname,
-				"program_name"			  =>	$record->program_name,
-				"qualifier_type"		  =>	$record->name,
-				"confirmation_status"	=>	$record->confirmation_status,
-				"confirmation_date"		=>	$record->confirmation_date
+					"numRows"				=>	($ctr++),
+					"action"				=>	'<a href="/office-of-admissions/app-dl-enrollment-form/'.$record->applicant_id.'" class="btn bg-teal btn-block waves-effect">DOWNLOAD ENROLLMENT FORM</a><a href="/office-of-admissions/app-dl-osa-form/'.$record->applicant_id.'/'.urlencode($encryption).'" class="btn bg-amber btn-block waves-effect">DOWNLOAD OSA FORM</a><a href="/office-of-admissions/app-dl-request-form137/'.$record->applicant_id.'" class="btn bg-blue-grey btn-block waves-effect">Request Form137</a>',
+					"applicant_id"			=>	$record->applicant_id,
+					"fname"					=>	$record->fname,
+					"mname"					=>	$record->mname,
+					"lname"					=>	$record->lname,
+					"program_name"			=>	$record->program_name,
+					"qualifier_type"		=>	$record->name,
+					"confirmation_status"	=>	$record->confirmation_status,
+					"confirmation_date"		=>	$record->confirmation_date
 				); 
 			}
 		}

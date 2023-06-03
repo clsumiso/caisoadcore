@@ -167,6 +167,16 @@ class Applicant_model extends CI_Model {
     return $query->result();
   }
 
+  public function getEnrollmentForm($appID = "")
+  {
+    $db2 = $this->load->database('applicantDB', TRUE);
+    $db2->select("*");
+    $db2->from('tbl_enrollment_form');
+    $db2->where('applicant_id', $appID);
+    $query = $db2->get();
+    return $query->result();
+  }
+
   public function getProgram($qoutaProgram = "")
   {
     $db2 = $this->load->database('applicantDB', TRUE);

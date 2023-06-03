@@ -85,7 +85,6 @@ let applicantData = $('#applicantList').DataTable({
         { data: "mname" },
         { data: "program_name" },
         { data: "qualifier_type" },
-        { data: "confirmation_status" },
         { data: "confirmation_date" }
     ]
 });

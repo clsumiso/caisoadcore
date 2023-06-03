@@ -3827,6 +3827,262 @@ class Applicant extends CI_Controller
     // $mpdf->Output('enrollment_form.pdf', \Mpdf\Output\Destination::FILE);
   }
 
+  public function donwloadForm137($appID)
+  {
+    // ini_set('memory_limit', '-1');
+    // ini_set('max_execution_time', 0);
+    $defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+
+    $defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+
+    $mpdf = new \Mpdf\Mpdf([
+      'mode'          =>  'utf-8',
+      'format'        =>  'LETTER', //in cm
+      'orientation'   =>  'P',
+      'margin_top'    =>  '6',
+      'margin_left'   =>  '25',
+      'margin_right'  =>  '25',
+      'margin_bottom' =>  '0',
+      'fontDir'       =>  array_merge($fontDirs, [
+                              'custom/font/directory',
+                          ]),
+      'fontdata'      => $fontData + [
+                          'roboto' => [
+                            'R' => 'Roboto-Regular.ttf'
+                          ]
+                        ],
+      'default_font'  => 'roboto'
+     ]
+    );
+
+    $mpdf->showWatermarkImage = true;
+    $mpdf->use_kwt = true;
+
+    $stylesheet = "
+      .right {
+          float: right;
+          width: 40%;
+          margin-right: 60px;
+      }
+
+      .left {
+          float: left;
+          width: 45%;
+      }
+
+      .right1 {
+          float: right;
+        width: 60%;
+      }
+
+      .left1 {
+          float: left;
+          width: 40%;
+      }
+
+      .custom-thumbnail
+      {
+        border: 1px solid #000;
+        border-radius: 60px;
+        height: 2in;
+        width: 2in;
+      }
+    ";
+
+    // $applicant_id = $appID;
+    $ctr = 1;
+    // $applicant_info = $this->applicant->get_applicant_info($applicant_id);
+    $test = '';
+
+    $html = '';
+      
+    /*Header*/
+    $html .=  '
+      <table style="text-align: center; margin: 0 auto;">
+        <tr>
+          <td rowspan="3" style="vertical-align: top; padding-right: 20px;">
+            <img src="'.base_url('assets/images/logo.bmp').'" width="80"/>
+          </td>
+          <td style="padding-top: 15px;">
+            <p style="text-align: center; font-family: tahoma; font-size: 12px;">
+                Republic of the Philippines
+            </p>
+            <p style="text-align: center; font-family: tahoma; font-size: 12px; font-weight: bold;">
+              CENTRAL LUZON STATE UNIVERSITY
+            </p>
+            <p style="text-align: center; font-family: tahoma; font-size: 12px;">
+              Science City of Muñoz, Nueva Ecija
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-top: 20px;">
+            <p style="text-align: center; font-family: tahoma; font-size: 16px; font-weight: bold;">
+              OFFICE OF ADMISSIONS
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-top: 30px;">
+            <p style="text-align: center; font-family: tahoma; font-size: 16px; font-weight: bold;">
+              REQUEST FOR FORM 137A/<br>
+              TRANSCRIPT OF RECORDS (TOR)            
+            </p>
+          </td>
+        </tr>
+      </table>
+      <table style="width: 100%; padding-top: 30px;">
+        <tr>
+          <td>
+            <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+              '.date("F j, Y").'
+            </p>
+          </td>
+        </tr>
+      </table>
+      <table style="width: 100%; margin-top: 20px;">
+        <tr>
+          <td>
+            <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+              The Principal/Registrar 
+            </p>
+          </td>
+        </tr>
+      </table>
+    ';
+
+    $enrollmentForm = $this->applicant->getEnrollmentForm($appID);
+    foreach ($enrollmentForm as $enrollment) 
+    {
+      $html .=  '
+        <table style="width: 100%;">
+          <tr>
+            <td>
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: bold;">
+                '.(strtoupper($enrollment->senior_high_address)).'
+              </p>
+            </td>
+          </tr>
+        </table>
+        <table style="width: 100%;">
+          <tr>
+            <td>
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                '.(count(explode("|", $enrollment->senior_high_cluster)) > 0 ? explode("|", $enrollment->senior_high_cluster)[3].", ".explode("|", $enrollment->senior_high_cluster)[2].", ".explode("|", $enrollment->senior_high_cluster)[1].", ".$enrollment->zipcode : "****").'
+              </p>
+            </td>
+          </tr>
+        </table>
+        <table style="width: 100%; margin-top: 20px;">
+          <tr>
+            <td>
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                Dear Sir/Madam,
+              </p>
+            </td>
+          </tr>
+        </table>
+        <table style="width: 100%; margin-top: 20px;">
+          <tr>
+            <td>
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                Please send us the F-137A/Transcript of Records (TOR) of '.($enrollment->sex == "F" ? "Ms." : "Mr.").' <b>'.(strtoupper($enrollment->lastname.", ".$enrollment->firstname." ".$enrollment->middlename)).'</b> who has been temporarily admitted in this University pending receipt of his/her credentials.
+              </p>
+            </td>
+          </tr>
+        </table>
+        <table style="width: 100%; margin-top: 20px;">
+          <tr>
+            <td>
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                Your prompt attention on this request will be highly appreciated.
+              </p>
+            </td>
+          </tr>
+        </table>
+        <table style="width: 100%; margin-top: 20px;">
+          <tr>
+            <td>
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                Very truly yours,
+              </p>
+            </td>
+          </tr>
+        </table>
+        <table style="width: 100%; margin-top: 35px;">
+          <tr>
+            <td style="width: 150px; text-align: center;">
+              <img src="'.base_url('assets/signatures/19880801-02.png').'" />
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: bold; text-decoration: underlined;">
+                FILIPINA C. GATCHALIAN
+              </p>
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                Registrar IV 
+              </p>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+        <table style="width: 100%; margin-top: 35px;">
+          <tr>
+            <td style="border-bottom: 1px solid #000; width: 50px; text-align: center;">
+              <p style="text-align: center; font-family: tahoma; font-size: 15px; font-weight: regular;">
+                &#10003;
+              </p>
+            </td>
+            <td>
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular; font-style: italic;">
+                1<sup>st</sup> request with remarks <b>“Copy for Central Luzon State University”</b> if possible.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border-bottom: 1px solid #000; width: 50px; text-align: center;">
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                
+              </p>
+            </td>
+            <td>
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular; font-style: italic;">
+                2<sup>nd</sup> request with remarks <b>“Copy for Central Luzon State University”</b> if possible.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border-bottom: 1px solid #000; width: 50px; text-align: center;">
+              <p style="text-align: center; font-family: tahoma; font-size: 15px; font-weight: regular;">
+                &#10003;
+              </p>
+            </td>
+            <td>
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular; font-style: italic;">
+                Please entrust to the bearer
+              </p>
+            </td>
+          </tr>
+        </table>
+      ';
+    }
+
+    $mpdf->SetHTMLFooter('<p style="font-size: 10px; font-style: italic;">ACA.OAD.YYY.F.016 (Revision No. 0; August 1, 2016)</p>');
+
+    $mpdf->WriteHTML($stylesheet, 1);
+    $mpdf->WriteHTML($html, 2);
+
+    // $mpdf->watermark_font = 'villona';
+
+    ob_clean();
+    header('Content-type: application/pdf');
+    header('Content-Disposition: inline; filename="enrollment_form.pdf"');
+    header('Content-Transfer-Encoding: binary');
+    header('Accept-Ranges: bytes');
+    $mpdf->Output("request-form137-".$appID."-".(date("YmdHis")).".pdf", \Mpdf\Output\Destination::DOWNLOAD);
+    // $mpdf->Output();
+    ob_end_flush();
+  }
+
 }
 
 
