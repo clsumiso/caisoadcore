@@ -527,6 +527,10 @@ class Applicant extends CI_Controller
             {
               if ($appType == 1)
               {
+                if (in_array($applicantID, array("23-06755")))
+                {
+                  $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\', \''.urlencode($encryption).'\')">ACCEPT</a>';
+                }
                 // $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\', \''.urlencode($encryption).'\')">ACCEPT</a>';
               }
 

@@ -672,9 +672,10 @@ class Admission_application extends CI_Controller
     $fontData = $defaultFontConfig['fontdata'];
     $mpdf = new \Mpdf\Mpdf([
           'mode'          => 'utf-8',
-          'format'        => 'LEGAL', //in cm
+          'format'        => [215.9, 330.2], //in cm
           'orientation'   => 'P',
           'margin_top'    => '15',
+          'margin_bottom' => '50',
           'fontDir'       => array_merge($fontDirs, [
                                   'custom/font/directory',
                           ]),

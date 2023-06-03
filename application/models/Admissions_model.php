@@ -255,6 +255,13 @@ class Admissions_model extends CI_Model {
 
 			$actionBtn .= '<a href="/office-of-admissions/admission_application/applicationInfo/'.$record->application_id.'" class="btn btn-sm bg-teal btn-block waves-effect" target="_BLANK" style="margin-top: 5px;">Application Form</a>';
 
+			$referenceForm = $this->getReferenceAnswer($record->application_id);
+			$referenceCtr = 1;
+			foreach ($referenceForm as $refForm) 
+			{
+				$actionBtn .= '<a href="/office-of-admissions/admissions/exportReferenceForm/'.$refForm->reference_id.'" class="btn btn-sm bg-blue-grey btn-block waves-effect" target="_BLANK" style="margin-top: 5px;">Reference '.($referenceCtr++).'</a>';
+			}
+
 			$data[] = array( 
 				"numRows"				=>	($ctr++),
 				"action"				=>	$actionBtn,
@@ -290,6 +297,8 @@ class Admissions_model extends CI_Model {
 
 		return $response; 
 	}
+
+
 	// End of DataTable data
 
 	/**
@@ -301,6 +310,17 @@ class Admissions_model extends CI_Model {
 		$applicantDB->select("reference_email, reference_status, reference_remarks");
 		$applicantDB->from("oad0003");
 		$applicantDB->where("application_id", $applicationID);
+		$query = $applicantDB->get();
+
+		return $query->result();
+	}
+
+	public function getReferenceAnswer($applicationID = "")
+	{
+		$applicantDB = $this->load->database('applicantDB', TRUE);
+		$applicantDB->select("reference_id");
+		$applicantDB->from("oad0002");
+		$applicantDB->where("applicant_id", $applicationID);
 		$query = $applicantDB->get();
 
 		return $query->result();
@@ -348,6 +368,20 @@ class Admissions_model extends CI_Model {
 					break;
 			}
 		}
+	}
+
+	public function getReferenceInfo($referenceID = "")
+	{
+		$applicantDB = $this->load->database('applicantDB', TRUE);
+		$applicantDB->select("oad0002.*, tbl_college.college_desc, oad0001.lname, oad0001.fname, oad0001.mname");
+		$applicantDB->from("oad0002");
+		$applicantDB->join("oad0001", "oad0002.applicant_id = oad0001.application_id", "inner");
+		$applicantDB->join("tbl_course", "oad0001.field_of_study = tbl_course.course_id", "inner");
+		$applicantDB->join("tbl_college", "tbl_course.college_id = tbl_college.college_id", "inner");
+		$applicantDB->where("oad0002.reference_id", $referenceID);
+		$query = $applicantDB->get();
+
+		return $query->result();
 	}
 	/**
 	 * End of Other functions
