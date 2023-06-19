@@ -144,12 +144,12 @@ class Applicant_model extends CI_Model {
   {
     $db2 = $this->load->database('applicantDB', TRUE);
     $db2->select("tbl_enrollment_form.*, tbl_profile.*, tbl_religion.religion_name, tbl_citizenship.citizenship_name, tbl_confirmation.confirmation_date");
-    $db2->from('tbl_enrollment_form');
-    $db2->join('tbl_profile', 'tbl_enrollment_form.applicant_id = tbl_profile.applicant_id', 'inner');
+    $db2->from('tbl_profile');
+    $db2->join('tbl_enrollment_form', 'tbl_profile.applicant_id = tbl_enrollment_form.applicant_id', 'left');
     $db2->join('tbl_confirmation', 'tbl_profile.applicant_id = tbl_confirmation.confirmation_id', 'inner');
-    $db2->join('tbl_religion', 'tbl_enrollment_form.religion_id = tbl_religion.religion_id', 'inner');
-    $db2->join('tbl_citizenship', 'tbl_enrollment_form.citizenship_id = tbl_citizenship.citizenship_code', 'inner');
-    $db2->where('tbl_enrollment_form.applicant_id', $applicant_id);
+    $db2->join('tbl_religion', 'tbl_enrollment_form.religion_id = tbl_religion.religion_id', 'left');
+    $db2->join('tbl_citizenship', 'tbl_enrollment_form.citizenship_id = tbl_citizenship.citizenship_code', 'left');
+    $db2->where('tbl_profile.applicant_id', $applicant_id);
     $query = $db2->get();
     return $query->result();
   }
@@ -161,7 +161,7 @@ class Applicant_model extends CI_Model {
     $db2->from('tbl_profile');
     $db2->join('tbl_program', 'tbl_profile.program_id = tbl_program.program_id', 'inner');
     $db2->join('tbl_college', 'tbl_program.college_id = tbl_college.college_id', 'inner');
-    $db2->join('tbl_enrollment_form', 'tbl_profile.applicant_id = tbl_enrollment_form.applicant_id', 'inner');
+    $db2->join('tbl_enrollment_form', 'tbl_profile.applicant_id = tbl_enrollment_form.applicant_id', 'left');
     $db2->where('tbl_profile.applicant_id', $appID);
     $query = $db2->get();
     return $query->result();

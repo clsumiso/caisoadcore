@@ -160,154 +160,166 @@ class Applicant extends CI_Controller
     $decryption=openssl_decrypt ($encryption, $ciphering, $decryption_key, $options, $decryption_iv);
     $data = array();
     
-    if ($_SESSION['applicant_id_key'] == $appID)
+    if (isset($_SESSION['applicant_id_key']))
     {
-      if (urlencode($encryption)  == $securityCode)
+      if ($_SESSION['applicant_id_key'] == $appID)
       {
-        $applicant_id = $appID;
-        $ctr = 1;
-        $applicant_info = $this->applicant->get_applicant_info($applicant_id);
-        $test = '';
-        foreach ($applicant_info as $applicant) 
+        if (urlencode($encryption)  == $securityCode)
         {
-          $html = '';
-          $program = '';
-          $college = '';
-          $department = '';
-          $clsu2_email = '';
-
-          $college_vocational = "";
-          // '.$applicant->vocational_school_address.','.$applicant->vocational_school_year.','.$applicant->vocational_awads.'|'.$applicant->college_school_address.','.$applicant->college_school_year.','.$applicant->college_awards.'
-          if ($applicant->vocational_school_address != "")
+          $applicant_id = $appID;
+          $ctr = 1;
+          $applicant_info = $this->applicant->get_applicant_info($applicant_id);
+          $test = '';
+          foreach ($applicant_info as $applicant) 
           {
-            $college_vocational .= $applicant->vocational_school_address;
-          }
+            $html = '';
+            $program = '';
+            $college = '';
+            $department = '';
+            $clsu2_email = '';
 
-          if ($applicant->vocational_school_address != "")
-          {
-            $college_vocational .= ",".$applicant->vocational_school_year;
-          }
+            $college_vocational = "";
+            // '.$applicant->vocational_school_address.','.$applicant->vocational_school_year.','.$applicant->vocational_awads.'|'.$applicant->college_school_address.','.$applicant->college_school_year.','.$applicant->college_awards.'
+            if ($applicant->vocational_school_address != "")
+            {
+              $college_vocational .= $applicant->vocational_school_address;
+            }
 
-          if ($applicant->vocational_awads != "")
-          {
-            $college_vocational .= ",".$applicant->vocational_awads;
-          }
+            if ($applicant->vocational_school_address != "")
+            {
+              $college_vocational .= ",".$applicant->vocational_school_year;
+            }
 
-          if ($applicant->college_school_address != "")
-          {
-            $college_vocational .= "|".$applicant->college_school_address;
-          }
+            if ($applicant->vocational_awads != "")
+            {
+              $college_vocational .= ",".$applicant->vocational_awads;
+            }
 
-          if ($applicant->college_school_year != "")
-          {
-            $college_vocational .= ",".$applicant->college_school_year;
-          }
+            if ($applicant->college_school_address != "")
+            {
+              $college_vocational .= "|".$applicant->college_school_address;
+            }
 
-          if ($applicant->college_awards != "")
-          {
-            $college_vocational .= ",".$applicant->college_awards;
-          }
+            if ($applicant->college_school_year != "")
+            {
+              $college_vocational .= ",".$applicant->college_school_year;
+            }
 
-          $student_info = $this->applicant->get_student_info($applicant_id);
-          foreach ($student_info as $student) 
-          {
-            $program = $student->program_name;
-            $college = $student->college_desc;
-            $clsu2_email = $student->student_email;
-          }
+            if ($applicant->college_awards != "")
+            {
+              $college_vocational .= ",".$applicant->college_awards;
+            }
 
+            $student_info = $this->applicant->get_student_info($applicant_id);
+            foreach ($student_info as $student) 
+            {
+              $program = $student->program_name;
+              $college = $student->college_desc;
+              $clsu2_email = $student->student_email;
+            }
+
+            $data = array(
+              "applicant_id"                  =>  $applicant_id, 
+              "lastname"                      =>  $applicant->lname, 
+              "firstname"                     =>  $applicant->fname, 
+              "middlename"                    =>  $applicant->mname, 
+              "age"                           =>  $applicant->age, 
+              "permanent_address"             =>  $applicant->permanent_address, 
+              "zipcode"                       =>  $applicant->zipcode, 
+              "country"                       =>  $applicant->country, 
+              "date_of_birth"                 =>  $applicant->date_of_birth, 
+              "place_of_birth"                =>  $applicant->place_of_birth, 
+              "course_program"                =>  $program, 
+              "gender"                        =>  $applicant->gender, 
+              "civil_status"                  =>  $applicant->civil_status, 
+              "student_tel_contact"           =>  $applicant->student_tel_contact, 
+              "student_mobile_contact"        =>  $applicant->student_mobile_contact, 
+              "student_email"                 =>  $clsu2_email, 
+              "clsu_address"                  =>  $applicant->clsu_address,
+              "senior_high_address"           =>  $applicant->senior_high_address,
+              "type_of_school"                =>  $applicant->type_of_school, 
+              "high_school_grad_year"         =>  $applicant->high_school_grad_year, 
+              "father_name"                   =>  $applicant->father_name, 
+              "father_age"                    =>  $applicant->father_age, 
+              "father_occupation"             =>  $applicant->father_occupation, 
+              "father_education"              =>  $applicant->father_education, 
+              "mother_name"                   =>  $applicant->mother_name, 
+              "mother_age"                    =>  $applicant->mother_age, 
+              "mother_occupation"             =>  $applicant->mother_occupation, 
+              "mother_education"              =>  $applicant->mother_education, 
+              "birth_order"                   =>  $applicant->birth_order, 
+              "no_brother"                    =>  $applicant->no_brother, 
+              "no_sister"                     =>  $applicant->no_sister, 
+              "family_income"                 =>  $applicant->family_income, 
+              "elementary_school_address"     =>  $applicant->elementary_school_address, 
+              "elementary_year"               =>  $applicant->elementary_year, 
+              "high_school_address"           =>  $applicant->high_school_address, 
+              "high_school_year"              =>  $applicant->high_school_year, 
+              "vocational_school_address"     =>  $applicant->vocational_school_address, 
+              "vocational_school_year"        =>  $applicant->vocational_school_year, 
+              "college_school_address"        =>  $applicant->college_school_address, 
+              "college_school_year"           =>  $applicant->college_school_year, 
+              "extra_curricular"              =>  $applicant->extra_curricular, 
+              "emergency_person"              =>  $applicant->emergency_person, 
+              "emergency_relationship"        =>  $applicant->emergency_relationship, 
+              "emergency_contact"             =>  $applicant->emergency_contact, 
+              "emergency_address"             =>  $applicant->emergency_address, 
+              "scholarship"                   =>  $applicant->scholarship, 
+              "first_generation"              =>  $applicant->first_generation, 
+              "disability"                    =>  $applicant->disability, 
+              "family_doctor"                 =>  $applicant->family_doctor,
+              "family_doctor_contact"         =>  $applicant->family_doctor_contact,
+              "senior_high_school_awards"     =>  $applicant->senior_high_school_awards,
+              "father_contact"                =>  $applicant->father_contact,
+              "mother_contact"                =>  $applicant->mother_contact,
+              "father_address"                =>  $applicant->father_address,
+              "mother_address"                =>  $applicant->mother_address,
+              "elem_awards"                   =>  $applicant->elem_awards,
+              "high_school_awards"            =>  $applicant->high_school_awards,
+              "vocational_awads"              =>  $applicant->vocational_awads,
+              "college_awards"                =>  $applicant->college_awards,
+              "guardian_name"                 =>  $applicant->guardian_name,
+              "guardian_age"                  =>  $applicant->guardian_age,
+              "guardian_occupation"           =>  $applicant->guardian_occupation,
+              "guardian_education"            =>  $applicant->guardian_education,
+              "guardian_contact"              =>  $applicant->guardian_contact,
+              "guardian_address"              =>  $applicant->guardian_address,
+              "four_p"                        =>  $applicant->four_p,
+              "listahanan"                    =>  $applicant->listahanan,
+              "strand"                        =>  $applicant->strand,
+              "parent_marriage_status"        =>  $applicant->parent_marriage_status,
+              "guardian_relationship"         =>  $applicant->guardian_relationship,
+              "guardian_email"                =>  $applicant->guardian_email,
+              "study_habit"                   =>  $applicant->study_habit,
+              "study_habit_hours"             =>  $applicant->study_habit_hours,
+              "reason_to_enroll"              =>  $applicant->reason_to_enroll,
+              "vision_health"                 =>  $applicant->vision_health,
+              "allergy"                       =>  $applicant->allergy,
+              "medicine_take"                 =>  $applicant->medicine_take,
+              "guidance_councilor"            =>  $applicant->guidance_councilor,
+              "visit_guidance_councilor"      =>  $applicant->visit_guidance_councilor,
+              "guidance_councilor_assistance" =>  $applicant->guidance_councilor_assistance
+            );
+          }
+          $this->load->view('applicants/_header', $data);
+          $this->load->view('applicants/_css', $data);
+          $this->load->view('applicants/update_applicant_enrollment_form_view', $data);
+          $this->load->view('applicants/_footer', $data);
+          $this->load->view('applicants/_js', $data);
+        }else
+        {
           $data = array(
-            "applicant_id"                  =>  $applicant_id, 
-            "lastname"                      =>  $applicant->lname, 
-            "firstname"                     =>  $applicant->fname, 
-            "middlename"                    =>  $applicant->mname, 
-            "age"                           =>  $applicant->age, 
-            "permanent_address"             =>  $applicant->permanent_address, 
-            "zipcode"                       =>  $applicant->zipcode, 
-            "country"                       =>  $applicant->country, 
-            "date_of_birth"                 =>  $applicant->date_of_birth, 
-            "place_of_birth"                =>  $applicant->place_of_birth, 
-            "course_program"                =>  $program, 
-            "gender"                        =>  $applicant->gender, 
-            "civil_status"                  =>  $applicant->civil_status, 
-            "student_tel_contact"           =>  $applicant->student_tel_contact, 
-            "student_mobile_contact"        =>  $applicant->student_mobile_contact, 
-            "student_email"                 =>  $clsu2_email, 
-            "clsu_address"                  =>  $applicant->clsu_address,
-            "senior_high_address"           =>  $applicant->senior_high_address,
-            "type_of_school"                =>  $applicant->type_of_school, 
-            "high_school_grad_year"         =>  $applicant->high_school_grad_year, 
-            "father_name"                   =>  $applicant->father_name, 
-            "father_age"                    =>  $applicant->father_age, 
-            "father_occupation"             =>  $applicant->father_occupation, 
-            "father_education"              =>  $applicant->father_education, 
-            "mother_name"                   =>  $applicant->mother_name, 
-            "mother_age"                    =>  $applicant->mother_age, 
-            "mother_occupation"             =>  $applicant->mother_occupation, 
-            "mother_education"              =>  $applicant->mother_education, 
-            "birth_order"                   =>  $applicant->birth_order, 
-            "no_brother"                    =>  $applicant->no_brother, 
-            "no_sister"                     =>  $applicant->no_sister, 
-            "family_income"                 =>  $applicant->family_income, 
-            "elementary_school_address"     =>  $applicant->elementary_school_address, 
-            "elementary_year"               =>  $applicant->elementary_year, 
-            "high_school_address"           =>  $applicant->high_school_address, 
-            "high_school_year"              =>  $applicant->high_school_year, 
-            "vocational_school_address"     =>  $applicant->vocational_school_address, 
-            "vocational_school_year"        =>  $applicant->vocational_school_year, 
-            "college_school_address"        =>  $applicant->college_school_address, 
-            "college_school_year"           =>  $applicant->college_school_year, 
-            "extra_curricular"              =>  $applicant->extra_curricular, 
-            "emergency_person"              =>  $applicant->emergency_person, 
-            "emergency_relationship"        =>  $applicant->emergency_relationship, 
-            "emergency_contact"             =>  $applicant->emergency_contact, 
-            "emergency_address"             =>  $applicant->emergency_address, 
-            "scholarship"                   =>  $applicant->scholarship, 
-            "first_generation"              =>  $applicant->first_generation, 
-            "disability"                    =>  $applicant->disability, 
-            "family_doctor"                 =>  $applicant->family_doctor,
-            "family_doctor_contact"         =>  $applicant->family_doctor_contact,
-            "senior_high_school_awards"     =>  $applicant->senior_high_school_awards,
-            "father_contact"                =>  $applicant->father_contact,
-            "mother_contact"                =>  $applicant->mother_contact,
-            "father_address"                =>  $applicant->father_address,
-            "mother_address"                =>  $applicant->mother_address,
-            "elem_awards"                   =>  $applicant->elem_awards,
-            "high_school_awards"            =>  $applicant->high_school_awards,
-            "vocational_awads"              =>  $applicant->vocational_awads,
-            "college_awards"                =>  $applicant->college_awards,
-            "guardian_name"                 =>  $applicant->guardian_name,
-            "guardian_age"                  =>  $applicant->guardian_age,
-            "guardian_occupation"           =>  $applicant->guardian_occupation,
-            "guardian_education"            =>  $applicant->guardian_education,
-            "guardian_contact"              =>  $applicant->guardian_contact,
-            "guardian_address"              =>  $applicant->guardian_address,
-            "four_p"                        =>  $applicant->four_p,
-            "listahanan"                    =>  $applicant->listahanan,
-            "strand"                        =>  $applicant->strand,
-            "parent_marriage_status"        =>  $applicant->parent_marriage_status,
-            "guardian_relationship"         =>  $applicant->guardian_relationship,
-            "guardian_email"                =>  $applicant->guardian_email,
-            "study_habit"                   =>  $applicant->study_habit,
-            "study_habit_hours"             =>  $applicant->study_habit_hours,
-            "reason_to_enroll"              =>  $applicant->reason_to_enroll,
-            "vision_health"                 =>  $applicant->vision_health,
-            "allergy"                       =>  $applicant->allergy,
-            "medicine_take"                 =>  $applicant->medicine_take,
-            "guidance_councilor"            =>  $applicant->guidance_councilor,
-            "visit_guidance_councilor"      =>  $applicant->visit_guidance_councilor,
-            "guidance_councilor_assistance" =>  $applicant->guidance_councilor_assistance
+            "code"  =>  "OFFICE OF ADMISSIONS",
+            "msg"   =>  "Forbidden Access",
+            "link"  =>  "https://ctec.clsu2.edu.ph/clsucat/",
+            "homepageBTN" =>  "GO TO CTEC"
           );
+          $this->load->view('err/custom_error', $data);
         }
-        $this->load->view('applicants/_header', $data);
-        $this->load->view('applicants/_css', $data);
-        $this->load->view('applicants/update_applicant_enrollment_form_view', $data);
-        $this->load->view('applicants/_footer', $data);
-        $this->load->view('applicants/_js', $data);
       }else
       {
         $data = array(
-          "code"  =>  "OFFICE OF ADMISSIONS",
+          "code"  =>  "WARNING",
           "msg"   =>  "Forbidden Access",
           "link"  =>  "https://ctec.clsu2.edu.ph/clsucat/",
           "homepageBTN" =>  "GO TO CTEC"
