@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Department_model extends CI_Model {
+class Dean_model extends CI_Model {
 
   // ------------------------------------------------------------------------
 
@@ -72,8 +72,8 @@ class Department_model extends CI_Model {
 		$applicantDB->select('count(*) as allcount');
 		$applicantDB->join('tbl_course', 'oad0001.field_of_study = tbl_course.course_id', 'inner');
 		$applicantDB->join('oad0003', 'oad0001.application_id = oad0003.application_id', 'inner');
-		$applicantDB->where_in("oad0003.department_remarks", array("pending", "approved_regular", "approved_probationary"));
-		$applicantDB->where("tbl_course.department_id", $role);
+		$applicantDB->where_in("oad0003.dean_remarks", array("pending", "approved"));
+		$applicantDB->where("tbl_course.college_id", $role);
 		$applicantDB->group_by(array('oad0003.application_id'));
 		// $applicantDB->where('tbl_enrollment.semester_id', $searchSemester);
 		if($searchQuery != '')
@@ -85,8 +85,8 @@ class Department_model extends CI_Model {
 		$applicantDB->select('count(*) as allcount');
 		$applicantDB->join('tbl_course', 'oad0001.field_of_study = tbl_course.course_id', 'inner');
 		$applicantDB->join('oad0003', 'oad0001.application_id = oad0003.application_id', 'inner');
-		$applicantDB->where_in("oad0003.department_remarks", array("pending", "approved_regular", "approved_probationary"));
-		$applicantDB->where("tbl_course.department_id", $role);
+		$applicantDB->where_in("oad0003.dean_remarks", array("pending", "approved"));
+		$applicantDB->where("tbl_course.college_id", $role);
 		$applicantDB->group_by(array('oad0003.application_id'));
 		if($searchQuery != '')
 			$applicantDB->where($searchQuery);
@@ -98,8 +98,8 @@ class Department_model extends CI_Model {
 		$applicantDB->select('oad0001.application_id, oad0001.lname, oad0001.fname, oad0001.mname, tbl_course.course_desc, oad0001.degree_program_applied, oad0001.date_created, oad0001.gwa_file, oad0001.img_file, oad0001.proficiency_file, oad0001.tor_file');
 		$applicantDB->join('tbl_course', 'oad0001.field_of_study = tbl_course.course_id', 'inner');
 		$applicantDB->join('oad0003', 'oad0001.application_id = oad0003.application_id', 'inner');
-		$applicantDB->where_in("oad0003.department_remarks", array("pending", "approved_regular", "approved_probationary"));
-		$applicantDB->where("tbl_course.department_id", $role);
+		$applicantDB->where_in("oad0003.dean_remarks", array("pending", "approved"));
+		$applicantDB->where("tbl_course.college_id", $role);
 		$applicantDB->group_by(array('oad0003.application_id'));
 
 		if($searchQuery != '')
@@ -133,44 +133,34 @@ class Department_model extends CI_Model {
 			switch (strtoupper($record->degree_program_applied)) 
 			{
 				case 'PHD':
-					if (in_array($this->getApprovalStatus($record->application_id)[0]->department_remarks, array("approved_regular", "approved_probationary")))
+					if ($this->getApprovalStatus($record->application_id)[0]->dean_remarks == "approved")
 					{
-						$actionBtn = count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-amber btn-block waves-effect disabled" style="margin-top: 5px;">ENDORSED - REGULAR</button>' : '';	
+						$actionBtn = count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-orange btn-block waves-effect disabled" style="margin-top: 5px;">APPROVED</button>' : '';	
 
-						$actionBtn .= count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-amber btn-block waves-effect disabled" style="margin-top: 5px;">ENDORSED - PROBATIONARY</button>' : '';	
-
-						$actionBtn .= count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-amber btn-block waves-effect disabled" style="margin-top: 5px;">ADVISED TO WITHDRAW</button>' : '';	
+						$actionBtn .= count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-blue-grey btn-block waves-effect disabled" style="margin-top: 5px;">RETURN TO DEPARTMENT</button>' : '';	
 
 						$actionBtn .= count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-red btn-block waves-effect disabled" style="margin-top: 5px;">RETURN TO OAD</button>' : '';	
 					}else
 					{
-						$actionBtn = count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-amber btn-block waves-effect" style="margin-top: 5px;" onclick="endorsedToDean(\''.$record->application_id.'\')">ENDORSED - REGULAR</button>' : '';
+						$actionBtn = count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-orange btn-block waves-effect" style="margin-top: 5px;" onclick="submitApprove(\''.$record->application_id.'\')">APPROVED</button>' : '';
 
-						$actionBtn .= count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-amber btn-block waves-effect" style="margin-top: 5px;" onclick="endorsedToDeanProbationary(\''.$record->application_id.'\')">ENDORSED - PROBATIONARY</button>' : '';
-
-						$actionBtn .= count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-amber btn-block waves-effect" style="margin-top: 5px;" onclick="adiviseWithdraw(\''.$record->application_id.'\')">ADVISED TO WITHDRAW</button>' : '';
-
-						$actionBtn .= count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-red btn-block waves-effect" style="margin-top: 5px;" onclick="returnApplication(\''.$record->application_id.'\')">RETURN TO OAD</button>' : '';
+						$actionBtn .= count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-red btn-block waves-effect" style="margin-top: 5px;" onclick="returnApplication(\''.$record->application_id.'\')">RETURN TO OAD</button>' : '';	
 					}
 					
 					break;
 				case 'MASTER':
-					if (in_array($this->getApprovalStatus($record->application_id)[0]->department_remarks, array("approved_regular", "approved_probationary")))
+					if ($this->getApprovalStatus($record->application_id)[0]->dean_remarks == "approved")
 					{
-						$actionBtn = count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-amber btn-block waves-effect disabled" style="margin-top: 5px;">ENDORSED - REGULAR</button>' : '';	
+						$actionBtn = count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-orange btn-block waves-effect disabled" style="margin-top: 5px;">APPROVED</button>' : '';
 
-						$actionBtn .= count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-amber btn-block waves-effect disabled" style="margin-top: 5px;">ENDORSED - PROBATIONARY</button>' : '';	
+						$actionBtn .= count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-blue-grey btn-block waves-effect disabled" style="margin-top: 5px;">RETURN TO DEPARTMENT</button>' : '';	
 
-						$actionBtn .= count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-amber btn-block waves-effect disabled" style="margin-top: 5px;">ADVISED TO WITHDRAW</button>' : '';	
-
-						$actionBtn .= count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-red btn-block waves-effect disabled" style="margin-top: 5px;">RETURN TO OAD</button>' : '';
+						$actionBtn .= count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-red btn-block waves-effect disabled" style="margin-top: 5px;">RETURN TO OAD</button>' : '';	
 					}else
 					{
-						$actionBtn = count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-amber btn-block waves-effect" style="margin-top: 5px;" onclick="endorsedToDean(\''.$record->application_id.'\')">ENDORSED - REGULAR</button>' : '';
+						$actionBtn = count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-orange btn-block waves-effect" style="margin-top: 5px;" onclick="submitApprove(\''.$record->application_id.'\')">APPROVED</button>' : '';
 
-						$actionBtn .= count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-amber btn-block waves-effect" style="margin-top: 5px;" onclick="endorsedToDeanProbationary(\''.$record->application_id.'\')">ENDORSED - PROBATIONARY</button>' : '';
-						
-						$actionBtn .= count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-amber btn-block waves-effect" style="margin-top: 5px;" onclick="adiviseWithdraw(\''.$record->application_id.'\')">ADVISED TO WITHDRAW</button>' : '';
+						$actionBtn .= count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-blue-grey btn-block waves-effect" style="margin-top: 5px;" onclick="returnApplicationToDepartment(\''.$record->application_id.'\')">RETURN TO DEPARTMENT</button>' : '';	
 
 						$actionBtn .= count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-red btn-block waves-effect" style="margin-top: 5px;" onclick="returnApplication(\''.$record->application_id.'\')">RETURN TO OAD</button>' : '';	
 					}
@@ -189,7 +179,7 @@ class Department_model extends CI_Model {
 				"numRows"				=>	($ctr++),
 				"action"				=>	$actionBtn,
 				"requirements"			=>	'
-				
+
 				'.$referenceBTN.'
 
 				<button type="button" class="btn btn-sm bg-teal btn-block waves-effect" style="margin-top: 5px;" onclick="viewApplicationForm(\''.$record->application_id.'\')">Application Form</button>
@@ -207,8 +197,8 @@ class Department_model extends CI_Model {
 				"degree_programm"		=>	$record->course_desc,
 				"level_applied"			=>	$record->degree_program_applied,
 				"date_applied"			=>	date("F d, Y H:i:s", strtotime($record->date_created)),
-				"department"			=>	count($this->getApprovalStatus($record->application_id)) > 0 ? $this->getApprovalStatus($record->application_id)[0]->department_remarks : "****",
-				"dean"			=>	count($this->getApprovalStatus($record->application_id)) > 0 ? $this->getApprovalStatus($record->application_id)[0]->dean_note : "****"
+				"department"			=>	count($this->getApprovalStatus($record->application_id)) > 0 ? $this->getApprovalStatus($record->application_id)[0]->department_note : "****",
+				"dean"			=>	count($this->getApprovalStatus($record->application_id)) > 0 ? $this->getApprovalStatus($record->application_id)[0]->dean_remarks : "****"
 			); 
 		}
 
@@ -295,4 +285,4 @@ class Department_model extends CI_Model {
 }
 
 /* End of file Department_model.php */
-/* Location: ./application/models/Department_model.php */
+/* Location: ./application/models/Dean_model.php */

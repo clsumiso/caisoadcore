@@ -87,8 +87,16 @@ let applicantData = $('#applicantList').DataTable({
         { data: "level_applied" },
         { data: "date_applied" },
         { data: "reference" },
-        { data: "department" }
-    ]
+        { data: "department" },
+        { data: "referenceCtr" }
+    ],
+    "rowCallback": function( row, data, index ) 
+    {
+        if (data.referenceCtr > 1)
+        {
+            $("td", row).css("background-color","#2ecc71");
+        }
+    }
 });
 
 

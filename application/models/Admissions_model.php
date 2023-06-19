@@ -283,7 +283,8 @@ class Admissions_model extends CI_Model {
 				"level_applied"			=>	$record->degree_program_applied,
 				"date_applied"			=>	date("F d, Y H:i:s", strtotime($record->date_created)),
 				"reference"				=>	$referenceHtml,
-				"department"			=>	count($this->getApprovalStatus($record->application_id)) > 0 ? $this->getApprovalStatus($record->application_id)[0]->department_remarks : "****"
+				"department"			=>	count($this->getApprovalStatus($record->application_id)) > 0 ? $this->getApprovalStatus($record->application_id)[0]->department_remarks : "****",
+				"referenceCtr"			=>	count($referenceForm)
 			); 
 		}
 
@@ -379,6 +380,18 @@ class Admissions_model extends CI_Model {
 		$applicantDB->join("tbl_course", "oad0001.field_of_study = tbl_course.course_id", "inner");
 		$applicantDB->join("tbl_college", "tbl_course.college_id = tbl_college.college_id", "inner");
 		$applicantDB->where("oad0002.reference_id", $referenceID);
+		$query = $applicantDB->get();
+
+		return $query->result();
+	}
+
+	public function getReferenceEmail($referenceName, $applicationID)
+	{
+		$applicantDB = $this->load->database('applicantDB', TRUE);
+		$applicantDB->select("email");
+		$applicantDB->from("oad0004");
+		$applicantDB->like('reference_name', $referenceName, 'both');
+		$applicantDB->where("application_id", $applicationID);
 		$query = $applicantDB->get();
 
 		return $query->result();

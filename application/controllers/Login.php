@@ -136,7 +136,7 @@ class Login extends CI_Controller
                   {
                     $response = array(
                       'sys_msg'   =>  "SUCCESS",
-                      'redirect'  =>  "department_head",
+                      'redirect'  =>  "department",
                       'msg'       =>  ''
                     );
                   }else

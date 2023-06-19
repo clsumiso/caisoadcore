@@ -54,9 +54,9 @@ class Applicant_model extends CI_Model {
   public function checkTotalEnroll($programID)
   {
     $applicantDB = $this->load->database('applicantDB', TRUE);
-    $applicantDB->select('tbl_enrollment_form.applicant_id');
-    $applicantDB->from('tbl_enrollment_form');
-    $applicantDB->join('tbl_profile', 'tbl_enrollment_form.applicant_id = tbl_profile.applicant_id', 'inner');
+    $applicantDB->select('tbl_confirmation.confirmation_id ');
+    $applicantDB->from('tbl_confirmation');
+    $applicantDB->join('tbl_profile', 'tbl_confirmation.confirmation_id = tbl_profile.applicant_id', 'inner');
     $applicantDB->where('tbl_profile.program_id', $programID);
 
     $query = $applicantDB->get();

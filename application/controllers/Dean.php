@@ -1,14 +1,14 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Department extends CI_Controller
+class Dean extends CI_Controller
 {
     
   public function __construct()
   {
     parent::__construct();
 		$this->load->helper('date');
-		$this->load->model('department_model', 'department');
+		$this->load->model('dean_model', 'dean');
     $this->load->model("admission_application_model", "admission_application");
     $this->load->model('admissions_model', 'admissions');
   }
@@ -22,7 +22,7 @@ class Department extends CI_Controller
     {
       if (isset($_SESSION['utype']))
       {
-        if ($_SESSION['utype'] != "department head")
+        if ($_SESSION['utype'] != "dean")
         {
           redirect('/');
         }
@@ -39,11 +39,11 @@ class Department extends CI_Controller
 			'get_time'		=>	$this->get_time()
 		);
 
-    $this->load->view('department/_header', $data);
-    $this->load->view('department/_css', $data);
-    $this->load->view('department/department_view', $data);
-    $this->load->view('department/_footer', $data);
-    $this->load->view('department/_js', $data);
+    $this->load->view('dean/_header', $data);
+    $this->load->view('dean/_css', $data);
+    $this->load->view('dean/dean_view', $data);
+    $this->load->view('dean/_footer', $data);
+    $this->load->view('dean/_js', $data);
   }
 
 	public function get_time()
@@ -58,18 +58,18 @@ class Department extends CI_Controller
     // POST data
 		$postData = $this->input->post();
 
-    $role = $this->validateDepartment($_SESSION['uid']);
+    $role = $this->validateCollege($_SESSION['uid']);
 
 		// Get data
-		$data = $this->department->getGraduateApplicants($postData, $role);
+		$data = $this->dean->getGraduateApplicants($postData, $role);
 
 		echo json_encode($data);
   }
 
-  public function validateDepartment($userID = "")
+  public function validateCollege($userID = "")
   {
     $role = 0;
-    $roleData = $this->department->getRole($userID);
+    $roleData = $this->dean->getRole($userID);
     foreach ($roleData as $role) 
     {
       $role = $role->role;
@@ -1562,15 +1562,53 @@ class Department extends CI_Controller
     return count($parseData) > $index ? $parseData[$index] : "N/A";
   }
 
-  public function deanEndorse()
+  public function deanApprove()
   {
     $applicationID = $_POST['appID'];
     $msg = array();
 
     $data = array(
-      "dean_remarks"       => "pending",
-      "department_remarks" =>  "approved_regular",
-      "department_status"  => date("Y-m-d H:i:s")
+      "admission_remarks"  =>  "pending",
+      "dean_remarks" =>  "approved",
+      "dean_status"  => date("Y-m-d H:i:s")
+    );
+
+    $condition = array(
+      "application_id"  =>  $applicationID
+    );
+
+    $endorse = $this->admissions->update($data, $condition, array("oad0003"));
+    if ($endorse !== false)
+    {
+      $msg = array(
+        "sys_msg" =>  "success",
+        "msg"     =>  "Application forwarded successfully",
+        "type"    =>  "success"
+      );
+    }else
+    {
+      $msg = array(
+        "sys_msg" =>  "failed",
+        "msg"     =>  "Application forwarding failed",
+        "type"    =>  "error"
+      );
+    }
+
+    echo json_encode($msg);
+  }
+
+  public function returnApplicationToDepartment()
+  {
+    $applicationID = $_POST['appID'];
+    $remarks = $_POST['remarks'];
+    $msg = array();
+
+    $data = array(
+      "department_remarks" => "pending",
+      "department_status"  => NULL,
+      "dean_remarks" => NULL,
+      "dean_status"  => NULL,
+      "dean_note"   =>  $remarks
     );
 
     $condition = array(
@@ -1604,82 +1642,11 @@ class Department extends CI_Controller
     $msg = array();
 
     $data = array(
-      "deaprtment_note"     =>  $remarks,
       "department_remarks" => NULL,
-      "department_status"  => NULL
-    );
-
-    $condition = array(
-      "application_id"  =>  $applicationID
-    );
-
-    $endorse = $this->admissions->update($data, $condition, array("oad0003"));
-    if ($endorse !== false)
-    {
-      $msg = array(
-        "sys_msg" =>  "success",
-        "msg"     =>  "Application forwarded successfully",
-        "type"    =>  "success"
-      );
-    }else
-    {
-      $msg = array(
-        "sys_msg" =>  "failed",
-        "msg"     =>  "Application forwarding failed",
-        "type"    =>  "error"
-      );
-    }
-
-    echo json_encode($msg);
-  }
-
-  public function withdrawApplication()
-  {
-    $applicationID = $_POST['appID'];
-    $remarks = $_POST['remarks'];
-    $msg = array();
-
-    $data = array(
-      "department_note"     =>  $remarks,
-      "department_remarks"  =>  "advised_to_withdraw",
-      "department_status"   =>  date("Y-m-d H:i:s")
-    );
-
-    $condition = array(
-      "application_id"  =>  $applicationID
-    );
-
-    $endorse = $this->admissions->update($data, $condition, array("oad0003"));
-    if ($endorse !== false)
-    {
-      $msg = array(
-        "sys_msg" =>  "success",
-        "msg"     =>  "Application forwarded successfully",
-        "type"    =>  "success"
-      );
-    }else
-    {
-      $msg = array(
-        "sys_msg" =>  "failed",
-        "msg"     =>  "Application forwarding failed",
-        "type"    =>  "error"
-      );
-    }
-
-    echo json_encode($msg);
-  }
-
-  public function endorseProbationary()
-  {
-    $applicationID = $_POST['appID'];
-    $remarks = $_POST['remarks'];
-    $msg = array();
-
-    $data = array(
-      "dean_remarks"       => "pending",
-      "department_note"     =>  $remarks,
-      "department_remarks"  =>  "approved_probationary",
-      "department_status"   =>  date("Y-m-d H:i:s")
+      "department_status"  => NULL,
+      "dean_remarks" => NULL,
+      "dean_status"  => NULL,
+      "dean_note"   =>  $remarks
     );
 
     $condition = array(

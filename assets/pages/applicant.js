@@ -30,15 +30,18 @@ function acceptChoiceProgram(programID, programName, applicantID, securityCode)
                     // data_privacy(applicantID) 
                     if (response.sys_msg == "success")
                     {
-                        getApplicantInfo(applicantID);
-                        data_privacy(applicantID, securityCode);
+                        // getApplicantInfo(applicantID);
+                        // data_privacy(applicantID, securityCode);
+                        if (response.msg == "confirmed")
+                        {
+                            data_privacy(applicantID, securityCode);
+                        }else
+                        {
+                            location.reload(true);
+                        }
                     }else
                     {
-                        swal({
-                            title: "Office of Admissions",
-                            text: response.sys_msg,
-                            type: "warning"
-                        });
+                        alert(response.msg);
                     }
                 },
                 complete: function () {
@@ -80,6 +83,7 @@ function getApplicantInfo(appID)
             $('.dateFrom').html(data.profile.dateFrom);
             $('.dateTo').html(data.profile.dateTo);
             $('.program_for_other_qualifier').html(data.profile.nonqoutaprograms);
+            // location.reload(true);
             
             // swal({
             //     title: "Office of Admissions",

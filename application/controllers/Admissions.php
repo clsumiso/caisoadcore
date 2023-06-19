@@ -164,7 +164,7 @@ class Admissions extends CI_Controller
       'margin_top'    =>  '6',
       'margin_left'   =>  '25',
       'margin_right'  =>  '25',
-      'margin_bottom' =>  '0',
+      'margin_bottom' =>  '25',
       'fontDir'       =>  array_merge($fontDirs, [
                               'custom/font/directory',
                           ]),
@@ -312,6 +312,7 @@ class Admissions extends CI_Controller
 
     foreach ($referenceInfo as $reference) 
     {
+      $referenceEmail = $this->admissions->getReferenceEmail($reference->reference_name, $reference->applicant_id);
       $html .= '
         <table style="width: 100%; padding-top: 10px;">
           <tr>
@@ -510,8 +511,84 @@ class Admissions extends CI_Controller
             </td>
           </tr>
         </table>
+        <table style="width: 100%; margin-top: 50px;">
+          <tr>
+            <td style="width: 120px;">
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                Reference Name:
+              </p>
+            </td>
+              <td>
+                <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                  '.$reference->reference_name.'
+                </p>
+              </td>
+          </tr>
+          <tr>
+            <td style="width: 120px;">
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                Relationship to the Applicant:
+              </p>
+            </td>
+              <td>
+                <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                  '.$reference->reference_relationship.'
+                </p>
+              </td>
+          </tr>
+          <tr>
+            <td style="width: 120px;">
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                Affiliation:
+              </p>
+            </td>
+              <td>
+                <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                  '.$reference->reference_affiliation.'
+                </p>
+              </td>
+          </tr>
+          <tr>
+            <td style="width: 120px;">
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                Position:
+              </p>
+            </td>
+              <td>
+                <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                  '.$reference->reference_position.'
+                </p>
+              </td>
+          </tr>
+          <tr>
+            <td style="width: 120px;">
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                Reference Email:
+              </p>
+            </td>
+              <td>
+                <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                  '.(count($referenceEmail) > 0 ? $referenceEmail[0]->email : "***" ).'
+                </p>
+              </td>
+          </tr>
+          <tr>
+            <td style="width: 120px;">
+              <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                Reference Contact:
+              </p>
+            </td>
+              <td>
+                <p style="text-align: center; font-family: tahoma; font-size: 11px; font-weight: regular;">
+                  '.$reference->reference_number.'
+                </p>
+              </td>
+          </tr>
+        </table>
       ';
     }
+
+
       
 
     $mpdf->SetHTMLFooter('<p style="font-size: 10px; font-style: italic;">ACA.OAD.YYY.F.035 (Revision No. 1; May 23, 2023)</p>');
@@ -526,7 +603,7 @@ class Admissions extends CI_Controller
     header('Content-Disposition: inline; filename="enrollment_form.pdf"');
     header('Content-Transfer-Encoding: binary');
     header('Accept-Ranges: bytes');
-    $mpdf->Output("recommendation-letter".(date("YmdHis")).".pdf", \Mpdf\Output\Destination::DOWNLOAD);
+    $mpdf->Output("reference-form.pdf", \Mpdf\Output\Destination::DOWNLOAD);
     // $mpdf->Output();
     ob_end_flush();
     // echo $test;

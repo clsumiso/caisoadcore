@@ -30,10 +30,10 @@
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <h3>LIST OF GRADUATE LEVEL APPLICANTS</h3>
                             <div class="table-responsive">
-                                <table id='applicantList' class='table table-bordered table-striped table-hover js-basic-example dataTable'>
+                                <table id='applicantList' class='table table-bordered table-stripped table-hover js-basic-example dataTable'>
                                     <thead>
                                         <tr>
-                                            <th colspan="8"></th>
+                                            <th colspan="9"></th>
                                             <th colspan="3" style="text-align: center;">APPLICATION STATUS</th>
                                         </tr>
                                         <tr>

@@ -46,9 +46,9 @@
                                     <li role="presentation"><a href="#admissionApplication" aria-controls="admissionApplication" role="tab" data-toggle="tab">Admissions Graduate</a></li>
                                 </ul>
                                 <div class="tab-content">
-                                    <?php $this->load->view('department/tab_menu/_home.php'); ?>
+                                    <?php $this->load->view('dean/tab_menu/_home.php'); ?>
 
-                                    <?php $this->load->view('department/tab_menu/_admissions_graduate.php'); ?>
+                                    <?php $this->load->view('dean/tab_menu/_admissions_graduate.php'); ?>
                                 </div>
                             </div>
                         </div>
