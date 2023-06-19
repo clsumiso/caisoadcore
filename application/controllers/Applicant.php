@@ -160,7 +160,7 @@ class Applicant extends CI_Controller
     $decryption=openssl_decrypt ($encryption, $ciphering, $decryption_key, $options, $decryption_iv);
     $data = array();
     
-    if ($_SESSION['applicant_id_key'] == $applicantID)
+    if ($_SESSION['applicant_id_key'] == $appID)
     {
       if (urlencode($encryption)  == $securityCode)
       {

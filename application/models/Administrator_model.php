@@ -14,7 +14,7 @@ class Administrator_model extends CI_Model {
 	{
 		$this->db->select('*');
 		$this->db->from('tbl_semester');
-		$this->db->where('semester_id > 3');
+		$this->db->where('semester_id > 2');
 		// $this->db->where('semester_id <= 6');
 		$this->db->order_by('semester_id', 'DESC');
 		$query = $this->db->get();
@@ -62,17 +62,6 @@ class Administrator_model extends CI_Model {
         $this->db->from('tbl_course');
 		$this->db->where('college_id', $college);
 		$this->db->where_in('course_type', array('BS', 'BA', 'B', 'C', 'D', 'MS', 'PhD'));
-		$this->db->order_by('course_name', 'asc');
-        $query = $this->db->get();
-
-		return $query->result();
-	}
-
-	public function verifyDropping($schedid = "")
-	{
-		$this->db->select('course_id, course_name, course_desc');
-        $this->db->from('tbl_course');
-		$this->db->where('college_id', $college);
 		$this->db->order_by('course_name', 'asc');
         $query = $this->db->get();
 
