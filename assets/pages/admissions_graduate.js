@@ -68,12 +68,12 @@ let applicantData = $('#applicantList').DataTable({
     //'searching': false, // Remove default Search Control
     'ajax': 
     {
-    'url': window.location.origin + "/office-of-admissions/admissions/graduateLevelList",
-    'data': function(data)
-    {
-        // data.semester = $('#semesterGrades option:selected').val();
-        // data.course = $('#gradeCourse option:selected').val();
-    }
+		'url': window.location.origin + "/office-of-admissions/admissions/graduateLevelList",
+		'data': function(data)
+		{
+			// data.semester = $('#semesterGrades option:selected').val();
+			data.status = $('#gradStatus option:selected').val();
+		}
     },
     'columns': 
     [
@@ -88,17 +88,26 @@ let applicantData = $('#applicantList').DataTable({
         { data: "date_applied" },
         { data: "reference" },
         { data: "department" },
-        { data: "referenceCtr" }
+        { data: "dean" }
     ],
     "rowCallback": function( row, data, index ) 
-    {
-        if (data.referenceCtr > 1)
-        {
-            $("td", row).css("background-color","#2ecc71");
-        }
+	{
+		if (data.department == "approved_regular" || data.department == "approved_probationary" && data.dean == "approved")
+		{
+			$("td", row).css("background-color", "#ffeaa7");
+		} else
+		{
+			if (data.referenceCtr > 1)
+			{
+				$("td", row).css("background-color", "#2ecc71");
+			}
+		}
     }
 });
 
+$('#gradStatus').change(function () {
+	applicantData.draw();
+});
 
 function newexportaction(e, dt, button, config) {
     var self = this;

@@ -568,14 +568,14 @@ class Applicant extends CI_Controller
               {
 				        if (in_array($applicantID, array("23-06755", "23-01874", "23-04025", "23-04823", "23-00951", "23-08093", "23-09262", "23-10969", "23-10869", "23-05352", "23-09900", "23-05318", "23-05697", "23-02952", "23-02382", "23-09649", "23-05318", "23-07172", "23-04623", "23-04514", "23-06194", "23-05631", "23-00469", "23-07127", "23-00540", "23-02952", "23-07699")))
                 {
-                  $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\', \''.urlencode($encryption).'\')">ACCEPT</a>';
+                  // $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\', \''.urlencode($encryption).'\')">ACCEPT</a>';
                 }
                 // $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\', \''.urlencode($encryption).'\')">ACCEPT</a>';
               }
 				
 			        if ($appType == 18)
               {
-                $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\', \''.urlencode($encryption).'\')">ACCEPT</a>';
+                // $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\', \''.urlencode($encryption).'\')">ACCEPT</a>';
               }
 
               if ($appType == 2)
@@ -622,7 +622,7 @@ class Applicant extends CI_Controller
                   {
                     if (floatval($applicantPercentileRank[0]->percentile_rank) >= $min)
                     {
-                      $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\', \''.urlencode($encryption).'\')">ACCEPT</a>';
+                      // $htmlData .= '<a href="javascript:void(0)" class="btn btn-success btn-lg btn-block waves-effect" onclick="data_privacy(\''.$applicantID.'\', \''.urlencode($encryption).'\')">ACCEPT</a>';
                     }else
                     {
                       // Not qualified in the top ranks
@@ -2033,8 +2033,19 @@ class Applicant extends CI_Controller
       $con = array(
         "applicant_id"  =>  $_POST['applicantID']
       );
+	  
+      $confirmationData = $this->applicant->getConfirmation($_POST['applicantID']);
+	  $saveData = "";
 
-      if ($this->applicant->updateForm($enrollmentFormData, $con, array("tbl_enrollment_form")) !== false) 
+	  if (count($confirmationData) > 0)
+	  {
+		  $saveData = $this->applicant->updateForm($enrollmentFormData, $con, array("tbl_enrollment_form"));
+	  }else
+	  {
+		  $saveData = $this->applicant->save("tbl_enrollment_form", $enrollmentFormData);
+	  }
+
+      if ($saveData !== false) 
       {
         $data = array(
           "confirmationStatus"  =>  "Updated Successfully",

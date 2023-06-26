@@ -52,6 +52,7 @@
                                     <li role="presentation" class="bg-danger"><a href="#accounting" aria-controls="accounting" role="tab" data-toggle="tab">ACCOUNTING</a></li>
                                     <li role="presentation" class="bg-danger"><a href="#grades" aria-controls="grades" role="tab" data-toggle="tab">GRADES</a></li>
                                     <li role="presentation" class="bg-danger"><a href="#encoder" aria-controls="encoder" role="tab" data-toggle="tab">ENCODER</a></li>
+                                    <li role="presentation" class="bg-danger"><a href="#user_account" aria-controls="encoder" role="tab" data-toggle="tab">USER ACCOUNTS</a></li>
                                 </ul>
 
                                 <div class="tab-content">
@@ -71,6 +72,8 @@
                                     <?php $this->load->view('administrator/tab_menu/_section_monitoring'); ?>
 
                                     <?php $this->load->view('administrator/tab_menu/_accounting'); ?>
+
+                                    <?php $this->load->view('administrator/tab_menu/_user_accounts'); ?>
                                     
                                 </div>
                             </div>

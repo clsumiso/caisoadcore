@@ -93,8 +93,20 @@ class Administrator extends CI_Controller {
 		echo json_encode(array("course"	=>	$htmlData));
 	}
 
-    public function scheduleList()
+    public function userAccountList()
     {
+
+		// POST data
+		$postData = $this->input->post();
+
+		// Get data
+		$data = $this->administrator->getUserAccount($postData);
+
+		echo json_encode($data);
+   	}
+
+	public function scheduleList()
+	{
 
 		// POST data
 		$postData = $this->input->post();
@@ -103,7 +115,7 @@ class Administrator extends CI_Controller {
 		$data = $this->administrator->getSchedule($postData);
 
 		echo json_encode($data);
-   	}
+	}
 
 	public function sectionMonitoringList()
 	{
@@ -312,6 +324,8 @@ class Administrator extends CI_Controller {
 				$htmlData .= "<td><input style='width: 150px;' class='form-control' type='text' name='gradeData[]' value='".$studentGrade->cat_no."' readonly /></td>";
 
 				$individualStudentGrade = $this->administrator->checkGrades($studentGrade->user_id, $studentGrade->cat_no, $semesterID, $studentGrade->teaching_faculty_id);
+				$droppingData = $this->administrator->getDropping($studentGrade->user_id, $studentGrade->schedid, $semesterID);
+
 				if (count($individualStudentGrade) == 0)
 				{
 					$htmlData .= "<td>";
@@ -362,47 +376,61 @@ class Administrator extends CI_Controller {
 					$htmlData .= "<td>----</td>";
 				}else
 				{
+					$postedGrade = "";
+					$postedReexam = "";
+					// if (count($droppingData) > 0)
+					// {
+					// 	$postedGrade = "D";
+					// 	$postedReexam = "D";
+					// }else
+					// {
+					// 	$postedGrade = strtoupper($individualStudentGrade[0]->grades);
+					// 	$postedReexam = strtoupper($individualStudentGrade[0]->reexam);
+					// }
+					$postedGrade = strtoupper($individualStudentGrade[0]->grades);
+						$postedReexam = strtoupper($individualStudentGrade[0]->reexam);
+					
 					$htmlData .= "<td>";
 						$htmlData .= "
 							<select style='width: 150px;' class='form-control' ".($individualStudentGrade[0]->status == "approved" ? '' : '')." name='gradeData[]'>
-								<option value='-1' ".(strtoupper($individualStudentGrade[0]->grades) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
-								<option value='1.00' ".(strtoupper($individualStudentGrade[0]->grades) == "1.00" ? 'selected="true"' : "").">1.00</option>
-								<option value='1.25' ".(strtoupper($individualStudentGrade[0]->grades) == "1.25" ? 'selected="true"' : "").">1.25</option>
-								<option value='1.50' ".(strtoupper($individualStudentGrade[0]->grades) == "1.50" ? 'selected="true"' : "").">1.50</option>
-								<option value='1.75' ".(strtoupper($individualStudentGrade[0]->grades) == "1.75" ? 'selected="true"' : "").">1.75</option>
-								<option value='2.00' ".(strtoupper($individualStudentGrade[0]->grades) == "2.00" ? 'selected="true"' : "").">2.00</option>
-								<option value='2.25' ".(strtoupper($individualStudentGrade[0]->grades) == "2.25" ? 'selected="true"' : "").">2.25</option>
-								<option value='2.50' ".(strtoupper($individualStudentGrade[0]->grades) == "2.50" ? 'selected="true"' : "").">2.50</option>
-								<option value='2.75' ".(strtoupper($individualStudentGrade[0]->grades) == "2.75" ? 'selected="true"' : "").">2.75</option>
-								<option value='3.00' ".(strtoupper($individualStudentGrade[0]->grades) == "3.00" ? 'selected="true"' : "").">3.00</option>
-								<option value='5.00' ".(strtoupper($individualStudentGrade[0]->grades) == "5.00" ? 'selected="true"' : "").">5.00</option>
-								<option value='D' ".(strtoupper($individualStudentGrade[0]->grades) == "D" ? 'selected="true"' : "").">D</option>
-								<option value='FD' ".(strtoupper($individualStudentGrade[0]->grades) == "FD" ? 'selected="true"' : "").">FORCE DROPPED</option>
-								<option value='NG' ".(strtoupper($individualStudentGrade[0]->grades) == "NG" ? 'selected="true"' : "").">NG</option>
-								<option value='INC' ".(strtoupper($individualStudentGrade[0]->grades) == "INC" ? 'selected="true"' : "").">INC</option>
-								<option value='IP' ".(strtoupper($individualStudentGrade[0]->grades) == "IP" ? 'selected="true"' : "").">IP</option>
+								<option value='-1' ".(strtoupper($postedGrade) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
+								<option value='1.00' ".(strtoupper($postedGrade) == "1.00" ? 'selected="true"' : "").">1.00</option>
+								<option value='1.25' ".(strtoupper($postedGrade) == "1.25" ? 'selected="true"' : "").">1.25</option>
+								<option value='1.50' ".(strtoupper($postedGrade) == "1.50" ? 'selected="true"' : "").">1.50</option>
+								<option value='1.75' ".(strtoupper($postedGrade) == "1.75" ? 'selected="true"' : "").">1.75</option>
+								<option value='2.00' ".(strtoupper($postedGrade) == "2.00" ? 'selected="true"' : "").">2.00</option>
+								<option value='2.25' ".(strtoupper($postedGrade) == "2.25" ? 'selected="true"' : "").">2.25</option>
+								<option value='2.50' ".(strtoupper($postedGrade) == "2.50" ? 'selected="true"' : "").">2.50</option>
+								<option value='2.75' ".(strtoupper($postedGrade) == "2.75" ? 'selected="true"' : "").">2.75</option>
+								<option value='3.00' ".(strtoupper($postedGrade) == "3.00" ? 'selected="true"' : "").">3.00</option>
+								<option value='5.00' ".(strtoupper($postedGrade) == "5.00" ? 'selected="true"' : "").">5.00</option>
+								<option value='D' ".(strtoupper($postedGrade) == "D" ? 'selected="true"' : "").">D</option>
+								<option value='FD' ".(strtoupper($postedGrade) == "FD" ? 'selected="true"' : "").">FORCE DROPPED</option>
+								<option value='NG' ".(strtoupper($postedGrade) == "NG" ? 'selected="true"' : "").">NG</option>
+								<option value='INC' ".(strtoupper($postedGrade) == "INC" ? 'selected="true"' : "").">INC</option>
+								<option value='IP' ".(strtoupper($postedGrade) == "IP" ? 'selected="true"' : "").">IP</option>
 							</select>
 						";
 					$htmlData .= "</td>";
 					$htmlData .= "<td>";
 						$htmlData .= "
 							<select style='width: 150px;' class='form-control' ".($individualStudentGrade[0]->status == "approved" ? '' : '')." name='gradeData[]'>
-								<option value='-1' ".(strtoupper($individualStudentGrade[0]->reexam) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
-								<option value='1.00' ".(strtoupper($individualStudentGrade[0]->reexam) == "1.00" ? 'selected="true"' : "").">1.00</option>
-								<option value='1.25' ".(strtoupper($individualStudentGrade[0]->reexam) == "1.25" ? 'selected="true"' : "").">1.25</option>
-								<option value='1.50' ".(strtoupper($individualStudentGrade[0]->reexam) == "1.50" ? 'selected="true"' : "").">1.50</option>
-								<option value='1.75' ".(strtoupper($individualStudentGrade[0]->reexam) == "1.75" ? 'selected="true"' : "").">1.75</option>
-								<option value='2.00' ".(strtoupper($individualStudentGrade[0]->reexam) == "2.00" ? 'selected="true"' : "").">2.00</option>
-								<option value='2.25' ".(strtoupper($individualStudentGrade[0]->reexam) == "2.25" ? 'selected="true"' : "").">2.25</option>
-								<option value='2.50' ".(strtoupper($individualStudentGrade[0]->reexam) == "2.50" ? 'selected="true"' : "").">2.50</option>
-								<option value='2.75' ".(strtoupper($individualStudentGrade[0]->reexam) == "2.75" ? 'selected="true"' : "").">2.75</option>
-								<option value='3.00' ".(strtoupper($individualStudentGrade[0]->reexam) == "3.00" ? 'selected="true"' : "").">3.00</option>
-								<option value='5.00' ".(strtoupper($individualStudentGrade[0]->reexam) == "5.00" ? 'selected="true"' : "").">5.00</option>
-								<option value='D' ".(strtoupper($individualStudentGrade[0]->reexam) == "D" ? 'selected="true"' : "").">D</option>
-								<option value='FD' ".(strtoupper($individualStudentGrade[0]->reexam) == "FD" ? 'selected="true"' : "").">FORCE DROPPED</option>
-								<option value='NG' ".(strtoupper($individualStudentGrade[0]->reexam) == "NG" ? 'selected="true"' : "").">NG</option>
-								<option value='INC' ".(strtoupper($individualStudentGrade[0]->reexam) == "INC" ? 'selected="true"' : "").">INC</option>
-								<option value='IP' ".(strtoupper($individualStudentGrade[0]->reexam) == "IP" ? 'selected="true"' : "").">IP</option>
+								<option value='-1' ".(strtoupper($postedReexam) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
+								<option value='1.00' ".(strtoupper($postedReexam) == "1.00" ? 'selected="true"' : "").">1.00</option>
+								<option value='1.25' ".(strtoupper($postedReexam) == "1.25" ? 'selected="true"' : "").">1.25</option>
+								<option value='1.50' ".(strtoupper($postedReexam) == "1.50" ? 'selected="true"' : "").">1.50</option>
+								<option value='1.75' ".(strtoupper($postedReexam) == "1.75" ? 'selected="true"' : "").">1.75</option>
+								<option value='2.00' ".(strtoupper($postedReexam) == "2.00" ? 'selected="true"' : "").">2.00</option>
+								<option value='2.25' ".(strtoupper($postedReexam) == "2.25" ? 'selected="true"' : "").">2.25</option>
+								<option value='2.50' ".(strtoupper($postedReexam) == "2.50" ? 'selected="true"' : "").">2.50</option>
+								<option value='2.75' ".(strtoupper($postedReexam) == "2.75" ? 'selected="true"' : "").">2.75</option>
+								<option value='3.00' ".(strtoupper($postedReexam) == "3.00" ? 'selected="true"' : "").">3.00</option>
+								<option value='5.00' ".(strtoupper($postedReexam) == "5.00" ? 'selected="true"' : "").">5.00</option>
+								<option value='D' ".(strtoupper($postedReexam) == "D" ? 'selected="true"' : "").">D</option>
+								<option value='FD' ".(strtoupper($postedReexam) == "FD" ? 'selected="true"' : "").">FORCE DROPPED</option>
+								<option value='NG' ".(strtoupper($postedReexam) == "NG" ? 'selected="true"' : "").">NG</option>
+								<option value='INC' ".(strtoupper($postedReexam) == "INC" ? 'selected="true"' : "").">INC</option>
+								<option value='IP' ".(strtoupper($postedReexam) == "IP" ? 'selected="true"' : "").">IP</option>
 							</select>
 						";
 					$htmlData .= "</td>";
@@ -416,7 +444,15 @@ class Administrator extends CI_Controller {
 		echo json_encode(array("data"	=>	$htmlData));
 	}
 	/*End of grades module Functions*/
+	
 
+	/*
+    * User Account Module Functions
+    */
+	
+	/*End of User Account module Functions*/
+
+	
 	/**
 	 * Enrollment Module
 	 */
@@ -663,7 +699,6 @@ class Administrator extends CI_Controller {
 					"old_data"		=>	json_encode($gradeOldData),
 					"new_data"		=>	json_encode($data),
 					"date_created"	=>	date("Y-m-d H:i:s")
-
 				);
 
 				if (count($data) > 0)
@@ -993,6 +1028,49 @@ class Administrator extends CI_Controller {
 
 		echo json_encode($msg);
 	}
+
+	public function resetPassword()
+	{
+		$post = $_POST;
+		$msg = array();
+		$data = array(
+			"upass"	=>	$post['password']
+		);
+
+		$condition = array(
+			"user_id"	=>	$post['userID'],
+			"uname"		=>	$post['userName']
+		);
+
+		$metadata = array(
+			"user_id"		=>	$_SESSION['uid'],
+			"semester_id"	=>	0,
+			"action"		=>	"reset password",
+			"old_data"		=>	"",
+			"new_data"		=>	$post['password'],
+			"date_created"	=>	date("Y-m-d H:i:s")
+
+		);
+
+		$saveToMetadata = $this->administrator->save("metadata", $metadata);
+		$reset = $this->administrator->update($data, $condition, array('tbl_users'));
+		if ($reset !== false)
+		{
+			$msg = array(
+				"sys_msg"	=>	"success",
+				"msg"		=>	"Password Reset Successfully",
+				"type"		=>	"success"
+			);
+		}else
+		{
+			$msg = array(
+				"sys_msg"	=>	"failed",
+				"msg"		=>	"Password Reset Failed, please try again",
+				"type"		=>	"error"
+			);
+		}
+		echo json_encode($msg);
+	}
 	 /**
 	  * END OF CRUD
 	  */
@@ -1093,6 +1171,7 @@ class Administrator extends CI_Controller {
 				break;
 			case 'D':
 				$remarks = "DROPPED";
+				break;
 			case 'FD':
 				$remarks = "FORCE DROPPED";
 				break;

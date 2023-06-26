@@ -45,6 +45,7 @@
                                     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
                                     <li role="presentation"><a href="#evaluation" aria-controls="evaluation" role="tab" data-toggle="tab">Evaluation</a></li>
                                     <li role="presentation"><a href="#enrollment" aria-controls="enrollment" role="tab" data-toggle="tab">Enrollment</a></li>
+                                    <li role="presentation"><a href="#grades" aria-controls="grades" role="tab" data-toggle="tab">Grades</a></li>
                                     <li role="presentation"><a href="#adding_changing" aria-controls="adding_changing" role="tab" data-toggle="tab">Adding & Changing</a></li>
                                     <!-- <li role="presentation"><a href="#reports-of-grades" aria-controls="reports-of-grades" role="tab" data-toggle="tab">Forms</a></li>
                                     <li role="presentation"><a href="#masterlist" aria-controls="masterlist" role="tab" data-toggle="tab">Masterlist</a></li>
@@ -62,6 +63,8 @@
                                     <?php $this->load->view('ric/tab_menu/_enrollment.php'); ?>
 
                                     <?php $this->load->view('ric/tab_menu/_adding_changing.php'); ?>
+
+                                    <?php $this->load->view('ric/tab_menu/_grade.php'); ?>
 
                                     <?php $this->load->view('ric/tab_menu/_rog.php'); ?>
 

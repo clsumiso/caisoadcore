@@ -13,8 +13,8 @@ use Box\Spout\Writer\Common\Creator\Style\BorderBuilder;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 require 'vendor/autoload.php';
 
-class Records_in_charge extends CI_Controller {
-
+class Records_in_charge extends CI_Controller 
+{
 
 	public function __construct()
 	{
@@ -1204,6 +1204,527 @@ class Records_in_charge extends CI_Controller {
 			$htmlData .= '</tr>';
 		echo json_encode(array("htmlData"	=>	$htmlData));
 	}
+
+	/*
+    * Grades Module Functions
+    */
+	public function gradeList()
+	{
+		// POST data
+		$postData = $this->input->post();
+
+		// Get data
+		$data = $this->records_in_charge->getGrades($postData);
+
+		echo json_encode($data);
+	}
+	
+	public function studentGradeList()
+	{
+		$userID = $_POST['studentID'];
+		$semesterID = $_POST['semesterID'];
+		$htmlData = "";
+		$ctr = 1;
+		
+		$studentGradeListData = $this->records_in_charge->getStudentGrade($userID, $semesterID);
+
+		foreach ($studentGradeListData as $studentGrade) 
+		{
+			$htmlData .= "<tr>";
+				$htmlData .= "<td>".($ctr++)."</td>";
+				$htmlData .= "<td>".$studentGrade->user_id."</td>";
+				$htmlData .= "<td><input style='width: 150px;' class='form-control' type='text' name='gradeData[]' value='".$studentGrade->schedid."' readonly /></td>";
+				$htmlData .= "<td><input style='width: 150px;' class='form-control' type='text' name='gradeData[]' value='".$studentGrade->teaching_faculty_id."' readonly /></td>";
+				$htmlData .= "<td><input style='width: 150px;' class='form-control' type='text' name='gradeData[]' value='".$studentGrade->cat_no."' readonly /></td>";
+
+				$individualStudentGrade = $this->records_in_charge->checkGrades($studentGrade->user_id, $studentGrade->cat_no, $semesterID, $studentGrade->teaching_faculty_id);
+				$droppingData = $this->records_in_charge->getDropping($studentGrade->user_id, $studentGrade->schedid, $semesterID);
+
+				$tmpEdit = "";
+
+				if (count($individualStudentGrade) == 0)
+				{
+					$tmpEdit = " disabled";
+					$htmlData .= "<td>";
+						$htmlData .= "
+							<select style='width: 150px;' class='form-control' name='gradeData[]' ".$tmpEdit.">
+								<option value='-1'>SELECT GRADE</option>
+								<option value='1.00'>1.00</option>
+								<option value='1.25'>1.25</option>
+								<option value='1.50'>1.50</option>
+								<option value='1.75'>1.75</option>
+								<option value='2.00'>2.00</option>
+								<option value='2.25'>2.25</option>
+								<option value='2.50'>2.50</option>
+								<option value='2.75'>2.75</option>
+								<option value='3.00'>3.00</option>
+								<option value='5.00'>5.00</option>
+								<option value='D'>D</option>
+								<option value='FD'>FORCE DROPPED</option>
+								<option value='NG'>NG</option>
+								<option value='INC'>INC</option>
+								<option value='IP'>IP</option>
+							</select>
+						";
+					$htmlData .= "</td>";
+					$htmlData .= "<td>";
+						$htmlData .= "
+							<select style='width: 150px;' class='form-control' name='gradeData[]' ".$tmpEdit.">
+								<option value='-1'>SELECT GRADE</option>
+								<option value='1.00'>1.00</option>
+								<option value='1.25'>1.25</option>
+								<option value='1.50'>1.50</option>
+								<option value='1.75'>1.75</option>
+								<option value='2.00'>2.00</option>
+								<option value='2.25'>2.25</option>
+								<option value='2.50'>2.50</option>
+								<option value='2.75'>2.75</option>
+								<option value='3.00'>3.00</option>
+								<option value='5.00'>5.00</option>
+								<option value='D'>D</option>
+								<option value='FD'>FORCE DROPPED</option>
+								<option value='NG'>NG</option>
+								<option value='INC'>INC</option>
+								<option value='IP'>IP</option>
+							</select>
+						";
+					$htmlData .= "</td>";
+					$htmlData .= "<td>----</td>";
+					$htmlData .= "<td>----</td>";
+				}else
+				{
+					$postedGrade = "";
+					$postedReexam = "";
+					$postedGrade = strtoupper($individualStudentGrade[0]->grades);
+					$postedReexam = strtoupper($individualStudentGrade[0]->reexam);
+					$tmpEdit = "";
+					if ($postedGrade == "" || $postedGrade != "")
+					{
+						$tmpEdit = " disabled";
+					}
+					$htmlData .= "<td>";
+						$htmlData .= "
+							<select style='width: 150px;' class='form-control' name='gradeData[]' ".$tmpEdit.">
+								<option value='-1' ".(strtoupper($postedGrade) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
+								<option value='1.00' ".(strtoupper($postedGrade) == "1.00" ? 'selected="true"' : "").">1.00</option>
+								<option value='1.25' ".(strtoupper($postedGrade) == "1.25" ? 'selected="true"' : "").">1.25</option>
+								<option value='1.50' ".(strtoupper($postedGrade) == "1.50" ? 'selected="true"' : "").">1.50</option>
+								<option value='1.75' ".(strtoupper($postedGrade) == "1.75" ? 'selected="true"' : "").">1.75</option>
+								<option value='2.00' ".(strtoupper($postedGrade) == "2.00" ? 'selected="true"' : "").">2.00</option>
+								<option value='2.25' ".(strtoupper($postedGrade) == "2.25" ? 'selected="true"' : "").">2.25</option>
+								<option value='2.50' ".(strtoupper($postedGrade) == "2.50" ? 'selected="true"' : "").">2.50</option>
+								<option value='2.75' ".(strtoupper($postedGrade) == "2.75" ? 'selected="true"' : "").">2.75</option>
+								<option value='3.00' ".(strtoupper($postedGrade) == "3.00" ? 'selected="true"' : "").">3.00</option>
+								<option value='5.00' ".(strtoupper($postedGrade) == "5.00" ? 'selected="true"' : "").">5.00</option>
+								<option value='D' ".(strtoupper($postedGrade) == "D" ? 'selected="true"' : "").">D</option>
+								<option value='FD' ".(strtoupper($postedGrade) == "FD" ? 'selected="true"' : "").">FORCE DROPPED</option>
+								<option value='NG' ".(strtoupper($postedGrade) == "NG" ? 'selected="true"' : "").">NG</option>
+								<option value='INC' ".(strtoupper($postedGrade) == "INC" ? 'selected="true"' : "").">INC</option>
+								<option value='IP' ".(strtoupper($postedGrade) == "IP" ? 'selected="true"' : "").">IP</option>
+							</select>
+						";
+					$htmlData .= "</td>";
+					$htmlData .= "<td>";
+						$htmlData .= "
+							<select style='width: 150px;' class='form-control' name='gradeData[]'>
+								<option value='-1' ".(strtoupper($postedReexam) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
+								<option value='1.00' ".(strtoupper($postedReexam) == "1.00" ? 'selected="true"' : "").">1.00</option>
+								<option value='1.25' ".(strtoupper($postedReexam) == "1.25" ? 'selected="true"' : "").">1.25</option>
+								<option value='1.50' ".(strtoupper($postedReexam) == "1.50" ? 'selected="true"' : "").">1.50</option>
+								<option value='1.75' ".(strtoupper($postedReexam) == "1.75" ? 'selected="true"' : "").">1.75</option>
+								<option value='2.00' ".(strtoupper($postedReexam) == "2.00" ? 'selected="true"' : "").">2.00</option>
+								<option value='2.25' ".(strtoupper($postedReexam) == "2.25" ? 'selected="true"' : "").">2.25</option>
+								<option value='2.50' ".(strtoupper($postedReexam) == "2.50" ? 'selected="true"' : "").">2.50</option>
+								<option value='2.75' ".(strtoupper($postedReexam) == "2.75" ? 'selected="true"' : "").">2.75</option>
+								<option value='3.00' ".(strtoupper($postedReexam) == "3.00" ? 'selected="true"' : "").">3.00</option>
+								<option value='5.00' ".(strtoupper($postedReexam) == "5.00" ? 'selected="true"' : "").">5.00</option>
+								<option value='D' ".(strtoupper($postedReexam) == "D" ? 'selected="true"' : "").">D</option>
+								<option value='FD' ".(strtoupper($postedReexam) == "FD" ? 'selected="true"' : "").">FORCE DROPPED</option>
+								<option value='NG' ".(strtoupper($postedReexam) == "NG" ? 'selected="true"' : "").">NG</option>
+								<option value='INC' ".(strtoupper($postedReexam) == "INC" ? 'selected="true"' : "").">INC</option>
+								<option value='IP' ".(strtoupper($postedReexam) == "IP" ? 'selected="true"' : "").">IP</option>
+							</select>
+						";
+					$htmlData .= "</td>";
+					$htmlData .= "<td>".$individualStudentGrade[0]->remarks."</td>";
+					$htmlData .= "<td>".$individualStudentGrade[0]->status."</td>";
+				}
+				
+			$htmlData .= "</tr>";
+		}
+
+		echo json_encode(array("data"	=>	$htmlData));
+	}
+	/*End of grades module Functions*/
+
+	/**
+	 * CRUD
+	 */
+	public function saveGrade()
+	{
+		// $action = $_POST['action'];
+		$gradeData = $_POST['gradeData'];
+		$action = $_POST['action'];
+		$semester = $_POST['semester'];
+		$studentID = $_POST['studentID'];
+
+		$output = array();
+		$msg = array();
+		$ctr = 1;
+
+		$scheduleID = '';
+		$gradeFaculty = '';
+		$grade = '';
+		$reexam = '';
+		$cat_no = '';
+
+		for ($i = 0 ; $i < count($gradeData); $i++)
+		{
+			
+			switch ($ctr)
+			{
+				case 1:
+					$scheduleID = $gradeData[$i];
+					break;
+				case 2:
+					$gradeFaculty = $gradeData[$i];
+					break;
+				case 3:
+					$cat_no = $gradeData[$i];
+					break;
+				case 4:
+					$grade = $gradeData[$i];
+					break;
+				case 5:
+					$reexam = $gradeData[$i];
+					break;
+			}
+
+			if ($ctr == 5)
+			{
+				$data = array();
+				$condtion = array(
+					"subject"	=>	$cat_no,
+					"semester_id"	=>	$semester,
+					"user_id"	=>	$studentID
+				);
+
+				/**
+				 * 
+				 */
+				if ($action == "save"){
+					if ($grade != -1 && $reexam != -1)
+					{
+						if ($action == "save")
+						{
+							$data = array(
+								"semester_id"	=>	$semester,
+								"user_id"		=>	$studentID,
+								"faculty_id"	=>	$gradeFaculty,
+								"subject"		=>	$cat_no,
+								"units"			=>	0,
+								"grades"		=>	$grade,
+								"remarks"		=>	$this->gradeRemarks($grade),
+								"weight"		=> 	0,
+								"status"		=>	'approved'
+
+							);
+						}
+					}else if ($grade != -1 && $reexam == -1)
+					{
+						if ($action == "save")
+						{
+							$data = array(
+								"semester_id"	=>	$semester,
+								"user_id"		=>	$studentID,
+								"faculty_id"	=>	$gradeFaculty,
+								"subject"		=>	$cat_no,
+								"units"			=>	0,
+								"grades"		=>	$grade,
+								"remarks"		=>	$this->gradeRemarks($grade),
+								"weight"		=> 	0,
+								"status"		=>	'approved'
+
+							);
+						}
+					}else if ($grade == -1 && $reexam != -1)
+					{
+						if ($action == "save")
+						{
+							$data = array(
+								"semester_id"	=>	$semester,
+								"user_id"		=>	$studentID,
+								"faculty_id"	=>	$gradeFaculty,
+								"subject"		=>	$cat_no,
+								"units"			=>	0,
+								"grades"		=>	$grade,
+								"remarks"		=>	$this->gradeRemarks($grade),
+								"weight"		=> 	0,
+								"status"		=>	'approved'
+
+							);
+						}
+					}
+				}
+
+				// array_push($output, $condtion);
+				// Get Old Data
+				$gradeOldData = $this->administrator->getGradesOldData($condtion);
+				foreach ($gradeOldData as $gradeVal) 
+				{
+					$data = array();
+					if ($grade != -1 && $reexam != -1)
+					{
+						if ($action == "save")
+						{
+							$data = array(
+								"semester_id"	=>	$semester,
+								"user_id"		=>	$studentID,
+								"faculty_id"	=>	$gradeFaculty,
+								"subject"		=>	$cat_no,
+								"units"			=>	0,
+								"grades"		=>	$grade,
+								"remarks"		=>	$this->gradeRemarks($grade),
+								"weight"		=> 	0,
+								"status"		=>	'approved'
+
+							);
+						}else
+						{
+							if ($grade != $gradeVal->grades && $reexam != $gradeVal->reexam)
+							{
+								$data = array(
+									"status"		=>	"approved",
+									"grades"		=>	$grade,
+									"reexam"		=>	$reexam,
+									"remarks"		=>	$this->gradeRemarks($reexam),
+									"sched_section"	=>	date("Y-m-d H:i:s")
+								);
+							}else if($grade == $gradeVal->grades && $reexam != $gradeVal->reexam)
+							{
+								$data = array(
+									"status"		=>	"approved",
+									"reexam"		=>	$reexam,
+									"remarks"		=>	$this->gradeRemarks($reexam),
+									"sched_section"	=>	date("Y-m-d H:i:s")
+								);
+							}else if($grade != $gradeVal->grades && $reexam == $gradeVal->reexam)
+							{
+								$data = array(
+									"status"		=>	"approved",
+									"grades"		=>	$grade,
+									"remarks"		=>	$this->gradeRemarks($grade),
+									"sched_section"	=>	date("Y-m-d H:i:s")
+								);
+							}else
+							{
+								$data = array();
+							}
+						}
+					}else if ($grade != -1 && $reexam == -1)
+					{
+						if ($action == "save")
+						{
+							$data = array(
+								"semester_id"	=>	$semester,
+								"user_id"		=>	$studentID,
+								"faculty_id"	=>	$gradeFaculty,
+								"subject"		=>	$cat_no,
+								"units"			=>	0,
+								"grades"		=>	$grade,
+								"remarks"		=>	$this->gradeRemarks($grade),
+								"weight"		=> 	0,
+								"status"		=>	'approved'
+
+							);
+						}else
+						{
+							if ($grade != $gradeVal->grades)
+							{
+								$data = array(
+									"status"		=>	"approved",
+									"grades"		=>	$grade,
+									"remarks"		=>	$this->gradeRemarks($grade),
+									"sched_section"	=>	date("Y-m-d H:i:s")
+								);
+							}
+						}
+					}else if ($grade == -1 && $reexam != -1)
+					{
+						if ($action == "save")
+						{
+							$data = array(
+								"semester_id"	=>	$semester,
+								"user_id"		=>	$studentID,
+								"faculty_id"	=>	$gradeFaculty,
+								"subject"		=>	$cat_no,
+								"units"			=>	0,
+								"grades"		=>	$grade,
+								"remarks"		=>	$this->gradeRemarks($grade),
+								"weight"		=> 	0,
+								"status"		=>	'approved'
+
+							);
+						}else
+						{
+							if ($reexam != $gradeVal->reexam)
+							{
+								$data = array(
+									"status"		=>	"approved",
+									"reexam"		=>	$reexam,
+									"remarks"		=>	$this->gradeRemarks($reexam),
+									"sched_section"	=>	date("Y-m-d H:i:s")
+								);
+							}
+						}
+					}else
+					{
+						$data = array();
+					}
+
+					// array_push($output, $data);
+				}
+
+				/**
+				 * First procedure save to metadata for history logs
+				 */
+				$metadata = array(
+					"user_id"		=>	$_SESSION['uid'],
+					"semester_id"	=>	$semester,
+					"action"		=>	$action,
+					"old_data"		=>	json_encode($gradeOldData),
+					"new_data"		=>	json_encode($data),
+					"date_created"	=>	date("Y-m-d H:i:s")
+				);
+
+				if (count($data) > 0)
+				{
+					$saveToMetadata = $this->administrator->save("metadata", $metadata);
+					if ($saveToMetadata !== false)
+					{
+						if ($action == "save")
+						{
+
+							if ($grade == "D" || $reexam == "D")
+							{
+								$data = array(
+									"studid"		=>	$studentID,
+									"fl_id"			=>	0,
+									"date_request"	=>	date("Y-m-d H:i:s"),
+									"status"		=>	"encoded",
+									"request_type"	=>	"drop",
+									"schedid"		=>	$scheduleID,
+									"semester_id"	=> 	$semester
+	
+								);
+								$saveGrade = $this->administrator->save("tbl_dropping", $data);
+							}else
+							{
+								$data = array();
+							}
+						}else if ($action == "update")
+						{
+							$saveGrade = $this->administrator->update($data, $condtion, array("tbl_grades"));
+						}
+						
+						if ($saveGrade !== false)
+						{
+							$msg = array(
+								"sys_msg"	=> 	"success",
+								"msg"		=>	"Successfully updated",
+								"icon"		=>	"success",
+								"test"		=>	json_encode($data)
+							);
+						}else
+						{
+							$msg = array(
+								"sys_msg"	=> 	"failed",
+								"msg"		=>	"Something went wrong, please try again",
+								"icon"		=>	"error"
+							);
+						}
+					}else
+					{
+						$msg = array(
+							"sys_msg"	=> 	"failed",
+							"msg"		=>	"Something went wrong, please try again",
+							"icon"		=>	"error"
+						);
+					}
+				}
+
+				if (count($data) > 0)
+				{
+					array_push($output, $data);
+				}
+				
+				/**
+				 * END First procedure save to metadata for history logs
+				 */
+				$ctr = 0;
+			}
+			$ctr++;
+		}
+		// $reexamData = $_POST['reexam'];
+		if (count($output) == 0)
+		{
+			$msg = array(
+				"sys_msg"	=> 	"no_change",
+				"msg"		=>	"No changes",
+				"icon"		=>	"info"
+			);
+		}
+
+		echo json_encode(array("sys_msg"	=>	$msg));
+	}
+
+	/**
+	 * END CRUD
+	 */
+
+	 /**
+	 * OTHER Functions
+	 */
+	public function gradeRemarks($grade = "")
+	{
+		$remarks = "";
+		switch ($grade) {
+			case '1.00':
+				case '1.25':
+					case '1.50':
+						case '1.75':
+							case '2.00':
+								case '2.25':
+									case '2.50':
+										case '2.75':
+											case '3.00':
+												$remarks = "PASSED";
+				break;
+			case 'INC':
+				$remarks = "INCOMPLETE";
+				break;
+			case 'NG':
+				$remarks = "NO GRADE";
+				break;
+			case 'D':
+				$remarks = "DROPPED";
+				break;
+			case 'FD':
+				$remarks = "FORCE DROPPED";
+				break;
+			case 'IP':
+				$remarks = "IN PROGRESS";
+				break;
+			case '5.00':
+				$remarks = "FAILED";
+				break;
+		}
+
+		return $remarks;
+	}
+	/**
+	 * END of OTHER FUNCTION
+	 */
 }
 
 /* End of file Records_in_charge.php */

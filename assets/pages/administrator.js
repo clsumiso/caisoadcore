@@ -1,4 +1,3 @@
-
 let scheduleData = $('#scheduleTable').DataTable({
     'dom': 'lBfrtip',
     'buttons': [
@@ -478,6 +477,100 @@ let applicantData = $('#applicantList').DataTable({
     ]
 });
 
+// ********************************************************************************************************************************
+let userAccountData = $('#userTable').DataTable({
+    'dom': 'lBfrtip',
+    'buttons': [
+        {
+            extend: 'excelHtml5',
+            exportOptions: {
+                columns: [2,3,4,5,6,7]
+            },
+            filename: 'EVALUATION TEMPLATE',
+            "action": newexportaction
+        },
+        {
+            extend: 'pdfHtml5',
+            orientation: 'landscape',
+            pageSize: 'LEGAL',
+            messageTop: 'Student Copy',
+            title: 'OFFICE OF ADMISSIONS',
+            exportOptions: {
+                columns: [2,3,4,5,6,7]
+            },
+            "action": newexportaction
+        },
+        {
+            extend: 'print',
+            messageTop: 'Student Copy',
+            title: 'OFFICE OF ADMISSIONS',
+            exportOptions: {
+                columns: [2,3,4,5,6,7]
+            },
+            "action": newexportaction,
+            customize: function(win)
+            {
+    
+                var last = null;
+                var current = null;
+                var bod = [];
+    
+                var css = '@page { size: landscape; }',
+                    head = win.document.head || win.document.getElementsByTagName('head')[0],
+                    style = win.document.createElement('style');
+    
+                style.type = 'text/css';
+                style.media = 'print';
+    
+                if (style.styleSheet)
+                {
+                    style.styleSheet.cssText = css;
+                }
+                else
+                {
+                    style.appendChild(win.document.createTextNode(css));
+                }
+    
+                head.appendChild(style);
+            },
+            pageSize: 'LEGAL'
+        }
+    ],
+    'responsive': true,
+    'autoWidth': true,
+    'processing': true,
+    'serverSide': true,
+    'serverMethod': 'post',
+    columnDefs: [
+        { orderable: false, targets: [0, 1] }
+    ],
+    //'searching': false, // Remove default Search Control
+    'ajax': 
+    {
+        'url': window.location.origin + "/office-of-admissions/administrator/userAccountList",
+        'data': function(data)
+        {
+            data.userType = $('#userType option:selected').val();
+        }
+    },
+    'columns': 
+    [
+        { data: "numRows" },
+        { data: "action" },
+        { data: "user_id" },
+        { data: "lname" },
+        { data: "fname" },
+        { data: "mname" },
+        { data: "uname" },
+        { data: "upass" },
+        { data: "login_timestamp" }
+    ]
+});
+
+$('#userType').change(function(){
+    userAccountData.draw();
+});
+
 let arrDay = ["M_", "T_", "W_", "TH_", "F_", "S_"]; 
 
 function newexportaction(e, dt, button, config) {
@@ -533,6 +626,65 @@ function updateSchedule(schedid, semester)
    'show');
 
    $('.modal-title').text('Class Schedule (' + $('#semester option:selected').text() + ")");
+}
+
+function resetPassword(userID, username)
+{
+    $('#userAccountModal').modal(
+    {
+        backdrop: 'static', 
+        keyboard: false
+    }, 
+    'show');
+    $('[name="txtUsername"]').val(username);
+    $('[name="txtUserID"]').val(userID);
+}
+
+function saveUser()
+{
+    if ($('[name="txtPassword"]').val() != "")
+    {
+        swal({
+            title: "Are you sure?",
+            text: "",
+            type: "info",
+            showCancelButton: true,
+            confirmButtonText: "YES",
+            closeOnConfirm: false,
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            showLoaderOnConfirm: true,
+        }, function (isConfirm) 
+        {
+            if (isConfirm) 
+            {
+                $.ajax({
+                    url: window.location.origin + "/office-of-admissions/administrator/resetPassword",
+                    type:"POST",
+                    dataType: 'JSON',
+                    data: 
+                    { 
+                        userID: $('[name="txtUserID"]').val(),
+                        userName: $('[name="txtUsername"]').val(),
+                        password: $('[name="txtPassword"]').val()
+                    },
+                    success: function(data)
+                    {
+                        swal((data.sys_msg == "success" ? "SUCCESS" : "FAILED"), data.msg, data.type);
+                        userAccountData.draw();
+                        $('[name="txtPassword"]').val();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) 
+                    {
+                        
+                    }
+                });
+            }
+        });
+    }else
+    {
+        swal("FAILED", "Password field is required!!!", "warning");
+    }
 }
 
 function save(action)

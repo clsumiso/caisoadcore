@@ -29,6 +29,18 @@
                     <div class="row clearfix">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <h3>LIST OF GRADUATE LEVEL APPLICANTS</h3>
+							<div class="row clearfix">
+								<div class="col-sm-3 col-md-3 col-lg-3">
+									<b>FILTER BY:</b>
+									<select class="form-control" id="gradStatus">
+										<option value="pending">PENDING</option>
+										<option value="approved_regular">ENDORSED - REGULAR</option>
+										<option value="approved_probationary">ENDORSED - PROBATIONARY</option>
+										<option value="approved">DEAN - APPROVED</option>
+										<option value="show_all">SHOW ALL</option>
+									</select>
+								</div>
+							</div>
                             <div class="table-responsive">
                                 <table id='applicantList' class='table table-bordered table-stripped table-hover js-basic-example dataTable'>
                                     <thead>

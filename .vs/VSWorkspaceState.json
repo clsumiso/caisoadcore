@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\application",
+    "\\application\\controllers",
+    "\\application\\models",
+    "\\application\\views",
+    "\\application\\views\\admissions\\tab_menu",
+    "\\application\\views\\grad_level_admissions",
+    "\\application\\views\\grad_level_admissions\\tab_menu",
+    "\\assets",
+    "\\assets\\pages"
+  ],
+  "SelectedNode": "\\application\\controllers\\Applicant.php",
+  "PreviewInSolutionExplorer": false
+}

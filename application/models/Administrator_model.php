@@ -715,6 +715,110 @@ class Administrator_model extends CI_Model {
 
 		return $response; 
 	}
+	
+	function getUserAccount($postData=null)
+	{
+
+		$response = array();
+
+		## Read value
+		$draw = $postData['draw'];
+		$start = $postData['start'];
+		$rowperpage = $postData['length']; // Rows display per page
+		$columnIndex = $postData['order'][0]['column']; // Column index
+		if (!in_array($columnIndex, array(0,1)))
+		{
+			$columnName = $postData['columns'][$columnIndex]['data']; // Column name
+		}else
+		{
+			$columnName = "";
+		}
+		$columnSortOrder = $postData['order'][0]['dir']; // asc or desc
+		$searchValue = $postData['search']['value']; // Search value
+
+		// Custom search filter 
+		$searchUserType = $postData['userType'];
+
+		## Search 
+		$search_arr = array();
+		$searchQuery = "";
+
+		if($searchValue != '')
+		{
+			$search_arr[] = " (tbl_users.user_id like '%".$searchValue."%' OR tbl_profile.lname like '%".$searchValue."%' OR tbl_profile.fname like'%".$searchValue."%' OR tbl_profile.mname like'%".$searchValue."%' OR tbl_users.uname like'%".$searchValue."%') ";
+		}
+
+		if($searchUserType != '')
+		{
+			$search_arr[] = " tbl_users.user_type='".$searchUserType."' ";
+		}
+
+		if(count($search_arr) > 0)
+		{
+			$searchQuery = implode(" AND ",$search_arr);
+		}
+
+		## Total number of records without filtering
+		$this->db->select('count(*) as allcount');
+		$this->db->join('tbl_profile', 'tbl_users.user_id = tbl_profile.user_id', 'inner');
+		$this->db->where("user_type", $searchUserType);
+
+		$records = $this->db->get('tbl_users')->result();
+		$totalRecords = $records[0]->allcount;
+
+		## Total number of record with filtering
+		$this->db->select('count(*) as allcount');
+		$this->db->join('tbl_profile', 'tbl_users.user_id = tbl_profile.user_id', 'inner');
+		$this->db->where("user_type", $searchUserType);
+
+		if($searchQuery != '')
+		$this->db->where($searchQuery);
+		$records = $this->db->get('tbl_users')->result();
+		$totalRecordwithFilter = $records[0]->allcount;
+
+		## Fetch records
+		$this->db->select('tbl_users.user_id, tbl_users.profile_id, tbl_profile.lname, tbl_profile.fname, tbl_profile.mname, tbl_users.uname, tbl_users.upass, tbl_users.login_timestamp');
+		$this->db->join('tbl_profile', 'tbl_users.user_id = tbl_profile.user_id', 'inner');
+		$this->db->where("user_type", $searchUserType);
+
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+
+		$this->db->order_by($columnName, $columnSortOrder);
+		$this->db->limit($rowperpage, $start);
+		$records = $this->db->get('tbl_users')->result();
+
+		$data = array();
+		$ctr = 1;
+		foreach($records as $record)
+		{
+			$data[] = array( 
+				"numRows"			=>	($ctr++),
+				"action"			=>	'
+					<button class="btn btn-lg btn-flat bg-blue-grey waves-effect" onclick="resetPassword(\''.$record->user_id.'\', \''.$record->uname.'\')">RESET PASSWORD</button>
+
+					<button class="btn btn-lg btn-flat bg-orange waves-effect" onclick="javascript:alert(\''."NOT YET AVAILABLE".'\')">UPDATE PROFILE</button>
+				',
+				"user_id"			=>	$record->user_id,
+				"lname"				=>	$record->lname,
+				"fname"				=>	$record->fname,
+				"mname"				=>	$record->mname,
+				"uname"				=>	$record->uname,
+				"upass"				=>	$record->upass,
+				"login_timestamp"	=>	$record->login_timestamp
+			); 
+		}
+
+		## Response
+		$response = array(
+			"draw" => intval($draw),
+			"iTotalRecords" => $totalRecords,
+			"iTotalDisplayRecords" => $totalRecordwithFilter,
+			"aaData" => $data
+		);
+
+		return $response; 
+	}
 	// End of DataTable data
 
 	public function getTotal($tableName, $semester, $status, $schedid = "")
@@ -911,6 +1015,18 @@ class Administrator_model extends CI_Model {
 		$this->db->from('tbl_teaching_loads');
 		$this->db->where('schedid', $schedid);
 		$this->db->where('semester_id', $semesterID);
+		$query = $this->db->get();
+
+		return $query->result();
+	}
+
+	public function getDropping($user_id = "", $schedid = "", $semester = "")
+	{
+		$this->db->select('schedid');
+		$this->db->from('tbl_dropping');
+		$this->db->where('studid', $user_id);
+		$this->db->where('schedid', $schedid);
+		$this->db->where('semester_id', $semester);
 		$query = $this->db->get();
 
 		return $query->result();

@@ -172,6 +172,7 @@ class Admissions_model extends CI_Model {
 		// Custom search filter 
 		// $searchSemester = $postData['semester'];
 		// $searchCourse = $postData['course'];
+		$approvalStatus = $postData['status'];
 
 		## Search 
 		$search_arr = array();
@@ -246,10 +247,10 @@ class Admissions_model extends CI_Model {
 			switch (strtoupper($record->degree_program_applied)) 
 			{
 				case 'PHD':
-					$actionBtn = count($this->getReference($record->application_id)) == 3 ? '<button class="btn btn-sm bg-green btn-block waves-effect" style="margin-top: 5px;" onclick="endorsedToDepartment(\''.$record->application_id.'\')">ENDORSE TO DEPARTMENT</button>' : '<button class="btn btn-sm bg-green btn-block waves-effect disabled" style="margin-top: 5px;">ENDORSE TO DEPARTMENT</button>';
+					$actionBtn = count($this->getReference($record->application_id)) == 3 && $this->getApprovalStatus($record->application_id)[0]->department_remarks == "" && $this->getApprovalStatus($record->application_id)[0]->dean_remarks == "" ? '<button class="btn btn-sm bg-green btn-block waves-effect" style="margin-top: 5px;" onclick="endorsedToDepartment(\''.$record->application_id.'\')">ENDORSE TO DEPARTMENT</button>' : '<button class="btn btn-sm bg-green btn-block waves-effect disabled" style="margin-top: 5px;">ENDORSE TO DEPARTMENT</button>';
 					break;
 				case 'MASTER':
-					$actionBtn = count($this->getReference($record->application_id)) == 2 ? '<button class="btn btn-sm bg-green btn-block waves-effect" style="margin-top: 5px;" onclick="endorsedToDepartment(\''.$record->application_id.'\')">ENDORSE TO DEPARTMENT</button>' : '<button class="btn btn-sm bg-green btn-block waves-effect disabled" style="margin-top: 5px;">ENDORSE TO DEPARTMENT</button>';
+					$actionBtn = count($this->getReference($record->application_id)) == 2 && $this->getApprovalStatus($record->application_id)[0]->department_remarks == "" && $this->getApprovalStatus($record->application_id)[0]->dean_remarks == "" ? '<button class="btn btn-sm bg-green btn-block waves-effect" style="margin-top: 5px;" onclick="endorsedToDepartment(\''.$record->application_id.'\')">ENDORSE TO DEPARTMENT</button>' : '<button class="btn btn-sm bg-green btn-block waves-effect disabled" style="margin-top: 5px;">ENDORSE TO DEPARTMENT</button>';
 					break;
 			}
 
@@ -262,30 +263,43 @@ class Admissions_model extends CI_Model {
 				$actionBtn .= '<a href="/office-of-admissions/admissions/exportReferenceForm/'.$refForm->reference_id.'" class="btn btn-sm bg-blue-grey btn-block waves-effect" target="_BLANK" style="margin-top: 5px;">Reference '.($referenceCtr++).'</a>';
 			}
 
-			$data[] = array( 
-				"numRows"				=>	($ctr++),
-				"action"				=>	$actionBtn,
-				"requirements"			=>	'
+			if (count($referenceForm) > 1)
+			{
+				if (count($this->getApprovalStatus($record->application_id)) > 0)
+				{
+					if ($approvalStatus == "pending")
+					{
+						if ($this->getApprovalStatus($record->application_id)[0]->department_remarks == "" && $this->getApprovalStatus($record->application_id)[0]->dean_remarks == "")
+						{
+							$data[] = array( 
+								"numRows"				=>	($ctr++),
+								"action"				=>	$actionBtn,
+								"requirements"			=>	'
 
-				<a href="'.$this->getFileInfo($record->gwa_file, "GWA")['link'].'" target="'.$this->getFileInfo($record->gwa_file, "GWA")['target'].'" class="btn btn-sm bg-amber btn-block waves-effect" style="margin-top: 5px;">GWA</a>
+									<a href="'.$this->getFileInfo($record->gwa_file, "GWA")['link'].'" target="'.$this->getFileInfo($record->gwa_file, "GWA")['target'].'" class="btn btn-sm bg-amber btn-block waves-effect" style="margin-top: 5px;">GWA</a>
 				
-				<a href="'.$this->getFileInfo($record->img_file, "IMG")['link'].'" target="'.$this->getFileInfo($record->img_file, "IMG")['target'].'" class="btn btn-sm bg-blue-grey btn-block waves-effect" style="margin-top: 5px;">PICTURE</a>
+									<a href="'.$this->getFileInfo($record->img_file, "IMG")['link'].'" target="'.$this->getFileInfo($record->img_file, "IMG")['target'].'" class="btn btn-sm bg-blue-grey btn-block waves-effect" style="margin-top: 5px;">PICTURE</a>
 				
-				<a href="'.$this->getFileInfo($record->proficiency_file, "PROFICIENCY")['link'].'" target="'.$this->getFileInfo($record->proficiency_file, "PROFICIENCY")['target'].'" class="btn btn-sm bg-orange btn-block waves-effect" style="margin-top: 5px;">PROFICIENCY</a>
+									<a href="'.$this->getFileInfo($record->proficiency_file, "PROFICIENCY")['link'].'" target="'.$this->getFileInfo($record->proficiency_file, "PROFICIENCY")['target'].'" class="btn btn-sm bg-orange btn-block waves-effect" style="margin-top: 5px;">PROFICIENCY</a>
 				
-				<a href="'.$this->getFileInfo($record->tor_file, "TOR")['link'].'" target="'.$this->getFileInfo($record->tor_file, "TOR")['target'].'" class="btn btn-sm bg-teal btn-block waves-effect" style="margin-top: 5px;">TOR</a>
+									<a href="'.$this->getFileInfo($record->tor_file, "TOR")['link'].'" target="'.$this->getFileInfo($record->tor_file, "TOR")['target'].'" class="btn btn-sm bg-teal btn-block waves-effect" style="margin-top: 5px;">TOR</a>
 				
-				',
-				"fname"					=>	$record->fname,
-				"mname"					=>	$record->mname,
-				"lname"					=>	$record->lname,
-				"degree_programm"		=>	$record->course_desc,
-				"level_applied"			=>	$record->degree_program_applied,
-				"date_applied"			=>	date("F d, Y H:i:s", strtotime($record->date_created)),
-				"reference"				=>	$referenceHtml,
-				"department"			=>	count($this->getApprovalStatus($record->application_id)) > 0 ? $this->getApprovalStatus($record->application_id)[0]->department_remarks : "****",
-				"referenceCtr"			=>	count($referenceForm)
-			); 
+								',
+								"fname"					=>	$record->fname,
+								"mname"					=>	$record->mname,
+								"lname"					=>	$record->lname,
+								"degree_programm"		=>	$record->course_desc,
+								"level_applied"			=>	$record->degree_program_applied,
+								"date_applied"			=>	date("F d, Y H:i:s", strtotime($record->date_created)),
+								"reference"				=>	$referenceHtml,
+								"department"			=>	count($this->getApprovalStatus($record->application_id)) > 0 ? $this->getApprovalStatus($record->application_id)[0]->department_remarks : "****",
+								"dean"			=>	count($this->getApprovalStatus($record->application_id)) > 0 ? $this->getApprovalStatus($record->application_id)[0]->dean_remarks : "****",
+								"referenceCtr"			=>	count($referenceForm)
+							); 
+						}	 
+					}
+				}
+			}
 		}
 
 		## Response
@@ -330,7 +344,7 @@ class Admissions_model extends CI_Model {
 	public function getApprovalStatus($applicationID = "")
 	{
 		$applicantDB = $this->load->database('applicantDB', TRUE);
-		$applicantDB->select("department_remarks, dean_remarks");
+		$applicantDB->select("*");
 		$applicantDB->from("oad0003");
 		$applicantDB->where("application_id", $applicationID);
 		$applicantDB->group_by("application_id", array("application_id"));

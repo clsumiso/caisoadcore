@@ -179,6 +179,179 @@ class Records_in_charge_model extends CI_Model {
 		return $query->result();
 	}
 
+	/**
+	 * LOGS metadata
+	 */
+	public function getGradesOldData($condition = array())
+	{
+		$this->db->select("subject, grades, reexam");
+		$this->db->from("tbl_grades");
+		$this->db->where("subject", $condition['subject']);
+		$this->db->where("semester_id", $condition['semester_id']);
+		$this->db->where("user_id", $condition['user_id']);
+		$query = $this->db->get();
+
+		return $query->result();
+	}
+	/**
+	 * END of logs metadata
+	 */
+
+	/**
+	* Grades Module Functions
+	*/
+
+	public function getGrades($postData=null)
+	{
+		$response = array();
+
+		## Read value
+		$draw = $postData['draw'];
+		$start = $postData['start'];
+		$rowperpage = $postData['length']; // Rows display per page
+		$columnIndex = $postData['order'][0]['column']; // Column index
+		if (!in_array($columnIndex, array(0,1,9)))
+		{
+			$columnName = $postData['columns'][$columnIndex]['data']; // Column name
+		}else
+		{
+			$columnName = "";
+		}
+		$columnSortOrder = $postData['order'][0]['dir']; // asc or desc
+		$searchValue = $postData['search']['value']; // Search value
+
+		// Custom search filter 
+		$searchSemester = $postData['semester'];
+		$searchCourse = $postData['course'];
+
+		## Search 
+		$search_arr = array();
+		$searchQuery = "";
+
+		if($searchValue != '')
+		{
+			$search_arr[] = " (tbl_enrollment.user_id like '%".$searchValue."%' OR tbl_profile.fname like '%".$searchValue."%' OR tbl_profile.mname like'%".$searchValue."%' OR tbl_profile.lname like'%".$searchValue."%' ) ";
+		}
+
+		if($searchSemester != '')
+		{
+			$search_arr[] = " tbl_enrollment.semester_id='".$searchSemester."' AND tbl_profile.course_id='".$searchCourse."' ";
+		}
+
+		if(count($search_arr) > 0)
+		{
+			$searchQuery = implode(" AND ",$search_arr);
+		}
+
+		## Total number of records without filtering
+		$this->db->select('count(*) as allcount');
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+		// $this->db->where('tbl_enrollment.semester_id', $searchSemester);
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+		$records = $this->db->get('tbl_enrollment')->result();
+		$totalRecords = $records[0]->allcount;
+
+		## Total number of record with filtering
+		$this->db->select('count(*) as allcount');
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+		$records = $this->db->get('tbl_enrollment')->result();
+		$totalRecordwithFilter = $records[0]->allcount;
+
+		## Fetch records
+
+		$this->db->select('tbl_enrollment.user_id, tbl_semester.semester_name, tbl_profile.lname, tbl_profile.fname, tbl_profile.mname, tbl_course.course_name, tbl_enrollment.section, tbl_semester.semester_id, tbl_semester.semester_year');
+
+		$this->db->join('tbl_profile', 'tbl_enrollment.user_id = tbl_profile.user_id', 'inner');
+		$this->db->join('tbl_course', 'tbl_profile.course_id = tbl_course.course_id', 'inner');
+		$this->db->join('tbl_semester', 'tbl_enrollment.semester_id = tbl_semester.semester_id', 'inner');
+
+		if($searchQuery != '')
+			$this->db->where($searchQuery);
+
+		$this->db->order_by($columnName, $columnSortOrder);
+		$this->db->limit($rowperpage, $start);
+		$records = $this->db->get('tbl_enrollment')->result();
+
+		$data = array();
+		$ctr = 1;
+		foreach($records as $record)
+		{
+			$data[] = array( 
+				"numRows"			=>	($ctr++),
+				"action"			=>	'<button type="button" class="btn bg-green waves-effect" onclick="gradeDetails(\''.$record->user_id.'\', \''.$record->semester_id.'\')">
+											<i class="material-icons">assignment</i> view grades
+										</button>',
+				"user_id"			=>	$record->user_id,
+				"semester_name"		=>	$record->semester_name." ".$record->semester_year,
+				"fname"				=>	$record->fname,
+				"mname"				=>	$record->mname,
+				"lname"				=>	$record->lname,
+				"course_name"		=>	$record->course_name,
+				"section"			=>	$record->section
+			); 
+		}
+
+		## Response
+		$response = array(
+			"draw" => intval($draw),
+			"iTotalRecords" => $totalRecords,
+			"iTotalDisplayRecords" => $totalRecordwithFilter,
+			"aaData" => $data
+		);
+
+		return $response; 
+	}
+
+	public function getStudentGrade($userID = "", $semesterID = 0, $cat_no = "")
+	{
+		$this->db->select('tbl_registration.user_id, tbl_registration.schedid, tbl_class_schedule.cat_no, tbl_teaching_loads.user_id as teaching_faculty_id');
+		$this->db->from('tbl_registration');
+		$this->db->join('tbl_class_schedule', 'tbl_registration.schedid = tbl_class_schedule.schedid', 'inner');
+		$this->db->join('tbl_teaching_loads', 'tbl_class_schedule.schedid = tbl_teaching_loads.schedid', 'inner');
+		$this->db->where('tbl_registration.user_id', $userID);
+		$this->db->where('tbl_registration.semester_id', $semesterID);
+		$this->db->where('tbl_class_schedule.semester_id', $semesterID);
+		$this->db->where('tbl_class_schedule.class_type !=', 2);
+		$this->db->order_by('tbl_registration.schedid', 'ASC');
+		$query = $this->db->get();
+
+		return $query->result();
+	}
+
+	public function checkGrades($user_id = "", $cat_no = "", $semesterID = "", $faculty_id = "")
+	{
+		$this->db->select('*');
+		$this->db->from('tbl_grades');
+		$this->db->where('user_id', $user_id);
+		$this->db->where('subject', $cat_no);
+		$this->db->where('semester_id', $semesterID);
+		$query = $this->db->get();
+
+		return $query->result();
+	}
+
+	public function getDropping($user_id = "", $schedid = "", $semester = "")
+	{
+		$this->db->select('schedid');
+		$this->db->from('tbl_dropping');
+		$this->db->where('studid', $user_id);
+		$this->db->where('schedid', $schedid);
+		$this->db->where('semester_id', $semester);
+		$query = $this->db->get();
+
+		return $query->result();
+	}
+	/**
+	* End Grades Module Functions
+	*/
+
 	public function save($data = array(), $con = array(), $profileData = array(), $table = array(), $profileDataCon = array())
 	{
 		if(!empty($data)){
