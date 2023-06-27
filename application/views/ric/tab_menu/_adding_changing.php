@@ -12,6 +12,14 @@
                         </div>
                     </div>
                     <div class="row clearfix">
+                        <div class="col-sm-12 col-md-3 col-lg-3"">
+                            <b>Semester:</b>
+                            <select class="form-control" id="addingSemester">
+                                <?php echo $semester; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
                         <div class="col-sm-3">
                             <input type="text" class="form-control" name="studid_enrollment" id="studid_enrollment" placeholder="ID NUMBER e.g. 00-0000">
                         </div>

@@ -736,11 +736,22 @@ function get_enrollment()
 
 function showSubject() 
 {
-    $.ajax({
+    if ($('#addingSemester option:selected').val() == '#')
+    {
+      alert("Please select semester");
+    }else
+    {
+      $.ajax({
         url: window.location.origin + "/office-of-admissions/records_in_charge/showSubjects",
         type:"POST",
         dataType: 'JSON',
-        data: { studid: $('#studid_enrollment').val(), filter: $('#subject').val(), section: $('#section_list option:selected').val() },
+        data: 
+        { 
+          studid: $('#studid_enrollment').val(), 
+          filter: $('#subject').val(), 
+          section: $('#section_list option:selected').val(),
+          semester: $('#addingSemester option:selected').val()
+        },
         beforeSend: function ()
         {
             $('#status-loading').html('<span class="loader"></span>');
@@ -762,15 +773,28 @@ function showSubject()
             swal("Something went wrong!!!", "No data, please try again", "error");
         }
     });
+    }
+    
 }
 
 function studentEnrollment() 
 {
-  $.ajax({
+  if ($('#addingSemester option:selected').val() == '#')
+  {
+    alert("Please select semester");
+  }else
+  {
+    $.ajax({
         url: window.location.origin + "/office-of-admissions/records_in_charge/enrollment_components",
         type:"POST",
         dataType: 'JSON',
-        data: { studid: $('#studid_enrollment').val(), course: $('#course_list option:selected').val(), section: $('#section_list option:selected').val() },
+        data: 
+        { 
+          studid: $('#studid_enrollment').val(), 
+          course: $('#course_list option:selected').val(), 
+          section: $('#section_list option:selected').val(),
+          semester: $('#addingSemester option:selected').val()
+        },
         beforeSend: function ()
         {
           $('#status-loading').html('<span class="loader"></span>');
@@ -792,7 +816,10 @@ function studentEnrollment()
           swal("Something went wrong!!!", "No data, please try again", "error");
         }
     });
+  }
+  
 }
+/*END Enrolmment component*/
 
 function getCourse(collegeID) 
 {
@@ -807,8 +834,10 @@ function getCourse(collegeID)
         },
         success: function(data)
         {
-            $('#gradeCourse').html(data.courseData);
-            $('#gradeCourse').selectpicker('refresh');
+          $('#gradeCourse').html(data.courseData);
+          $('#gradeCourse').selectpicker('refresh');
+          $('#course_list').html(data.courseData);
+          $('#course_list').selectpicker('refresh');
         },
         complete: function () 
         {
@@ -910,7 +939,11 @@ function subjectEnrolled()
         url: window.location.origin + "/office-of-admissions/records_in_charge/subject_enrolled",
         type:"POST",
         dataType: 'JSON',
-        data: { studid: $('#studid_enrollment').val() },
+        data: 
+        { 
+          studid: $('#studid_enrollment').val(),
+          semester: $('#addingSemester option:selected').val()
+        },
         beforeSend: function ()
         {
           $('#status-loading').html('<span class="loader"></span>');

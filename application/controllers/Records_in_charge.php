@@ -1080,11 +1080,12 @@ class Records_in_charge extends CI_Controller
 
 	public function enrollment_components()
 	{
-		$semester = 7;
+		// $semester = count($this->records_in_charge->getActiveSemester()) > 0 ? $this->records_in_charge->getActiveSemester()[0]->semester_id : 0;
 		$student_data = $this->encoder->get_student_info($_POST['studid'], 6);
 		$name = '---';
 		$course = $_POST['course'];
 		$section = $_POST['section'];
+		$semester = $_POST['semester'];
 		$htmlData = '';
 		$i = 1;
 
@@ -1117,13 +1118,15 @@ class Records_in_charge extends CI_Controller
 
     public function showSubjects()
     {
-        $semester = 7;
+        // $semester = count($this->records_in_charge->getActiveSemester()) > 0 ? $this->records_in_charge->getActiveSemester()[0]->semester_id : 0;
         $section = $_POST['section'];
         $idNumber = $_POST['studid'];
         $filter = $_POST['filter'];
+        $semester = $_POST['semester'];
+
         $htmlData = "";
         $i = 1;
-        $subject_data = $this->encoder->getClassScheduleByFilter($filter, 7);
+        $subject_data = $this->encoder->getClassScheduleByFilter($filter, $semester);
 
         foreach ($subject_data as $subject) 
         {
@@ -1169,7 +1172,9 @@ class Records_in_charge extends CI_Controller
 
 	public function subject_enrolled()
 	{
-		$enrollData = $this->encoder->get_enrollment($_POST['studid'], 7);
+        // $semester = count($this->records_in_charge->getActiveSemester()) > 0 ? $this->records_in_charge->getActiveSemester()[0]->semester_id : 0;
+		$semester = $_POST['semester'];
+		$enrollData = $this->encoder->get_enrollment($_POST['studid'], $semester);
 		$htmlData = '';
 		$i = 1;
 		$total_units = 0;
@@ -1412,7 +1417,8 @@ class Records_in_charge extends CI_Controller
 				/**
 				 * 
 				 */
-				if ($action == "save"){
+				if ($action == "save")
+				{
 					if ($grade != -1 && $reexam != -1)
 					{
 						if ($action == "save")
