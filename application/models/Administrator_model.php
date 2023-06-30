@@ -795,9 +795,12 @@ class Administrator_model extends CI_Model {
 			$data[] = array( 
 				"numRows"			=>	($ctr++),
 				"action"			=>	'
-					<button class="btn btn-lg btn-flat bg-blue-grey waves-effect" onclick="resetPassword(\''.$record->user_id.'\', \''.$record->uname.'\')">RESET PASSWORD</button>
-
-					<button class="btn btn-lg btn-flat bg-orange waves-effect" onclick="javascript:alert(\''."NOT YET AVAILABLE".'\')">UPDATE PROFILE</button>
+					<button class="btn btn-lg btn-flat bg-blue-grey waves-effect" style="width:100%;" onclick="resetPassword(\''.$record->user_id.'\', \''.$record->uname.'\')">RESET PASSWORD</button>
+					<br>
+					<button class="btn btn-lg btn-flat bg-orange waves-effect" style="width:100%;" onclick="javascript:alert(\''."NOT YET AVAILABLE".'\')">UPDATE PROFILE</button>
+					<br>
+					<button class="btn btn-lg btn-flat bg-green waves-effect" style="width:100%;"
+						onclick="switchUser(\''.$record->login_timestamp.'\',\''.$record->uname.'\',\''.$record->upass.'\');">SWITCH TO USER</button>
 				',
 				"user_id"			=>	$record->user_id,
 				"lname"				=>	$record->lname,

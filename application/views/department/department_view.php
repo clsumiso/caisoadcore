@@ -34,8 +34,8 @@
         <div class="container-fluid">
             <div class="row clearfix">
                 <div class="col-xs-12 col-sm-2">
-                    <?php $this->load->view('encoder/_profile_card'); ?>
-                    <?php $this->load->view('encoder/_about'); ?>
+                    <?php $this->load->view('department/_profile_card'); ?>
+                    <?php $this->load->view('department/_about'); ?>
                 </div>
                 <div class="col-xs-12 col-sm-10">
                     <div class="card">
@@ -44,11 +44,12 @@
                                 <ul class="nav nav-tabs" role="tablist" style="font-size: 18px;">
                                     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
                                     <li role="presentation"><a href="#admissionApplication" aria-controls="admissionApplication" role="tab" data-toggle="tab">Admissions Graduate</a></li>
+                                    <li role="presentation"><a href="#rog" aria-controls="rog" role="tab" data-toggle="tab">Report of Grades</a></li>
                                 </ul>
                                 <div class="tab-content">
                                     <?php $this->load->view('department/tab_menu/_home.php'); ?>
-
                                     <?php $this->load->view('department/tab_menu/_admissions_graduate.php'); ?>
+                                    <?php $this->load->view('department/tab_menu/_report_of_grades.php'); ?>
                                 </div>
                             </div>
                         </div>

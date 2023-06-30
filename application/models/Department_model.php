@@ -9,6 +9,7 @@ class Department_model extends CI_Model {
   {
     parent::__construct();
     $this->load->database();
+    $this->table = '';
   }
 
   // ------------------------------------------------------------------------
@@ -292,6 +293,51 @@ class Department_model extends CI_Model {
 
 		return $query->result();
 	}
+
+	public function check_user_info($user_id)
+    {
+        $this->db->select("dept_id");
+        $this->db->from('tbl_profile');
+		$this->db->where('user_id', $user_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_subject($semester, $department_id)
+    {
+        $this->db->select("tbl_class_schedule.*");
+        $this->db->from('tbl_class_schedule');
+		$this->db->where('department_id', $department_id);
+		$this->db->where('semester_id', $semester);
+		$this->db->where_in('class_type', array(1, 4, 5));
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_teaching_loads($department_id, $schedid)
+    {
+        $this->db->select("tbl_profile.user_id, tbl_profile.lname, tbl_profile.fname, tbl_teaching_loads.schedid");
+        $this->db->from('tbl_teaching_loads');
+        $this->db->join('tbl_profile', 'tbl_teaching_loads.user_id = tbl_profile.user_id', 'inner');
+        $this->db->join('tbl_class_schedule', 'tbl_teaching_loads.schedid = tbl_class_schedule.schedid', 'inner');
+        $this->db->where('tbl_class_schedule.department_id', $department_id);
+        $this->db->where('tbl_teaching_loads.schedid', $schedid);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_rog_status($students = array(), $sem, $faculty_id, $subject)
+    {
+        $this->db->select("status");
+        $this->db->from('tbl_grades');
+        $this->db->where_in('user_id', $students);
+        $this->db->where_in('status', array('pending', 'faculty', 'department head', 'dean', 'approved'));
+        $this->db->where('faculty_id', $faculty_id);
+        $this->db->where('semester_id', $sem);
+        $this->db->where('subject', $subject);
+        $query = $this->db->get();
+        return $query->result();
+    }
 }
 
 /* End of file Department_model.php */

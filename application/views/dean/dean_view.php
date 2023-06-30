@@ -34,8 +34,8 @@
         <div class="container-fluid">
             <div class="row clearfix">
                 <div class="col-xs-12 col-sm-2">
-                    <?php $this->load->view('encoder/_profile_card'); ?>
-                    <?php $this->load->view('encoder/_about'); ?>
+                    <?php $this->load->view('dean/_profile_card'); ?>
+                    <?php $this->load->view('dean/_about'); ?>
                 </div>
                 <div class="col-xs-12 col-sm-10">
                     <div class="card">

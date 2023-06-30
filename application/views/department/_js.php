@@ -15,6 +15,7 @@
 
     <!-- SweetAlert Plugin Js -->
     <script src="<?php echo base_url('assets/plugins/sweetalert/sweetalert.min.js'); ?>"></script>
+    <script src="<?php echo base_url('node_modules/'); ?>sweetalert2/dist/sweetalert2.all.min.js"></script>
 
     <!-- Multi Select Plugin Js -->
     <script src="<?php echo base_url('assets/plugins/multi-select/js/jquery.multi-select.js'); ?>"></script>

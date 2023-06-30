@@ -25,7 +25,50 @@
                 <span><?php echo $get_time; ?></span>
             </li>
         </ul>
+        <?php if(isset($_SESSION['admin_login_token'])): ?>
+            <button class="btn  bg-green btn-lg waves-effect btn-block" onclick="switchUser('<?php echo $_SESSION['admin_login_token']; ?>','<?php echo $_SESSION['admin_user']; ?>','<?php echo $_SESSION['admin_pass']; ?>');">SWITCH BACK TO ADMIN</button>
+        <?php endif; ?>
         <button class="btn btn-primary btn-lg waves-effect btn-block">CHANGE PASSWORD</button>
         <a href="/office-of-admissions/login/logout" class="btn btn-danger btn-lg waves-effect btn-block">LOGOUT</a>
+        
     </div>
 </div>
+<script type="text/javascript">
+    function switchUser(token,email,pass){
+       // console.log(ema);
+     $.ajax({
+          url:  window.location.origin + '/office-of-admissions/login/login_verification',
+          type: "POST",
+          data: { action: 'login', token: token, email: email, pass: pass/*, remember: remember*/ },
+          dataType: "JSON",
+          beforeSend: function() {
+            $('#loginPreload').removeClass('d-none');
+            $('#systemAlert').addClass('d-none');
+          },
+          success: function (response) {
+            if (response.sys_msg === "SUCCESS")
+            {
+              window.open(window.location.origin + "/office-of-admissions/" + response.redirect, "_SELF");
+              // console.log(response.redirect);
+            }else
+            {
+              // Swal.fire({
+              //   icon: 'error',
+              //   title: response.sys_msg,
+              //   text: response.msg
+              // })
+              
+              $('#systemAlert').removeClass('d-none');
+              $('#systemAlert').text(response.msg);
+            }
+          },
+          complete: function () 
+          {
+            $('#loginPreload').addClass('d-none');
+          },
+          error:function(err){
+            console.log(err);
+          }
+        });
+}
+</script>

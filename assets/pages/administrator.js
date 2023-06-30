@@ -628,6 +628,43 @@ function updateSchedule(schedid, semester)
    $('.modal-title').text('Class Schedule (' + $('#semester option:selected').text() + ")");
 }
 
+function switchUser(token,email,pass){
+     $.ajax({
+          url:  window.location.origin + '/office-of-admissions/login/login_verification',
+          type: "POST",
+          data: { action: 'login', token: token, email: email, pass: pass/*, remember: remember*/ },
+          dataType: "JSON",
+          beforeSend: function() {
+            $('#loginPreload').removeClass('d-none');
+            $('#systemAlert').addClass('d-none');
+          },
+          success: function (response) {
+            if (response.sys_msg === "SUCCESS")
+            {
+              window.open(window.location.origin + "/office-of-admissions/" + response.redirect, "_SELF");
+              // console.log(response.redirect);
+            }else
+            {
+              // Swal.fire({
+              //   icon: 'error',
+              //   title: response.sys_msg,
+              //   text: response.msg
+              // })
+              
+              $('#systemAlert').removeClass('d-none');
+              $('#systemAlert').text(response.msg);
+            }
+          },
+          complete: function () 
+          {
+            $('#loginPreload').addClass('d-none');
+          },
+          error:function(err){
+            //console.log(err);
+          }
+        });
+}
+
 function resetPassword(userID, username)
 {
     $('#userAccountModal').modal(

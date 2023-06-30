@@ -22,7 +22,7 @@
                 </div>
                 <div class="post-content" style="padding: 10px;">
                     <div class="row">
-                        <div class="col-sm-12 col-md-3 col-lg-3"">
+                        <div class="col-sm-12 col-md-3 col-lg-3">
                             <b>Filter by USER TYPE:</b>
                             <select class="form-control" id="userType">
                                 <option value="">-- SELECT USERTYPE --</option>
@@ -46,7 +46,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>...</th>
-                                <th>ID NUMBER</th>
+                                <th>ID NUMBER / EMAIL</th>
                                 <th>Lastname</th>
                                 <th>Firstname</th>
                                 <th>Middlename</th>

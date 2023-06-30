@@ -24,7 +24,7 @@ class Administrator extends CI_Controller {
         {
         	redirect('/');
         }
-
+        
 		$data = array(
 			'name'				=>	$_SESSION['account_name'],
 			'user_type'			=>	strtoupper($_SESSION['utype']),
