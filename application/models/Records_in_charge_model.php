@@ -165,6 +165,16 @@ class Records_in_charge_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function getActiveSemester()
+	{
+		$this->db->select('*');
+		$this->db->from('tbl_semester');
+		$this->db->where('semester_status', 1);
+		$query = $this->db->get();
+
+		return $query->result();
+	}
+
 	public function get_students($course_id, $year_level, $semester_id)
 	{
 		$this->db->select('tbl_profile.user_id, tbl_profile.lname, tbl_profile.fname, tbl_profile.mname, tbl_profile.student_type, tbl_course.course_name, tbl_enrollment.section');

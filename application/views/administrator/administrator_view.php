@@ -50,7 +50,7 @@
                                     <li role="presentation" class="bg-warning"><a href="#applicant_setup" aria-controls="applicant_setup" role="tab" data-toggle="tab">Applicant Setup</a></li>
                                     <li role="presentation" class="bg-danger"><a href="#accounting" aria-controls="accounting" role="tab" data-toggle="tab">ACCOUNTING</a></li>
                                     <li role="presentation" class="bg-danger"><a href="#grades" aria-controls="grades" role="tab" data-toggle="tab">GRADES</a></li>
-                                    <li role="presentation" class="bg-danger"><a href="#encoder" aria-controls="encoder" role="tab" data-toggle="tab">ENCODER</a></li>
+                                    <!-- <li role="presentation" class="bg-danger"><a href="#encoder" aria-controls="encoder" role="tab" data-toggle="tab">ENCODER</a></li> -->
                                     <li role="presentation" class="bg-danger"><a href="#user_account" aria-controls="encoder" role="tab" data-toggle="tab">USER ACCOUNTS</a></li>
                                 </ul>
 
