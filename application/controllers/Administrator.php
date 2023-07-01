@@ -373,7 +373,14 @@ class Administrator extends CI_Controller {
 						";
 					$htmlData .= "</td>";
 					$htmlData .= "<td>----</td>";
-					$htmlData .= "<td>----</td>";
+					$htmlData .= "<td>
+									<select style='width: 150px;' class='form-control' name='gradeData[]'>
+										<option value='approved' selected>APPROVED</option>
+										<option value='dean'>DEAN</option>
+										<option value='department head'>DEPARTMENT HEAD</option>
+										<option value='faculty'>FACULTY</option>
+									</select>
+								</td>";
 				}else
 				{
 					$postedGrade = "";
@@ -388,11 +395,11 @@ class Administrator extends CI_Controller {
 					// 	$postedReexam = strtoupper($individualStudentGrade[0]->reexam);
 					// }
 					$postedGrade = strtoupper($individualStudentGrade[0]->grades);
-						$postedReexam = strtoupper($individualStudentGrade[0]->reexam);
+					$postedReexam = strtoupper($individualStudentGrade[0]->reexam);
 					
 					$htmlData .= "<td>";
 						$htmlData .= "
-							<select style='width: 150px;' class='form-control' ".($individualStudentGrade[0]->status == "approved" ? '' : '')." name='gradeData[]'>
+							<select style='width: 150px;' class='form-control' name='gradeData[]'>
 								<option value='-1' ".(strtoupper($postedGrade) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
 								<option value='1.00' ".(strtoupper($postedGrade) == "1.00" ? 'selected="true"' : "").">1.00</option>
 								<option value='1.25' ".(strtoupper($postedGrade) == "1.25" ? 'selected="true"' : "").">1.25</option>
@@ -414,7 +421,7 @@ class Administrator extends CI_Controller {
 					$htmlData .= "</td>";
 					$htmlData .= "<td>";
 						$htmlData .= "
-							<select style='width: 150px;' class='form-control' ".($individualStudentGrade[0]->status == "approved" ? '' : '')." name='gradeData[]'>
+							<select style='width: 150px;' class='form-control' name='gradeData[]'>
 								<option value='-1' ".(strtoupper($postedReexam) == "" ? 'selected="true"' : "").">SELECT GRADE</option>
 								<option value='1.00' ".(strtoupper($postedReexam) == "1.00" ? 'selected="true"' : "").">1.00</option>
 								<option value='1.25' ".(strtoupper($postedReexam) == "1.25" ? 'selected="true"' : "").">1.25</option>
@@ -435,7 +442,14 @@ class Administrator extends CI_Controller {
 						";
 					$htmlData .= "</td>";
 					$htmlData .= "<td>".$individualStudentGrade[0]->remarks."</td>";
-					$htmlData .= "<td>".$individualStudentGrade[0]->status."</td>";
+					$htmlData .= "<td>
+										<select style='width: 150px;' class='form-control' name='gradeData[]'>
+											<option value='approved' ".($individualStudentGrade[0]->status == "approved" ? 'selected="true"' : "").">APPROVED</option>
+											<option value='dean' ".($individualStudentGrade[0]->status == "dean" ? 'selected="true"' : "").">DEAN</option>
+											<option value='department head' ".($individualStudentGrade[0]->status == "department head" ? 'selected="true"' : "").">DEPARTMENT HEAD</option>
+											<option value='faculty' ".($individualStudentGrade[0]->status == "faculty" ? 'selected="true"' : "").">FACULTY</option>
+										</select>
+								</td>";
 				}
 				
 			$htmlData .= "</tr>";
@@ -480,8 +494,9 @@ class Administrator extends CI_Controller {
 		$gradeFaculty = '';
 		$grade = '';
 		$reexam = '';
+		$status = '';
 		$cat_no = '';
-
+		$tmp = array();
 		for ($i = 0 ; $i < count($gradeData); $i++)
 		{
 			
@@ -502,9 +517,12 @@ class Administrator extends CI_Controller {
 				case 5:
 					$reexam = $gradeData[$i];
 					break;
+				case 6:
+					$status = $gradeData[$i];
+					break;
 			}
 
-			if ($ctr == 5)
+			if ($ctr == 6)
 			{
 				$data = array();
 				$condtion = array(
@@ -516,177 +534,326 @@ class Administrator extends CI_Controller {
 				/**
 				 * 
 				 */
-				if ($action == "save"){
-					if ($grade != -1 && $reexam != -1)
-					{
-						if ($action == "save")
-						{
-							$data = array(
-								"semester_id"	=>	$semester,
-								"user_id"		=>	$studentID,
-								"faculty_id"	=>	$gradeFaculty,
-								"subject"		=>	$cat_no,
-								"units"			=>	0,
-								"grades"		=>	$grade,
-								"remarks"		=>	$this->gradeRemarks($grade),
-								"weight"		=> 	0,
-								"status"		=>	'approved'
+				// if ($action == "save")
+				// {
+				// 	if ($grade != -1 && $reexam != -1)
+				// 	{
+				// 		if ($action == "save")
+				// 		{
+				// 			$data = array(
+				// 				"semester_id"	=>	$semester,
+				// 				"user_id"		=>	$studentID,
+				// 				"faculty_id"	=>	$gradeFaculty,
+				// 				"subject"		=>	$cat_no,
+				// 				"units"			=>	0,
+				// 				"grades"		=>	$grade,
+				// 				"remarks"		=>	$this->gradeRemarks($grade),
+				// 				"weight"		=> 	0,
+				// 				"status"		=>	'approved'
 
-							);
-						}
-					}else if ($grade != -1 && $reexam == -1)
-					{
-						if ($action == "save")
-						{
-							$data = array(
-								"semester_id"	=>	$semester,
-								"user_id"		=>	$studentID,
-								"faculty_id"	=>	$gradeFaculty,
-								"subject"		=>	$cat_no,
-								"units"			=>	0,
-								"grades"		=>	$grade,
-								"remarks"		=>	$this->gradeRemarks($grade),
-								"weight"		=> 	0,
-								"status"		=>	'approved'
+				// 			);
+				// 		}
+				// 	}else if ($grade != -1 && $reexam == -1)
+				// 	{
+				// 		if ($action == "save")
+				// 		{
+				// 			$data = array(
+				// 				"semester_id"	=>	$semester,
+				// 				"user_id"		=>	$studentID,
+				// 				"faculty_id"	=>	$gradeFaculty,
+				// 				"subject"		=>	$cat_no,
+				// 				"units"			=>	0,
+				// 				"grades"		=>	$grade,
+				// 				"remarks"		=>	$this->gradeRemarks($grade),
+				// 				"weight"		=> 	0,
+				// 				"status"		=>	'approved'
 
-							);
-						}
-					}else if ($grade == -1 && $reexam != -1)
-					{
-						if ($action == "save")
-						{
-							$data = array(
-								"semester_id"	=>	$semester,
-								"user_id"		=>	$studentID,
-								"faculty_id"	=>	$gradeFaculty,
-								"subject"		=>	$cat_no,
-								"units"			=>	0,
-								"grades"		=>	$grade,
-								"remarks"		=>	$this->gradeRemarks($grade),
-								"weight"		=> 	0,
-								"status"		=>	'approved'
+				// 			);
+				// 		}
+				// 	}else if ($grade == -1 && $reexam != -1)
+				// 	{
+				// 		if ($action == "save")
+				// 		{
+				// 			$data = array(
+				// 				"semester_id"	=>	$semester,
+				// 				"user_id"		=>	$studentID,
+				// 				"faculty_id"	=>	$gradeFaculty,
+				// 				"subject"		=>	$cat_no,
+				// 				"units"			=>	0,
+				// 				"grades"		=>	$grade,
+				// 				"remarks"		=>	$this->gradeRemarks($grade),
+				// 				"weight"		=> 	0,
+				// 				"status"		=>	'approved'
 
-							);
-						}
-					}
-				}
+				// 			);
+				// 		}
+				// 	}
+				// }
 
 				// array_push($output, $condtion);
 				// Get Old Data
 				$gradeOldData = $this->administrator->getGradesOldData($condtion);
-				foreach ($gradeOldData as $gradeVal) 
+				// foreach ($gradeOldData as $gradeVal) 
+				// {
+				// 	$data = array();
+				// 	if ($grade != -1 && $reexam != -1)
+				// 	{
+				// 		// if ($action == "save")
+				// 		// {
+				// 		// 	$data = array(
+				// 		// 		"semester_id"	=>	$semester,
+				// 		// 		"user_id"		=>	$studentID,
+				// 		// 		"faculty_id"	=>	$gradeFaculty,
+				// 		// 		"subject"		=>	$cat_no,
+				// 		// 		"units"			=>	0,
+				// 		// 		"grades"		=>	$grade,
+				// 		// 		"remarks"		=>	$this->gradeRemarks($grade),
+				// 		// 		"weight"		=> 	0,
+				// 		// 		"status"		=>	'approved'
+
+				// 		// 	);
+				// 		// }else
+				// 		// {
+				// 		// 	Update action
+				// 		// 	if ($grade != $gradeVal->grades && $reexam != $gradeVal->reexam)
+				// 		// 	{
+				// 		// 		$data = array(
+				// 		// 			"status"		=>	"approved",
+				// 		// 			"grades"		=>	$grade,
+				// 		// 			"reexam"		=>	$reexam,
+				// 		// 			"remarks"		=>	$this->gradeRemarks($reexam),
+				// 		// 			"sched_section"	=>	date("Y-m-d H:i:s")
+				// 		// 		);
+				// 		// 	}else if($grade == $gradeVal->grades && $reexam != $gradeVal->reexam)
+				// 		// 	{
+				// 		// 		$data = array(
+				// 		// 			"status"		=>	"approved",
+				// 		// 			"reexam"		=>	$reexam,
+				// 		// 			"remarks"		=>	$this->gradeRemarks($reexam),
+				// 		// 			"sched_section"	=>	date("Y-m-d H:i:s")
+				// 		// 		);
+				// 		// 	}else if($grade != $gradeVal->grades && $reexam == $gradeVal->reexam)
+				// 		// 	{
+				// 		// 		$data = array(
+				// 		// 			"status"		=>	"approved",
+				// 		// 			"grades"		=>	$grade,
+				// 		// 			"remarks"		=>	$this->gradeRemarks($grade),
+				// 		// 			"sched_section"	=>	date("Y-m-d H:i:s")
+				// 		// 		);
+				// 		// 	}else
+				// 		// 	{
+				// 		// 		$data = array();
+				// 		// 	}
+				// 		// }
+				// 		$data = array(
+				// 			"status"		=>	"approved",
+				// 			"grades"		=>	$grade,
+				// 			"remarks"		=>	$this->gradeRemarks($grade),
+				// 			"sched_section"	=>	date("Y-m-d H:i:s")
+				// 		);
+				// 	}else if ($grade != -1 && $reexam == -1)
+				// 	{
+				// 		// if ($action == "save")
+				// 		// {
+				// 		// 	$data = array(
+				// 		// 		"semester_id"	=>	$semester,
+				// 		// 		"user_id"		=>	$studentID,
+				// 		// 		"faculty_id"	=>	$gradeFaculty,
+				// 		// 		"subject"		=>	$cat_no,
+				// 		// 		"units"			=>	0,
+				// 		// 		"grades"		=>	$grade,
+				// 		// 		"remarks"		=>	$this->gradeRemarks($grade),
+				// 		// 		"weight"		=> 	0,
+				// 		// 		"status"		=>	'approved'
+
+				// 		// 	);
+				// 		// }else
+				// 		// {
+				// 		// 	if ($grade != $gradeVal->grades)
+				// 		// 	{
+				// 		// 		$data = array(
+				// 		// 			"status"		=>	"approved",
+				// 		// 			"grades"		=>	$grade,
+				// 		// 			"remarks"		=>	$this->gradeRemarks($grade),
+				// 		// 			"sched_section"	=>	date("Y-m-d H:i:s")
+				// 		// 		);
+				// 		// 	}
+				// 		// }
+				// 		$data = array(
+				// 			"status"		=>	"approved",
+				// 			"grades"		=>	$grade,
+				// 			"remarks"		=>	$this->gradeRemarks($grade),
+				// 			"sched_section"	=>	date("Y-m-d H:i:s")
+				// 		);
+				// 	}else if ($grade == -1 && $reexam != -1)
+				// 	{
+				// 		// if ($action == "save")
+				// 		// {
+				// 		// 	$data = array(
+				// 		// 		"semester_id"	=>	$semester,
+				// 		// 		"user_id"		=>	$studentID,
+				// 		// 		"faculty_id"	=>	$gradeFaculty,
+				// 		// 		"subject"		=>	$cat_no,
+				// 		// 		"units"			=>	0,
+				// 		// 		"grades"		=>	$grade,
+				// 		// 		"remarks"		=>	$this->gradeRemarks($grade),
+				// 		// 		"weight"		=> 	0,
+				// 		// 		"status"		=>	'approved'
+				// 		// 	);
+				// 		// }else
+				// 		// {
+				// 		// 	if ($reexam != $gradeVal->reexam)
+				// 		// 	{
+				// 		// 		$data = array(
+				// 		// 			"status"		=>	"approved",
+				// 		// 			"reexam"		=>	$reexam,
+				// 		// 			"remarks"		=>	$this->gradeRemarks($reexam),
+				// 		// 			"sched_section"	=>	date("Y-m-d H:i:s")
+				// 		// 		);
+				// 		// 	}
+				// 		// }
+				// 		$data = array(
+				// 			"status"		=>	"approved",
+				// 			"reexam"		=>	$reexam,
+				// 			"remarks"		=>	$this->gradeRemarks($reexam),
+				// 			"sched_section"	=>	date("Y-m-d H:i:s")
+				// 		);
+				// 	}else
+				// 	{
+				// 		$data = array();
+				// 	}
+
+				// 	// array_push($output, $data);
+				// }
+				$data = array();
+				if ($grade != -1 && $reexam != -1)
+				{
+					// if ($action == "save")
+					// {
+					// 	$data = array(
+					// 		"semester_id"	=>	$semester,
+					// 		"user_id"		=>	$studentID,
+					// 		"faculty_id"	=>	$gradeFaculty,
+					// 		"subject"		=>	$cat_no,
+					// 		"units"			=>	0,
+					// 		"grades"		=>	$grade,
+					// 		"remarks"		=>	$this->gradeRemarks($grade),
+					// 		"weight"		=> 	0,
+					// 		"status"		=>	'approved'
+
+					// 	);
+					// }else
+					// {
+					// 	Update action
+					// 	if ($grade != $gradeVal->grades && $reexam != $gradeVal->reexam)
+					// 	{
+					// 		$data = array(
+					// 			"status"		=>	"approved",
+					// 			"grades"		=>	$grade,
+					// 			"reexam"		=>	$reexam,
+					// 			"remarks"		=>	$this->gradeRemarks($reexam),
+					// 			"sched_section"	=>	date("Y-m-d H:i:s")
+					// 		);
+					// 	}else if($grade == $gradeVal->grades && $reexam != $gradeVal->reexam)
+					// 	{
+					// 		$data = array(
+					// 			"status"		=>	"approved",
+					// 			"reexam"		=>	$reexam,
+					// 			"remarks"		=>	$this->gradeRemarks($reexam),
+					// 			"sched_section"	=>	date("Y-m-d H:i:s")
+					// 		);
+					// 	}else if($grade != $gradeVal->grades && $reexam == $gradeVal->reexam)
+					// 	{
+					// 		$data = array(
+					// 			"status"		=>	"approved",
+					// 			"grades"		=>	$grade,
+					// 			"remarks"		=>	$this->gradeRemarks($grade),
+					// 			"sched_section"	=>	date("Y-m-d H:i:s")
+					// 		);
+					// 	}else
+					// 	{
+					// 		$data = array();
+					// 	}
+					// }
+					$data = array(
+						"status"		=>	$status,
+						"grades"		=>	$grade,
+						"reexam"		=>	$reexam,
+						"remarks"		=>	$this->gradeRemarks($reexam),
+						"sched_section"	=>	date("Y-m-d H:i:s")
+					);
+				}else if ($grade != -1 && $reexam == -1)
+				{
+					// if ($action == "save")
+					// {
+					// 	$data = array(
+					// 		"semester_id"	=>	$semester,
+					// 		"user_id"		=>	$studentID,
+					// 		"faculty_id"	=>	$gradeFaculty,
+					// 		"subject"		=>	$cat_no,
+					// 		"units"			=>	0,
+					// 		"grades"		=>	$grade,
+					// 		"remarks"		=>	$this->gradeRemarks($grade),
+					// 		"weight"		=> 	0,
+					// 		"status"		=>	'approved'
+
+					// 	);
+					// }else
+					// {
+					// 	if ($grade != $gradeVal->grades)
+					// 	{
+					// 		$data = array(
+					// 			"status"		=>	"approved",
+					// 			"grades"		=>	$grade,
+					// 			"remarks"		=>	$this->gradeRemarks($grade),
+					// 			"sched_section"	=>	date("Y-m-d H:i:s")
+					// 		);
+					// 	}
+					// }
+					$data = array(
+						"status"		=>	$status,
+						"grades"		=>	$grade,
+						"reexam"		=>	NULL,
+						"remarks"		=>	$this->gradeRemarks($grade),
+						"sched_section"	=>	date("Y-m-d H:i:s")
+					);
+				}else if ($grade == -1 && $reexam != -1)
+				{
+					// if ($action == "save")
+					// {
+					// 	$data = array(
+					// 		"semester_id"	=>	$semester,
+					// 		"user_id"		=>	$studentID,
+					// 		"faculty_id"	=>	$gradeFaculty,
+					// 		"subject"		=>	$cat_no,
+					// 		"units"			=>	0,
+					// 		"grades"		=>	$grade,
+					// 		"remarks"		=>	$this->gradeRemarks($grade),
+					// 		"weight"		=> 	0,
+					// 		"status"		=>	'approved'
+					// 	);
+					// }else
+					// {
+					// 	if ($reexam != $gradeVal->reexam)
+					// 	{
+					// 		$data = array(
+					// 			"status"		=>	"approved",
+					// 			"reexam"		=>	$reexam,
+					// 			"remarks"		=>	$this->gradeRemarks($reexam),
+					// 			"sched_section"	=>	date("Y-m-d H:i:s")
+					// 		);
+					// 	}
+					// }
+					$data = array(
+						"status"		=>	$status,
+						"grades"		=>	NULL,
+						"reexam"		=>	$reexam,
+						"remarks"		=>	$this->gradeRemarks($reexam),
+						"sched_section"	=>	date("Y-m-d H:i:s")
+					);
+				}else
 				{
 					$data = array();
-					if ($grade != -1 && $reexam != -1)
-					{
-						if ($action == "save")
-						{
-							$data = array(
-								"semester_id"	=>	$semester,
-								"user_id"		=>	$studentID,
-								"faculty_id"	=>	$gradeFaculty,
-								"subject"		=>	$cat_no,
-								"units"			=>	0,
-								"grades"		=>	$grade,
-								"remarks"		=>	$this->gradeRemarks($grade),
-								"weight"		=> 	0,
-								"status"		=>	'approved'
-
-							);
-						}else
-						{
-							if ($grade != $gradeVal->grades && $reexam != $gradeVal->reexam)
-							{
-								$data = array(
-									"status"		=>	"approved",
-									"grades"		=>	$grade,
-									"reexam"		=>	$reexam,
-									"remarks"		=>	$this->gradeRemarks($reexam),
-									"sched_section"	=>	date("Y-m-d H:i:s")
-								);
-							}else if($grade == $gradeVal->grades && $reexam != $gradeVal->reexam)
-							{
-								$data = array(
-									"status"		=>	"approved",
-									"reexam"		=>	$reexam,
-									"remarks"		=>	$this->gradeRemarks($reexam),
-									"sched_section"	=>	date("Y-m-d H:i:s")
-								);
-							}else if($grade != $gradeVal->grades && $reexam == $gradeVal->reexam)
-							{
-								$data = array(
-									"status"		=>	"approved",
-									"grades"		=>	$grade,
-									"remarks"		=>	$this->gradeRemarks($grade),
-									"sched_section"	=>	date("Y-m-d H:i:s")
-								);
-							}else
-							{
-								$data = array();
-							}
-						}
-					}else if ($grade != -1 && $reexam == -1)
-					{
-						if ($action == "save")
-						{
-							$data = array(
-								"semester_id"	=>	$semester,
-								"user_id"		=>	$studentID,
-								"faculty_id"	=>	$gradeFaculty,
-								"subject"		=>	$cat_no,
-								"units"			=>	0,
-								"grades"		=>	$grade,
-								"remarks"		=>	$this->gradeRemarks($grade),
-								"weight"		=> 	0,
-								"status"		=>	'approved'
-
-							);
-						}else
-						{
-							if ($grade != $gradeVal->grades)
-							{
-								$data = array(
-									"status"		=>	"approved",
-									"grades"		=>	$grade,
-									"remarks"		=>	$this->gradeRemarks($grade),
-									"sched_section"	=>	date("Y-m-d H:i:s")
-								);
-							}
-						}
-					}else if ($grade == -1 && $reexam != -1)
-					{
-						if ($action == "save")
-						{
-							$data = array(
-								"semester_id"	=>	$semester,
-								"user_id"		=>	$studentID,
-								"faculty_id"	=>	$gradeFaculty,
-								"subject"		=>	$cat_no,
-								"units"			=>	0,
-								"grades"		=>	$grade,
-								"remarks"		=>	$this->gradeRemarks($grade),
-								"weight"		=> 	0,
-								"status"		=>	'approved'
-
-							);
-						}else
-						{
-							if ($reexam != $gradeVal->reexam)
-							{
-								$data = array(
-									"status"		=>	"approved",
-									"reexam"		=>	$reexam,
-									"remarks"		=>	$this->gradeRemarks($reexam),
-									"sched_section"	=>	date("Y-m-d H:i:s")
-								);
-							}
-						}
-					}else
-					{
-						$data = array();
-					}
-
-					// array_push($output, $data);
 				}
 
 				/**
@@ -708,7 +875,6 @@ class Administrator extends CI_Controller {
 					{
 						if ($action == "save")
 						{
-
 							if ($grade == "D" || $reexam == "D")
 							{
 								$data = array(
@@ -728,7 +894,30 @@ class Administrator extends CI_Controller {
 							}
 						}else if ($action == "update")
 						{
-							$saveGrade = $this->administrator->update($data, $condtion, array("tbl_grades"));
+							$gradesData = $this->administrator->checkGradeSubmitted($studentID, $semester, $cat_no);
+							if (count($gradesData) > 0)
+							{
+								// $saveGrade = $this->administrator->update($data, $condtion, array("tbl_grades"));
+
+								// $condtion = array(
+								// 	"subject"	=>	$cat_no,
+								// 	"semester_id"	=>	$semester,
+								// 	"user_id"	=>	$studentID
+								// );
+								$saveGrade = $this->administrator->update($data, $condtion, array("tbl_grades"));
+								array_push($tmp, $data);
+							}else
+							{
+								$data['semester_id'] 	= 	$semester;
+								$data['user_id']		=	$studentID;
+								$data['faculty_id']		=	$gradeFaculty;
+								$data['subject']		=	$cat_no;
+								$data['units']			=	0;
+								$data['weight']			= 	0;
+
+								$saveGrade = $this->administrator->save("tbl_grades", $data);
+							}
+							
 						}
 						
 						if ($saveGrade !== false)
@@ -737,7 +926,7 @@ class Administrator extends CI_Controller {
 								"sys_msg"	=> 	"success",
 								"msg"		=>	"Successfully updated",
 								"icon"		=>	"success",
-								"test"		=>	json_encode($data)
+								"test"		=>	json_encode($tmp)
 							);
 						}else
 						{
@@ -757,6 +946,7 @@ class Administrator extends CI_Controller {
 					}
 				}
 
+				// Check changes
 				if (count($data) > 0)
 				{
 					array_push($output, $data);
@@ -769,6 +959,7 @@ class Administrator extends CI_Controller {
 			}
 			$ctr++;
 		}
+		
 		// $reexamData = $_POST['reexam'];
 		if (count($output) == 0)
 		{

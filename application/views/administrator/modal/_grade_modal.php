@@ -39,7 +39,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-link waves-effect" onclick="save('update')">UPDATE</button>
-                <button type="button" class="btn btn-link waves-effect" onclick="save('save')">SAVE DROPPING</button>
+                <!-- <button type="button" class="btn btn-link waves-effect" onclick="save('save')">SAVE DROPPING</button> -->
                 <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
             </div>
         </div>

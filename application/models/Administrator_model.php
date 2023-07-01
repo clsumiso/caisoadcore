@@ -718,7 +718,6 @@ class Administrator_model extends CI_Model {
 	
 	function getUserAccount($postData=null)
 	{
-
 		$response = array();
 
 		## Read value
@@ -1026,6 +1025,18 @@ class Administrator_model extends CI_Model {
 		$this->db->from('tbl_dropping');
 		$this->db->where('studid', $user_id);
 		$this->db->where('schedid', $schedid);
+		$this->db->where('semester_id', $semester);
+		$query = $this->db->get();
+
+		return $query->result();
+	}
+
+	public function checkGradeSubmitted($userID = "", $semester = 0, $subject = "")
+	{
+		$this->db->select('*');
+		$this->db->from('tbl_grades');
+		$this->db->where('user_id', $userID);
+		$this->db->where('subject', $subject);
 		$this->db->where('semester_id', $semester);
 		$query = $this->db->get();
 
