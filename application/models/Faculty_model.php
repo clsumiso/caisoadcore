@@ -152,6 +152,52 @@ class Faculty_model extends CI_Model {
 	        return true;
 	    }
 	}
+
+	public function get_subject_to_submit_by_schedid($schedid, $semester)
+    {
+        $this->db->select("tbl_registration.user_id, tbl_class_schedule.schedid, tbl_class_schedule.cat_no, tbl_profile.lname, tbl_profile.fname");
+        $this->db->from('tbl_registration');
+        $this->db->join('tbl_class_schedule', 'tbl_registration.schedid = tbl_class_schedule.schedid', 'inner');
+        $this->db->join('tbl_profile', 'tbl_registration.user_id = tbl_profile.user_id', 'inner');
+        $this->db->where('tbl_registration.schedid', $schedid);
+
+        if ($semester == 3) 
+        {
+            $this->db->where('tbl_registration.status', 2);
+        }else
+        {
+            $this->db->where_in('tbl_registration.ra_status', array('approved'));
+        }
+        // $this->db->where('tbl_registration.status', 2);
+        
+
+        $this->db->where('tbl_registration.semester_id', $semester);
+        $this->db->order_by('tbl_profile.lname', 'ASC');
+        // $this->db->where_in('tbl_grades.status', array('pending', 'faculty'));
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_grades_to_submit($semester, $faculty, $user_id, $subject)
+    {
+        $this->db->select("grade_id, user_id, grades, reexam, status, faculty_id");
+        $this->db->from('tbl_grades');
+        $this->db->where('tbl_grades.user_id', $user_id);
+        $this->db->where('tbl_grades.faculty_id', $faculty);
+        $this->db->where('tbl_grades.semester_id', $semester);
+        $this->db->where('tbl_grades.subject', $subject);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_enrolled_student_id($schedid)
+    {
+        $this->db->select("user_id");
+        $this->db->from('tbl_registration');
+        $this->db->where('schedid', $schedid);
+        $query = $this->db->get();
+        return $query->result();
+    }
 }
 
 /* End of file Faculty_model.php */
