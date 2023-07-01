@@ -33,7 +33,9 @@
 								<div class="col-sm-3 col-md-3 col-lg-3">
 									<b>FILTER BY:</b>
 									<select class="form-control" id="gradStatus">
-										<option value="pending">PENDING</option>
+										<option value="pending">PENDING - OAD</option>
+										<option value="pending_department">PENDING - DEPARTMENT</option>
+										<option value="pending_dean">PENDING - DEAN</option>
 										<option value="approved_regular">ENDORSED - REGULAR</option>
 										<option value="approved_probationary">ENDORSED - PROBATIONARY</option>
 										<option value="approved">DEAN - APPROVED</option>
@@ -61,6 +63,7 @@
                                             <th style="text-align: center;">Reference <br> (Reference 1|Reference 2|Reference 3)</th>
                                             <th>Department Head</th>
                                             <th>Dean</th>
+                                            <th>NOTICE OF ADMISSIONS</th>
                                         </tr>
                                     </thead>
                                 </table>

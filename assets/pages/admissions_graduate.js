@@ -87,8 +87,9 @@ let applicantData = $('#applicantList').DataTable({
         { data: "level_applied" },
         { data: "date_applied" },
         { data: "reference" },
-        { data: "department" },
-        { data: "dean" }
+        { data: "department_remarks" },
+        { data: "dean_remarks" },
+        { data: "noa" }
     ],
     "rowCallback": function( row, data, index ) 
 	{
@@ -197,4 +198,14 @@ function endorsedToDepartment(applicationID)
             });
         }
     });
+}
+
+function generateNOA(applicantID = "")
+{
+    $('#noaModal').modal(
+    {
+        backdrop: 'static', 
+        keyboard: false
+    }, 
+    'show');
 }

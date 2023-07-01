@@ -699,24 +699,6 @@ class Admission_application extends CI_Controller
 
     $html = "";
     $eduactional_background = $data[0]->educational_background; 
-    // Define the Header/Footer before writing anything so they appear on the first page
-    // $mpdf->SetHTMLHeader('
-    //   <table class="table" style="margin-bottom: 0;">
-    //     <tr>
-    //       <td style="text-align: right; width: 18%;">
-    //         <img src="assets/images/logo.png" width="96" />
-    //       </td>
-    //       <td style="text-align: center; vertical-align: top; padding-top: 35px; width: 10%;">
-    //         <p style="font-family: roboto; font-size: 11px; font-weight: regular;">Republic of the Philippines</p>
-    //         <p style="font-family: roboto; font-size: 11px; font-weight: bold;">CENTRAL LUZON STATE UNIVERSITY</p>
-    //         <p style="font-family: roboto; font-size: 11px; font-weight: regular;">Science City of Muñoz, Nueva Ecija</p>
-    //       </td>
-    //       <td style="text-align: right; width: 20%;">
-    //         <img src="assets/images/passport-photo.png" style="width: 1.3in; height; 1.7in; border: 1px solid #000;" />
-    //       </td>
-    //     </tr>
-    //   </table>
-    // ', 'O');
     $html .= '
           <table class="table" style="margin-bottom: 0;">
             <tr>
@@ -2361,6 +2343,169 @@ class Admission_application extends CI_Controller
     array_push($output, $msg);
 
     return $output;
+  }
+
+  public function generateNoa()
+  {
+    $applicantID = $_POST['applicantID'];
+    $registrationSchedule = $_POST['regSched'];
+    $classStart = $_POST['classStart'];
+    $nonClsuGrad = $_POST['nonClsuGrad'];
+
+    $applicantData = $this->admission_application->get_applicant_noa($applicantID);
+    $output = array();
+    foreach($applicantData as $applicant)
+    {
+      array_push($output, $applicant->title); // [0]
+      array_push($output, $applicant->fname); // [1]
+      array_push($output, $applicant->mname); // [2]
+      array_push($output, $applicant->lname); // [3]
+      array_push($output, $applicant->barangay); // [4]
+      array_push($output, $applicant->municipality); // [5]
+      array_push($output, $applicant->province); // [6]
+      array_push($output, $applicant->department_remarks); // [7]
+      array_push($output, $applicant->department_note); // [8]
+      array_push($output, $applicant->dean_remarks); // [9]
+      array_push($output, $applicant->dean_note); // [10]
+      array_push($output, $applicant->course_desc); // [11]
+      array_push($output, ($applicant->semester == 1 ? "First Semester ".$applicant->school_year : "Second Semester ".$applicant->school_year)); // [12]
+      array_push($output, $registrationSchedule); // [13]
+      array_push($output, $classStart); // [14]
+      array_push($output, $nonClsuGrad); // [15]
+      array_push($output, $applicant->department_status); // [16]
+      array_push($output, $applicant->dean_status); // [17]
+    }
+
+    $this->processNoa($output);
+  }
+
+  public function processNoa($data = array())
+  {
+    // if (count($data) == 0)
+    // {
+    //   $data = array(
+    //     "code"        =>  "404",
+    //     "msg"         =>  "Application not found, please contact OFFICE OF ADMISSIONS (OAD)",
+    //     "link"        =>  "javascript:void(0)",
+    //     "homepageBTN" =>  "APPLICATION VERIFICATION"
+    //   );
+
+    //   $this->load->view('err/custom_error', $data);
+    //   return;
+    // }
+
+    $defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+
+    $defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    $mpdf = new \Mpdf\Mpdf([
+          'mode'          => 'utf-8',
+          'format'        => "A4", //in cm
+          'orientation'   => 'P',
+          'margin_top'    => '15',
+          'margin_bottom' => '50',
+          'fontDir'       => array_merge($fontDirs, [
+                                  'custom/font/directory',
+                          ]),
+          'fontdata'      => $fontData + [
+              'roboto' => [ 
+                  'R' => 'Roboto-Regular.ttf'
+              ],
+              'londrina' => [
+                  'R' => 'LondrinaOutline-Regular.ttf'
+              ],
+              'stoicheion' => [
+                  'R' => 'Stoicheion-2Od3X.ttf'
+              ],
+              'villona' => [
+                  'R' => 'Vilona-mLL45.ttf'
+              ]
+          ],
+          'default_font' => 'roboto'
+    ]);
+    $stylesheet = file_get_contents('assets/plugins/bootstrap/css/bootstrap.css');
+
+    $html = ""; 
+    /**
+     * Header
+     */
+    $html .= '
+          <table style="margin-bottom: 0; width: 100%;">
+            <tr>
+              <td style="text-align: right; width: 30%;">
+                <img src="assets/images/logo.png" width="80" />
+              </td>
+              <td style="text-align: center; vertical-align: top; padding-top: 15px; width: 10%;">
+                <p style="font-family: roboto; font-size: 12px; font-weight: regular;">Republic of the Philippines</p>
+                <p style="font-family: roboto; font-size: 12px; font-weight: bold;">CENTRAL LUZON STATE UNIVERSITY</p>
+                <p style="font-family: roboto; font-size: 12px; font-weight: regular;">Science City of Muñoz, Nueva Ecija</p>
+              </td>
+              <td style="text-align: right; width: 30%;">
+
+              </td>
+            </tr>
+            <tr>
+              <td style="text-align: right; width: 30%;"></td>
+              <td style="text-align: center; padding-bottom: 25px;">
+                <p style="font-family: roboto; font-size: 12px; font-weight: regular;">OFFICE OF ADMISSIONS</p>
+              </td>
+              <td style="text-align: right; width: 30%;"></td>
+            </tr>
+            <tr>
+              <td style="text-align: right; width: 30%;"></td>
+              <td style="text-align: center;">
+                <p style="font-family: roboto; font-size: 12px; font-weight: bold;">NOTICE OF ADMISSION</p>
+              </td>
+              <td style="text-align: right; width: 30%;"></td>
+            </tr>
+          </table>
+
+          <table border="1" style="margin-bottom: 0; width: 100%;">
+          </table>
+    ';
+    /**
+     * END OF HEADER
+     */
+    $html .= '
+      <table style="margin-bottom: 0; width: 100%; margin-top: 36px;">
+        <tr>
+          <td style="text-align: left;">
+            <p style="font-family: roboto; font-size: 12px; font-weight: regular;">
+              '.(date('F j, Y')).'
+            </p>
+          </td>
+        </tr>
+      </table>
+      <table style="margin-bottom: 0; width: 100%; margin-top: 36px;">
+        <tr>
+          <td style="text-align: left;">
+            <p style="font-family: roboto; font-size: 12px; font-weight: regular;">
+              '.$data[0].'
+            </p>
+          </td>
+        </tr>
+      </table>
+    ';
+    /**
+     * CONTENT
+     */
+
+    /**
+     * END OF CONTENT
+     */
+    $mpdf->SetHTMLFooter('
+      <table width="100%">
+          <tr>
+              <td style="font-family: roboto; font-size: 8px; font-style: italic;">ACA.OAD.YYY.F.133 (Revision No. 1; May 23, 2023)</td>
+          </tr>
+      </table>
+    ');
+    
+    $mpdf->WriteHTML($stylesheet, 1); // CSS Script goes here.
+    $mpdf->WriteHTML($html); //HTML Content goes here.
+    $mpdf->Output('application-form.pdf', 'I');
+    // $mpdf->Output();
   }
 }
 

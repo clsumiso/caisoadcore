@@ -173,6 +173,42 @@ class Admissions_model extends CI_Model {
 		// $searchSemester = $postData['semester'];
 		// $searchCourse = $postData['course'];
 		$approvalStatus = $postData['status'];
+		$filterVal = array();
+
+		switch ($approvalStatus) 
+		{
+			case 'pending':
+				$filterVal = array("", "");
+				break;
+			
+			case 'pending_department':
+				$filterVal = array("pending", "");
+				break;
+			
+			case 'pending_dean':
+				$filterVal = array("", "pending");
+				break;
+		
+			case 'approved_regular':
+				$filterVal = array("approved_regular", "pending");
+				break;
+			
+			case 'approved_probationary':
+				$filterVal = array("approved_probationary", "pending");
+				break;
+			
+			case 'approved':
+				$filterVal = array("", "approved");
+				break;
+			
+			case 'show_all':
+				$filterVal = array("_all", "_all");
+				break;
+				
+			default:
+				# code...
+				break;
+		}
 
 		## Search 
 		$search_arr = array();
@@ -195,29 +231,104 @@ class Admissions_model extends CI_Model {
 		
 		$applicantDB = $this->load->database('applicantDB', TRUE);
 		## Total number of records without filtering
-		$applicantDB->select('count(*) as allcount');
-		$applicantDB->join('tbl_course', 'oad0001.field_of_study = tbl_course.course_id', 'inner');
+		$applicantDB->select('DISTINCT(application_id) as allcount');
+		$applicantDB->group_by('application_id');
+
 		// $applicantDB->where('tbl_enrollment.semester_id', $searchSemester);
 		if($searchQuery != '')
 			$applicantDB->where($searchQuery);
-		$records = $applicantDB->get('oad0001')->result();
-		$totalRecords = $records[0]->allcount;
+		$records = $applicantDB->get('oad0003')->result();
+		$totalRecords = count($records);
+		
 
 		## Total number of record with filtering
-		$applicantDB->select('count(*) as allcount');
-		$applicantDB->join('tbl_course', 'oad0001.field_of_study = tbl_course.course_id', 'inner');
+		$applicantDB->select('DISTINCT(application_id) as allcount');
+		$applicantDB->group_by('application_id');
+
 		if($searchQuery != '')
+		{
 			$applicantDB->where($searchQuery);
-		$records = $applicantDB->get('oad0001')->result();
-		$totalRecordwithFilter = $records[0]->allcount;
+		}
+
+		if ($filterVal[0] == "" && $filterVal[1] != "")
+		{
+			$applicantDB->where('oad0003.dean_remarks', $filterVal[1]);
+		}else if ($filterVal[0] == "_all" && $filterVal[1] == "_all")
+		{
+			// NO WHERE CLAUSE
+		}else
+		{
+			if ($filterVal[0] == "")
+			{
+				$applicantDB->group_start();
+					$applicantDB->where('oad0003.department_remarks', $filterVal[0]);
+					$applicantDB->or_where('oad0003.department_remarks IS NULL');
+				$applicantDB->group_end();
+			}else
+			{
+				$applicantDB->where('oad0003.department_remarks', $filterVal[0]);
+			}
+
+			if ($filterVal[1] == "")
+			{
+				$applicantDB->group_start();
+					$applicantDB->where('oad0003.dean_remarks', $filterVal[1]);
+					$applicantDB->or_where('oad0003.dean_remarks IS NULL');
+				$applicantDB->group_end();
+			}else
+			{
+				$applicantDB->group_start();
+					$applicantDB->where('oad0003.dean_remarks', $filterVal[1]);
+				$applicantDB->group_end();
+			}
+		}
+		$records = $applicantDB->get('oad0003')->result();
+		$totalRecordwithFilter = count($records);
+		
 
 		## Fetch records
-
-		$applicantDB->select('oad0001.application_id, oad0001.lname, oad0001.fname, oad0001.mname, tbl_course.course_desc, oad0001.degree_program_applied, oad0001.date_created, oad0001.gwa_file, oad0001.img_file, oad0001.proficiency_file, oad0001.tor_file');
+		$applicantDB->select('oad0001.application_id, oad0001.lname, oad0001.fname, oad0001.mname, tbl_course.course_desc, oad0001.degree_program_applied, oad0001.date_created, oad0001.gwa_file, oad0001.img_file, oad0001.proficiency_file, oad0001.tor_file, oad0003.department_remarks, oad0003.dean_remarks, oad0003.department_note, oad0003.dean_note');
 		$applicantDB->join('tbl_course', 'oad0001.field_of_study = tbl_course.course_id', 'inner');
+		$applicantDB->join('oad0003', 'oad0001.application_id = oad0003.application_id', 'inner');
+		$applicantDB->group_by('oad0003.application_id');
 
 		if($searchQuery != '')
+		{
 			$applicantDB->where($searchQuery);
+		}
+
+		if ($filterVal[0] == "" && $filterVal[1] != "")
+		{
+			$applicantDB->where('oad0003.dean_remarks', $filterVal[1]);
+		}else if ($filterVal[0] == "_all" && $filterVal[1] == "_all")
+		{
+			// NO WHERE CLAUSE
+		}else
+		{
+			if ($filterVal[0] == "")
+			{
+				$applicantDB->group_start();
+					$applicantDB->where('oad0003.department_remarks', $filterVal[0]);
+					$applicantDB->or_where('oad0003.department_remarks IS NULL');
+				$applicantDB->group_end();
+			}else
+			{
+				$applicantDB->where('oad0003.department_remarks', $filterVal[0]);
+			}
+
+			if ($filterVal[1] == "")
+			{
+				$applicantDB->group_start();
+					$applicantDB->where('oad0003.dean_remarks', $filterVal[1]);
+					$applicantDB->or_where('oad0003.dean_remarks IS NULL');
+				$applicantDB->group_end();
+			}else
+			{
+				$applicantDB->group_start();
+					$applicantDB->where('oad0003.dean_remarks', $filterVal[1]);
+				$applicantDB->group_end();
+			}
+		}
 
 		$applicantDB->order_by($columnName, $columnSortOrder);
 		$applicantDB->limit($rowperpage, $start);
@@ -225,11 +336,15 @@ class Admissions_model extends CI_Model {
 
 		$data = array();
 		$ctr = 1;
+		$pageCtr = 0;
+
+		$tmp = array();
 
 		foreach($records as $record)
 		{
 			$referenceHtml = "";
 			$actionBtn = "";
+			$noaBtn = "";
 			/**
 			 * Get reference
 			 */
@@ -247,10 +362,42 @@ class Admissions_model extends CI_Model {
 			switch (strtoupper($record->degree_program_applied)) 
 			{
 				case 'PHD':
-					$actionBtn = count($this->getReference($record->application_id)) == 3 && $this->getApprovalStatus($record->application_id)[0]->department_remarks == "" && $this->getApprovalStatus($record->application_id)[0]->dean_remarks == "" ? '<button class="btn btn-sm bg-green btn-block waves-effect" style="margin-top: 5px;" onclick="endorsedToDepartment(\''.$record->application_id.'\')">ENDORSE TO DEPARTMENT</button>' : '<button class="btn btn-sm bg-green btn-block waves-effect disabled" style="margin-top: 5px;">ENDORSE TO DEPARTMENT</button>';
+					$actionBtn = count($this->getReference($record->application_id)) == 3 && $this->getApprovalStatus($record->application_id)[0]->department_remarks == "" && $this->getApprovalStatus($record->application_id)[0]->dean_remarks == "" ? 
+
+					'<button class="btn btn-sm bg-green btn-block waves-effect" style="margin-top: 5px;" onclick="endorsedToDepartment(\''.$record->application_id.'\')">ENDORSE TO DEPARTMENT</button>' : 
+					
+					'<button class="btn btn-sm bg-green btn-block waves-effect disabled" style="margin-top: 5px;">ENDORSE TO DEPARTMENT</button>';
+
+					// NOA BTN
+					$noaBtn = count($this->getReference($record->application_id)) == 3 && $this->getApprovalStatus($record->application_id)[0]->dean_remarks == "approved" ? 
+					
+					'<button type="button" class="btn btn-lg bg-orange btn-block waves-effect" style="font-size: 24px;" onclick="generateNOA(\''.$record->application_id.'\')">
+						NOA
+					</button>' : 
+					
+					'<button type="button" class="btn btn-lg bg-orange btn-block waves-effect disabled" style="font-size: 24px;">
+						NOA
+					</button>';
+					// END OF NOA BTN
 					break;
 				case 'MASTER':
-					$actionBtn = count($this->getReference($record->application_id)) == 2 && $this->getApprovalStatus($record->application_id)[0]->department_remarks == "" && $this->getApprovalStatus($record->application_id)[0]->dean_remarks == "" ? '<button class="btn btn-sm bg-green btn-block waves-effect" style="margin-top: 5px;" onclick="endorsedToDepartment(\''.$record->application_id.'\')">ENDORSE TO DEPARTMENT</button>' : '<button class="btn btn-sm bg-green btn-block waves-effect disabled" style="margin-top: 5px;">ENDORSE TO DEPARTMENT</button>';
+					$actionBtn = count($this->getReference($record->application_id)) == 2 && $this->getApprovalStatus($record->application_id)[0]->department_remarks == "" && $this->getApprovalStatus($record->application_id)[0]->dean_remarks == "" ? 
+					
+					'<button class="btn btn-sm bg-green btn-block waves-effect" style="margin-top: 5px;" onclick="endorsedToDepartment(\''.$record->application_id.'\')">ENDORSE TO DEPARTMENT</button>' : 
+					
+					'<button class="btn btn-sm bg-green btn-block waves-effect disabled" style="margin-top: 5px;">ENDORSE TO DEPARTMENT</button>';
+
+					// NOA BTN
+					$noaBtn = count($this->getReference($record->application_id)) == 2 && $this->getApprovalStatus($record->application_id)[0]->dean_remarks == "approved" ? 
+					
+					'<button type="button" class="btn btn-lg bg-orange btn-block waves-effect" style="font-size: 24px;" onclick="generateNOA(\''.$record->application_id.'\')">
+						NOA
+					</button>' : 
+					
+					'<button type="button" class="btn btn-lg bg-orange btn-block waves-effect disabled" style="font-size: 24px;">
+						NOA
+					</button>';
+					// END OF NOA BTN
 					break;
 			}
 
@@ -263,43 +410,34 @@ class Admissions_model extends CI_Model {
 				$actionBtn .= '<a href="/office-of-admissions/admissions/exportReferenceForm/'.$refForm->reference_id.'" class="btn btn-sm bg-blue-grey btn-block waves-effect" target="_BLANK" style="margin-top: 5px;">Reference '.($referenceCtr++).'</a>';
 			}
 
-			if (count($referenceForm) > 1)
-			{
-				if (count($this->getApprovalStatus($record->application_id)) > 0)
-				{
-					if ($approvalStatus == "pending")
-					{
-						if ($this->getApprovalStatus($record->application_id)[0]->department_remarks == "" && $this->getApprovalStatus($record->application_id)[0]->dean_remarks == "")
-						{
-							$data[] = array( 
-								"numRows"				=>	($ctr++),
-								"action"				=>	$actionBtn,
-								"requirements"			=>	'
+			$data[] = array( 
+				"numRows"				=>	($ctr++),
+				"action"				=>	$actionBtn,
+				"requirements"			=>	'
 
-									<a href="'.$this->getFileInfo($record->gwa_file, "GWA")['link'].'" target="'.$this->getFileInfo($record->gwa_file, "GWA")['target'].'" class="btn btn-sm bg-amber btn-block waves-effect" style="margin-top: 5px;">GWA</a>
-				
-									<a href="'.$this->getFileInfo($record->img_file, "IMG")['link'].'" target="'.$this->getFileInfo($record->img_file, "IMG")['target'].'" class="btn btn-sm bg-blue-grey btn-block waves-effect" style="margin-top: 5px;">PICTURE</a>
-				
-									<a href="'.$this->getFileInfo($record->proficiency_file, "PROFICIENCY")['link'].'" target="'.$this->getFileInfo($record->proficiency_file, "PROFICIENCY")['target'].'" class="btn btn-sm bg-orange btn-block waves-effect" style="margin-top: 5px;">PROFICIENCY</a>
-				
-									<a href="'.$this->getFileInfo($record->tor_file, "TOR")['link'].'" target="'.$this->getFileInfo($record->tor_file, "TOR")['target'].'" class="btn btn-sm bg-teal btn-block waves-effect" style="margin-top: 5px;">TOR</a>
-				
-								',
-								"fname"					=>	$record->fname,
-								"mname"					=>	$record->mname,
-								"lname"					=>	$record->lname,
-								"degree_programm"		=>	$record->course_desc,
-								"level_applied"			=>	$record->degree_program_applied,
-								"date_applied"			=>	date("F d, Y H:i:s", strtotime($record->date_created)),
-								"reference"				=>	$referenceHtml,
-								"department"			=>	count($this->getApprovalStatus($record->application_id)) > 0 ? $this->getApprovalStatus($record->application_id)[0]->department_remarks : "****",
-								"dean"			=>	count($this->getApprovalStatus($record->application_id)) > 0 ? $this->getApprovalStatus($record->application_id)[0]->dean_remarks : "****",
-								"referenceCtr"			=>	count($referenceForm)
-							); 
-						}	 
-					}
-				}
-			}
+					<a href="'.$this->getFileInfo($record->gwa_file, "GWA")['link'].'" target="'.$this->getFileInfo($record->gwa_file, "GWA")['target'].'" class="btn btn-sm bg-amber btn-block waves-effect" style="margin-top: 5px;">GWA</a>
+
+					<a href="'.$this->getFileInfo($record->img_file, "IMG")['link'].'" target="'.$this->getFileInfo($record->img_file, "IMG")['target'].'" class="btn btn-sm bg-blue-grey btn-block waves-effect" style="margin-top: 5px;">PICTURE</a>
+
+					<a href="'.$this->getFileInfo($record->proficiency_file, "PROFICIENCY")['link'].'" target="'.$this->getFileInfo($record->proficiency_file, "PROFICIENCY")['target'].'" class="btn btn-sm bg-orange btn-block waves-effect" style="margin-top: 5px;">PROFICIENCY</a>
+
+					<a href="'.$this->getFileInfo($record->tor_file, "TOR")['link'].'" target="'.$this->getFileInfo($record->tor_file, "TOR")['target'].'" class="btn btn-sm bg-teal btn-block waves-effect" style="margin-top: 5px;">TOR</a>
+
+				',
+				"fname"					=>	$record->fname,
+				"mname"					=>	$record->mname,
+				"lname"					=>	$record->lname,
+				"degree_programm"		=>	$record->course_desc,
+				"level_applied"			=>	$record->degree_program_applied,
+				"date_applied"			=>	date("F d, Y H:i:s", strtotime($record->date_created)),
+				"reference"				=>	$referenceHtml,
+				"department"			=>	$record->department_remarks,
+				"dean"					=>	$record->dean_remarks,
+				"department_remarks"	=>	$record->department_remarks."<hr> Note: ".($record->department_note == "" ? "n/a" : $record->department_note),
+				"dean_remarks"			=>	$record->dean_remarks."<hr> Note: ".($record->dean_note == "" ? "n/a" : $record->dean_note),
+				"referenceCtr"			=>	count($referenceForm),
+				"noa"					=>	$noaBtn
+			); 
 		}
 
 		## Response
@@ -333,7 +471,7 @@ class Admissions_model extends CI_Model {
 	public function getReferenceAnswer($applicationID = "")
 	{
 		$applicantDB = $this->load->database('applicantDB', TRUE);
-		$applicantDB->select("reference_id");
+		$applicantDB->select("reference_id, applicant_id");
 		$applicantDB->from("oad0002");
 		$applicantDB->where("applicant_id", $applicationID);
 		$query = $applicantDB->get();
@@ -347,7 +485,7 @@ class Admissions_model extends CI_Model {
 		$applicantDB->select("*");
 		$applicantDB->from("oad0003");
 		$applicantDB->where("application_id", $applicationID);
-		$applicantDB->group_by("application_id", array("application_id"));
+		$applicantDB->group_by(array("application_id"));
 		$query = $applicantDB->get();
 
 		return $query->result();

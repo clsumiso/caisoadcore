@@ -109,6 +109,20 @@ class Admission_application_model extends CI_Model {
     return $query->result();
   }
 
+  public function get_applicant_noa($applicantID = "")
+  {
+    $applicantDB = $this->load->database('applicantDB', TRUE);
+    $applicantDB->select("oad0001.*, oad0003.*, tbl_course.course_desc");
+    $applicantDB->from("oad0001");
+    $applicantDB->join("tbl_course", "oad0001.field_of_study = tbl_course.course_id", 'inner');
+    $applicantDB->join("oad0003", "oad0001.applicant_id = oad0003.applicant_id", 'inner');
+    $applicantDB->where("oad0001.application_id", $applicantID);
+    $applicantDB->group_by("oad0003.applicant_id");
+    $query = $applicantDB->get();
+
+    return $query->result();
+  }
+
   // ------------------------------------------------------------------------
   /**
 	 * CRUD

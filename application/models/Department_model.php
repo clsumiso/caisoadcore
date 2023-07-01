@@ -326,7 +326,7 @@ class Department_model extends CI_Model {
         return $query->result();
     }
 
-    public function get_rog_status($students = array(), $sem, $faculty_id, $subject)
+    public function get_rog_status($students = array(), $sem = 0, $faculty_id = "", $subject = "")
     {
         $this->db->select("status");
         $this->db->from('tbl_grades');
