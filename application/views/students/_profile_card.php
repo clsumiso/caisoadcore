@@ -35,7 +35,6 @@
 </div>
 <script type="text/javascript">
     function switchUser(token,email,pass){
-       // console.log(ema);
      $.ajax({
           url:  window.location.origin + '/office-of-admissions/login/login_verification',
           type: "POST",

@@ -2,6 +2,9 @@
 /* Spreadsheet */
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class Administrator extends CI_Controller {
 
@@ -1243,6 +1246,9 @@ class Administrator extends CI_Controller {
 
 		);
 
+		$user_id = $post['userID'];
+		$new_pass = $post['password'];
+
 		$saveToMetadata = $this->administrator->save("metadata", $metadata);
 		$reset = $this->administrator->update($data, $condition, array('tbl_users'));
 		if ($reset !== false)
@@ -1250,8 +1256,11 @@ class Administrator extends CI_Controller {
 			$msg = array(
 				"sys_msg"	=>	"success",
 				"msg"		=>	"Password Reset Successfully",
-				"type"		=>	"success"
+				"type"		=>	"success",
+				"user_id"	=>	$user_id,
+				"new_pass"	=>	$new_pass,
 			);
+			
 		}else
 		{
 			$msg = array(
@@ -1261,6 +1270,59 @@ class Administrator extends CI_Controller {
 			);
 		}
 		echo json_encode($msg);
+	}
+
+	public function resetPasswordNotif(){
+		$post = $_POST;
+		$user = $this->administrator->getOneProfileEmail($post['user_id']);
+		$new_pass = $post['new_pass'];
+		$mail = new PHPMailer(true);
+      	$ctr = 1;
+      	$msg = '';	
+      	$succ = '';
+		try {
+		
+        //Server settings
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+        $mail->isSMTP();                                            //Send using SMTP
+        //$mail->isSendmail();
+        $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+        $mail->SMTPAuth   = true;                     //Set the SMTP server to send through 
+        $mail->Username   = 'clsuoad.noreply@clsu2.edu.ph';                     //SMTP username
+        $mail->Password   = 'AD315510N5';                               //SMTP password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+        $mail->Port       = 587;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+        //Recipients
+        $mail->setFrom('clsuoad.noreply@gmail.com', 'OFFICE OF ADMISSIONS');
+        $mail->addAddress($user[0]->email); 
+        $mail->addReplyTo($user[0]->email,"");     //Add a recipient
+
+        //Content
+        $mail->isHTML(true);                                  //Set email format to HTML
+        $mail->Subject = 'OAd Portal Reset Password';
+        
+        $htmlContent  = '<p>Dear Maam/Sir,</p><br>';
+        $htmlContent  .= '<p>Good day, Here with your reset password: <b>'.$new_pass.'</b></h3><br>';
+        $mail->Body    = $htmlContent;
+            
+        $mail->send();
+        $mail->clearAddresses();
+        $msg = array(
+				"sys_msg"	=>	"success",
+				"msg"		=>	"Email Notification Sent!",
+				"type"		=>	"success",
+			);
+      } catch (Exception $e) {
+        $msg = array(
+				"sys_msg"	=>	"failed",
+				"msg"		=>	"Email Notification Fail!",
+				"type"		=>	"error"
+			);
+      }
+
+      echo json_encode($msg);
+
 	}
 	 /**
 	  * END OF CRUD

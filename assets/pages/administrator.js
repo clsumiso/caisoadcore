@@ -707,13 +707,35 @@ function saveUser()
                     },
                     success: function(data)
                     {
+
                         swal((data.sys_msg == "success" ? "SUCCESS" : "FAILED"), data.msg, data.type);
                         userAccountData.draw();
                         $('[name="txtPassword"]').val();
+                        if(data.sys_msg=="success"){
+                            $.ajax({
+                                url: window.location.origin + "/office-of-admissions/administrator/resetPasswordNotif",
+                                type:"POST",
+                                dataType: 'JSON',
+                                data: 
+                                { 
+                                    user_id: data.user_id,
+                                    new_pass: data.new_pass,
+                                },
+                                success: function(data)
+                                {
+                                    swal((data.sys_msg == "success" ? "SUCCESS" : "FAILED"), data.msg, data.type);
+                                    
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) 
+                                {
+                                  swal((data.sys_msg == "success" ? "SUCCESS" : "FAILED"), data.msg, data.type);
+                                }
+                            });
+                        }
                     },
                     error: function (jqXHR, textStatus, errorThrown) 
                     {
-                        
+                      console.log(jqXHR);  
                     }
                 });
             }

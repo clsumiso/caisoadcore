@@ -32,6 +32,16 @@ class Administrator_model extends CI_Model {
 		return $query->result();
 	}
 
+	public function getOneProfileEmail($user_id){
+		$this->db->select('*');
+        $this->db->from('tbl_profile');
+		$this->db->where('user_id',$user_id);
+        $query = $this->db->get();
+
+		return $query->result();
+	}
+
+
 	public function getCourse($college = "", $enrollmentType = "")
 	{
 		if ($enrollmentType == "resident")
