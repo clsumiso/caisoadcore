@@ -30,18 +30,18 @@
                         </div>
                         <div class="col-xs-12 col-sm-4">
                             <b>Catalogue Number (section)(schedid)</b>
-                            <select class="form-control" id="subject_filter" onchange="get_grades()" style="height: 60px;">
+                            <select class="form-control" id="subject_filter" onchange="show_subject($('#semester option:selected').val(),this.value);" style="height: 60px;">
                                 
                             </select>
                         </div>
-                        <div class="col-xs-12 col-sm-4">
-                            <b>....</b>
+                        <div class="col-xs-12 col-sm-4 p-2">
+                            <br>
                             <button class="button-21" role="button">SUBMIT</button>
                         </div>
-                    </div>
-                    <div class="row clearfix">
-                        <div class="col-xs-12 col-sm-4">
-                            <button class="button-20" role="button" onclick="test()">REQUEST RECTIFICATION</button>
+                        <div class="col-xs-12 col-sm-4 ">
+                            <button class="btn btn-warning" role="button">GRADE TEMPLATE</button>
+                            <button class="btn btn-primary" role="button">IMPORT GRADE</button>
+                            <button class="btn btn-success" role="button">GENERATE ROG</button>
                         </div>
                     </div>
                     <div class="row clearfix">

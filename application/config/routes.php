@@ -62,5 +62,7 @@ $route = array(
 	"app-dl-request-form137/(:any)"				=>	"applicant/donwloadForm137/$1",
 	"app-dl-osa-form/(:any)/(:any)"				=>	"applicant/donwloadOSAForm/$1/$2",
 	"app-update-form/(:any)/(:any)"				=>	"applicant/update_applicant_form/$1/$2",
-	"app-grad-requirements/(:any)/(:any)"		=>	"admissions/downloadRequirements/$1/$2"
+	"app-grad-requirements/(:any)/(:any)"		=>	"admissions/downloadRequirements/$1/$2",
+	'manage-grades/(:any)/(:any)'               =>  "faculty/manage_grades/$1/$2",
+    'manage-grades-old/(:any)/(:any)'           =>  "faculty/manage_grades_old/$1/$2",
 );

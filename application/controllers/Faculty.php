@@ -74,10 +74,17 @@ class Faculty extends CI_Controller {
 			{
 				$htmlContent .= '<option value="'.$subject_filter->schedid.'">'.$subject_filter->cat_no.' ('.$subject_filter->section.')('.$subject_filter->schedid.')</option>';
 			}
-		}else if ($_POST['semid'] >= 6)
-		{
+		}else if($_POST['semid']>=6){
+			$subject_filter_data = $this->faculty->get_subjects_new_grades($_POST['semid'], $_SESSION['e_id']);
+			$htmlContent = '<option value="#">-- SELECT SUBJECT --</option>';
 
-		}else
+			foreach ($subject_filter_data as $subject_filter) 
+			{
+				$htmlContent .= '<option value="'.$subject_filter->schedid.'">'.$subject_filter->cat_no.' ('.$subject_filter->section.')</option>';
+			}
+		}
+
+		else
 		{
 			$subject_filter_data = $this->faculty->get_subjects_old_grades($_POST['semid'], $_SESSION['e_id']);
 			$htmlContent = '<option value="#">-- SELECT SUBJECT --</option>';
@@ -89,7 +96,8 @@ class Faculty extends CI_Controller {
 		}
 
 		echo json_encode(array(
-			'content'	=>	$htmlContent
+			'sem_id'	=>	$_POST['semid'],
+			'content'	=>	$htmlContent,
 		));
 	}
 
@@ -343,9 +351,6 @@ class Faculty extends CI_Controller {
 
 				$output[] = $data;
 			}
-		}else if ($_POST['semid'] >= 6)
-		{
-			
 		}else
 		{
 			// Fetch member's records
@@ -591,6 +596,379 @@ class Faculty extends CI_Controller {
 		}
 
 		echo json_encode($msg);
+	}
+
+	public function grades_subject_list()
+	{
+		$sem = $_POST['semid'];
+		$schedid = $_POST['schedid'];
+		$user_id = $_SESSION['uid'];
+		$e_id = $_SESSION['e_id'];
+		$usr_arr = array();
+		$non_email_user = $this->faculty->get_non_email_user($e_id);
+		foreach ($non_email_user as $email) {
+			array_push($usr_arr, $email->user_id);
+		}
+
+		array_push($usr_arr, $e_id);
+		$subject_list = $this->faculty->get_subject($user_id, $sem, $e_id, $usr_arr, $schedid);
+		$_SESSION['class_rec_sem_filter']	= $sem;
+		$i = 1;
+		$output = [];
+		foreach($subject_list as $subject){
+			$enrolled = $this->faculty->get_enrolled($subject->schedid, $sem);
+			$total_enrolled = count($enrolled) > 0 ? count($enrolled) : 0;
+			$class_record_id = $this->faculty->get_profile_id($subject->user_id);
+			$class_rec_id = count($class_record_id) > 0 ? $class_record_id[0]->profile_id."_".$sem."_".$subject->schedid : "error";
+			$cps = count($this->faculty->get_cps($class_rec_id)) > 0 ? $this->faculty->get_cps($class_rec_id)[0]->class_standard : 0;
+
+			if ($subject->class_type == 2) {
+				$data = array(
+					$i++,
+					'<a href="javascript:void(0)" target="_self" class="btn btn-sm btn-default btn-block" onclick="show_rog_tracker(\''.$subject->schedid.'\', \''.$sem.'\')"><i class="fas fa-search"></i> ROG TRACKER</a>',
+					$subject->schedid,
+					$subject->cat_no,
+					$subject->units,
+					$subject->day,
+					$subject->time,
+					$subject->room,
+					$subject->section,
+					$total_enrolled
+				);
+			}else{
+				$data = array(
+					$i++,
+					'
+					<a href="/star/manage-grades/'.$class_rec_id.'/'.$sem.'" target="_self" class="btn btn-sm bg-green btn-block"><i class="fas fa-edit"></i> MANAGE</a>
+
+					<a href="/star/faculty/export_students/'.$class_rec_id.'/'.$sem.'" target="_self" class="btn btn-sm bg-yellow btn-block"><i class="fas fa-file-export"></i> GRADES TEMPLATE</a>
+					
+					<a href="javascript:void(0)" target="_self" class="btn btn-sm btn-default btn-block" onclick="show_rog_tracker(\''.$subject->schedid.'\', \''.$sem.'\')"><i class="fas fa-search"></i> ROG TRACKER</a>
+
+					<button class="btn btn-sm btn-default btn-block" onclick="import_grades(\''.$sem.'\', \''.$subject->schedid.'\')"><i class="fas fa-file-import"></i> IMPORT GRADES</button>
+
+					<a href="#'.$class_rec_id.'/'.$sem.'" target="_self" class="btn btn-sm btn-default btn-block"><i class="fas fa-download"></i> GENERATE ROG</a>',
+					$subject->schedid,
+					$subject->cat_no,
+					$subject->units,
+					$subject->day,
+					$subject->time,
+					$subject->room,
+					$subject->section,
+					$total_enrolled
+				);
+
+
+			}
+
+			$output[] = $data;
+		}
+
+		// Output to JSON format
+		echo json_encode(array("data"	=>	$output));
+	}
+
+	public function grades_subject_list_old()
+	{
+		$sem = $_POST['semid'];
+		$e_id = $_SESSION['e_id'];
+		$usr_arr = array();
+		$non_email_user = $this->faculty->get_non_email_user($e_id);
+		foreach ($non_email_user as $email) {
+			array_push($usr_arr, $email->user_id);
+		}
+
+		$subject_list = $this->faculty->get_grades_old_system($usr_arr, $sem);
+		$_SESSION['class_rec_sem_filter']= $sem;
+		$i = 1;
+		$output = [];
+		
+		foreach($subject_list as $subject){
+			$enrolled = $this->faculty->get_enrolled($subject->subject, $sem);
+			$total_enrolled = count($enrolled) > 0 ? count($enrolled) : 0;
+			$class_record_id = $this->faculty->get_profile_id($subject->user_id);
+			$class_rec_id = count($class_record_id) > 0 ? $class_record_id[0]->profile_id."_".$sem."_".$subject->subject : "error";
+			$cps = count($this->faculty->get_cps($class_rec_id)) > 0 ? $this->faculty->get_cps($class_rec_id)[0]->class_standard : 0;
+
+			$data = array(
+				$i++,
+				'
+				<a href="/star/manage-grades-old/'.$subject->subject.'/'.$sem.'" target="_self" class="btn btn-sm bg-green btn-block"><i class="fas fa-edit"></i> MANAGE</a>
+
+				<a href="/star/faculty/export_students_old/'.$subject->subject.'/'.$sem.'" target="_self" class="btn btn-sm bg-yellow btn-block"><i class="fas fa-file-export"></i> EXPORT GRADES</a>
+				
+				<a href="javascript:void(0)" target="_self" class="btn btn-sm btn-default btn-block" onclick="show_rog_tracker()"><i class="fas fa-search"></i> ROG TRACKER</a>
+
+				<button class="btn btn-sm btn-default btn-block" onclick="import_grades_old(\''.$sem.'\', \''.$subject->subject.'\')"><i class="fas fa-file-import"></i> IMPORT GRADES</button>
+
+				<a href="#'.$class_rec_id.'/'.$sem.'" target="_self" class="btn btn-sm btn-default btn-block"><i class="fas fa-download"></i> GENERATE ROG</a>',
+				$subject->subject,
+				$subject->subject,
+				$subject->units,
+				$subject->day,
+				$subject->time,
+				'***',
+				'***',
+				'***'
+			);
+
+			$output[] = $data;
+		}
+
+		echo json_encode(array("data"	=>	$output));
+	}
+
+
+	public function get_student_grade($semid, $schedid)
+	{
+		//$class_rec_id = $schedid;
+		//$schedid = explode('_', $schedid)[2];
+		$enrolled_data = $this->faculty->get_enrolled_student($schedid, $semid);
+		$html_data = '';
+		$i = 1;
+
+		foreach ($enrolled_data as $data) {
+			// Get student grades
+			$student_grade = $this->facultylty->get_student_grade($data->reg_id, $schedid,$semid);
+			$grade = '';
+			$reexam = '';
+			$remarks = '';
+			$grade_to_post = 1;
+			if (count($student_grade) > 0) {
+				if ($student_grade[0]->grades == '0.00') {
+					$grade = 'NO GRADE SUBMITTED';
+					$remarks = '<span class="badge badge-secondary">***</span>';
+				}else{
+					$grade = $student_grade[0]->grades;
+					if (in_array($grade, array('NG', 'IP'))) {
+						$remarks = '<span class="badge badge-secondary">'.$student_grade[0]->remarks.'</span>';
+					}else{
+						if (floatval($grade) <= 3.00) {
+							$remarks = '<span class="badge badge-success">'.$student_grade[0]->remarks.'</span>';
+						}else{
+							if (floatval($grade) == 4.00) {
+								$remarks = '<span class="badge badge-warning">'.$student_grade[0]->remarks.'</span>';
+							}
+							
+							if (floatval($grade) == 5.00) {
+								$remarks = '<span class="badge badge-danger">'.$student_grade[0]->remarks.'</span>';
+							}
+							
+						}
+					}
+				}
+
+				if ($student_grade[0]->reexam !== NULL) {
+					if ($student_grade[0]->reexam == '0.00') {
+						$reexam = 'NO GRADE SUBMITTED';
+						$remarks = '<span class="badge badge-secondary">***</span>';
+					}else{
+						$reexam = $student_grade[0]->reexam;
+						if (in_array($reexam, array('NG', 'IP'))) {
+							$remarks = '<span class="badge badge-secondary">'.$student_grade[0]->remarks.'</span>';
+						}else{
+							if (floatval($reexam) <= 3.00) {
+								$remarks = '<span class="badge badge-success">'.$student_grade[0]->remarks.'</span>';
+							}else{
+								if (floatval($reexam) == 4.00) {
+									$remarks = '<span class="badge badge-warning">'.$student_grade[0]->remarks.'</span>';
+								}
+								
+								if (floatval($reexam) == 5.00) {
+									$remarks = '<span class="badge badge-danger">'.$student_grade[0]->remarks.'</span>';
+								}
+								
+							}
+						}
+					}
+				}
+
+				$grade_to_post = $student_grade[0]->reexam !== NULL ? $student_grade[0]->reexam : $grade;
+			}else{
+				$grade = 'NO GRADE SUBMITTED';
+			}
+			
+			// Set the html value
+			$html_data .= '
+				<tr>
+					<td>
+						'.($i++).'
+					</td>
+					<td>
+						'.($data->user_id == '' ? $data->reg_id : $data->reg_id).'
+					</td>
+					<td>
+						<a>
+						'.($data->user_id == '' ? '<span style="color: red;">MISSING PROFILE, PLEASE REPORT TO OAD TO FIX</span>' : $data->lname.', '.$data->fname.' '.$data->mname).'
+						</a>
+						<br/>
+						<small>
+							'.$data->email.'
+						</small>
+					</td>
+					<td class="project-state">
+					'.$grade.' <span class="badge badge-success"></span>
+					</td>
+					<td class="project-state">
+					'.$reexam.' <span class="badge badge-success"></span>
+					</td>
+					<td class="project-state">
+					'.$remarks.'
+					<hr>
+					<small>Submission Status: '.(count($student_grade) > 0 ? $student_grade[0]->status : '***').'</small>
+					</td>';
+					
+					if (!in_array(count($student_grade) > 0 ? $student_grade[0]->status : '***', array('approved', 'dean', 'department head')) || (strtoupper($grade) == 'NG' || strtoupper($reexam) == 'NG' || strtoupper($grade) == 'IP' || strtoupper($reexam) == 'IP' || strtoupper($grade) == 'INC' || strtoupper($reexam) == 'INC')) {
+						if (explode('_', $class_rec_id)[1] != 1){
+							$html_data .= '<td class="project-actions text-center">
+											<button class="btn btn-primary btn-lg btn-flat" onclick="update_grade(\''.$data->reg_id.'\', \''.$data->schedid.'\', \''. explode('_', $class_rec_id)[1].'\', \''.(count($student_grade) > 0 ? $student_grade[0]->grade_id : 0).'\', \''.(str_replace('\'','',$data->lname).', '.$data->fname.' '.$data->mname).'\', \''.(count($student_grade) > 0 ? $student_grade[0]->subject : "***").'\', \''.(count($student_grade) > 0 ? "update" : "insert").'\', \''.$grade_to_post.'\')">
+												<i class="fas fa-edit">
+												</i>
+												UPDATE
+											</button>
+										</td>';
+						}
+					}else{
+						
+						$html_data .= '<td class="project-actions text-center">
+										<button class="btn btn-primary btn-lg btn-flat disabled animate__animated animate__pulse animate__infinite" onclick="javascript:void(0)">
+											UPDATE (not available)
+										</button>
+									</td>';
+					}
+				$html_data .= '</tr>';
+		}
+
+		echo json_encode($html_data);
+	}
+
+	public function get_student_grade_old(){
+		$subject = $_POST['subject'];
+		$sem = $_POST['sem'];
+		$status = $_POST['status'];
+		$e_id = $_SESSION['e_id'];
+		$usr_arr = array();
+		$non_email_user = $this->faculty->get_non_email_user($e_id);
+		foreach ($non_email_user as $email) {
+			array_push($usr_arr, $email->user_id);
+		}
+		$enrolled_data = $this->faculty->get_enrolled_student_old($subject, $sem, $usr_arr, $status);
+		$html_data = '';
+		$faculty = '';
+		$i = 1;
+
+		foreach ($enrolled_data as $data) {
+			// Get student grades
+			// $data = $this->faculty->get_data_old($data->user_id, $subject, $_POST['sem'], $usr_arr);
+			$grade = '';
+			$reexam = '';
+			$remarks = '';
+			// if (count($data) > 0) {
+				if ($data->grades == '0.00') {
+					$grade = 'NO GRADE SUBMITTED';
+					$remarks = '<span class="badge badge-secondary">***</span>';
+				}else{
+					$grade = $data->grades;
+					if (in_array($grade, array('NG', 'IP'))) {
+						$remarks = '<span class="badge badge-secondary">'.$data->remarks.'</span>';
+					}else{
+						if (floatval($grade) <= 3.00) {
+							$remarks = '<span class="badge badge-success">'.$data->remarks.'</span>';
+						}else{
+							if (floatval($grade) == 4.00) {
+								$remarks = '<span class="badge badge-warning">'.$data->remarks.'</span>';
+							}
+							
+							if (floatval($grade) == 5.00) {
+								$remarks = '<span class="badge badge-danger">'.$data->remarks.'</span>';
+							}
+							
+						}
+					}
+				}
+
+				
+				if ($data->reexam !== NULL) {
+					if ($data->reexam == '0.00') {
+						$reexam = 'NO GRADE SUBMITTED';
+						$remarks = '<span class="badge badge-secondary">***</span>';
+					}else{
+						$reexam = $data->reexam;
+						if (in_array($reexam, array('NG', 'IP'))) {
+							$remarks = '<span class="badge badge-secondary">'.$data->remarks.'</span>';
+						}else{
+							if (floatval($reexam) <= 3.00) {
+								$remarks = '<span class="badge badge-success">'.$data->remarks.'</span>';
+							}else{
+								if (floatval($reexam) == 4.00) {
+									$remarks = '<span class="badge badge-warning">'.$data->remarks.'</span>';
+								}
+								
+								if (floatval($reexam) == 5.00) {
+									$remarks = '<span class="badge badge-danger">'.$data->remarks.'</span>';
+								}
+								
+							}
+						}
+					}
+				}
+			// }
+
+			$grade_to_post = $data->reexam !== NULL ? $data->reexam : $grade;
+			// Set the html value
+			$html_data .= '
+				<tr>
+					<td>
+						'.($i++).'
+					</td>
+					<td>
+						'.$data->user_id.'
+					</td>
+					<td>
+						<a>
+						'.($data->user_id == '' ? '<span style="color: red;">MISSING PROFILE, PLEASE REPORT TO OAD TO FIX</span>' : $data->lname.', '.$data->fname.' '.$data->mname).'
+						</a>
+						<br/>
+						<small>
+							'.$data->email.'
+						</small>
+					</td>
+					<td class="project-state">
+					'.$grade.' <span class="badge badge-success"></span>
+					</td>
+					<td class="project-state">
+					'.$reexam.' <span class="badge badge-success"></span>
+					</td>
+					<td class="project-state">
+					'.$remarks.'
+					<hr>
+					<small>Submission Status: '.$data->status.'</small>
+					</td>
+					';
+					
+					if (!in_array($data->status, array('approved', 'dean', 'department head')) || (strtoupper($grade) == 'NG' || strtoupper($reexam) == 'NG')) {
+						if ($sem != 1)
+						{
+							$html_data .= '<td class="project-actions text-center">
+										<button class="btn btn-primary btn-lg btn-flat" onclick="update_grade_old(\''.$data->user_id.'\', \''.$subject.'\', \''.$sem.'\', \''.$data->grade_id.'\', \''.($data->lname.', '.$data->fname.' '.$data->mname).'\', \''.$grade_to_post.'\', \''.$data->units.'\', \''.$data->day.'\', \''.$data->time.'\')">
+											<i class="fas fa-edit">
+											</i>
+											UPDATE
+										</button>
+									</td>';
+						}
+					}else{
+						$html_data .= '<td class="project-actions text-center">
+										<button class="btn btn-primary btn-lg btn-flat disabled animate__animated animate__pulse animate__infinite" onclick="javascript:void(0)">
+											UPDATE (not available)
+										</button>
+									</td>';
+					}
+			$html_data .='</tr>';
+			$faculty = $data->faculty_id;
+		}
+
+		echo json_encode(array('data' => $html_data, 'faculty'	=>	$faculty));
 	}
 
 }

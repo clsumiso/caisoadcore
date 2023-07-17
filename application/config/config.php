@@ -24,7 +24,7 @@ date_default_timezone_set('Asia/Manila');
 | a PHP script and you can easily do that on your own.
 |
 */
-// $config['base_url'] = 'https://oad.clsu2.edu.ph/office-of-admissions/';
+//$config['base_url'] = 'https://oad.clsu2.edu.ph/office-of-admissions/';
 $config['base_url'] = 'http://localhost/office-of-admissions/';
 
 /*
@@ -162,7 +162,7 @@ $config['composer_autoload'] = 'vendor/autoload.php';
 | DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
 |
 */
-$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-@';
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-@\'",';
 
 /*
 |--------------------------------------------------------------------------

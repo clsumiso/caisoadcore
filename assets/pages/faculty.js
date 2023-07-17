@@ -23,6 +23,10 @@ function get_grades()
         url: window.location.origin + "/office-of-admissions/faculty/manage_grades",
         type:"POST",
         data: { semid: $('#semester option:selected').val(), subject: $('#subject_filter option:selected').val() },
+        success:function(data){
+          console.log(data);
+          $('#student_grades tbody').html(data);
+        },
         complete: function () 
         {
           // subject_filter();
@@ -233,6 +237,88 @@ function add_to_my_loads(email, schedid, semid, row, status)
   //       });
   //     } 
   // });
+}
+
+function show_subject(semester,schedid){
+  if (semester >= 3) {
+        if ($.fn.DataTable.isDataTable('#student_grades')) { $('#student_grades').DataTable().destroy(); }
+        
+        $('#student_grades tbody').empty();
+        $('#student_grades').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "responsive": true,
+            "scrollX": false,
+            "autoWidth": false,
+            "ajax" : {
+                url: window.location.origin + "/office-of-admissions/faculty/get_student_grade",
+                type:"POST",
+                data: { semid: semester, schedid: schedid, },
+                complete: function () {
+                   // loading.close();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                  //  loading.close();
+                  console.log(jqXHR);
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Something went wrong!!!',
+                        text: 'No data, please try again.',
+                        showConfirmButton: true,
+                        confirmButtonText: 'RELOAD',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                    }).then((res) => {
+                        if (res.isConfirmed) {
+                            show_subject();
+                        }
+                    });
+                }
+            } 
+        });
+    }else{
+        semester = semester == '#' ? 0 : semester;
+        if ($.fn.DataTable.isDataTable('#student_grades')) { $('#student_grades').DataTable().destroy(); }
+        
+        $('#student_grades tbody').empty();
+        $('#student_grades').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "responsive": true,
+            "scrollX": false,
+            "autoWidth": false,
+            "ajax" : {
+                url: window.location.origin + "/office-of-admissions/faculty/grades_subject_list_old",
+                type:"POST",
+                data: { semid: semester, schedid: schedid, },
+                complete: function () {
+                //    loading.close();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                  //  loading.close();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Something went wrong!!!',
+                        text: 'No data, please try again.',
+                        showConfirmButton: true,
+                        confirmButtonText: 'RELOAD',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                    }).then((res) => {
+                        if (res.isConfirmed) {
+                            show_subject();
+                        }
+                    });
+                }
+            }
+        });
+    }
 }
 
 function test() 

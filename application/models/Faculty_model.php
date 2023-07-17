@@ -198,6 +198,205 @@ class Faculty_model extends CI_Model {
         $query = $this->db->get();
         return $query->result();
     }
+
+    public function manage_grades($class_rec_id = '', $sem = '')
+	{
+		$data = array(
+			"account_name"  			=> 	$_SESSION['account_name'],
+			"page"         	 			=>  4.1,
+			"activity_subject_info"		=>	$this->grades_subject_data($class_rec_id, $sem)[0],
+			"semester"					=> 	$sem,
+			"cat_no"					=> 	$this->grades_subject_data($class_rec_id, $sem)[1],
+			"class_rec_id"				=> 	$class_rec_id,
+			"rog_status"				=>	$this->rog_status(explode('_', $class_rec_id)[2], $sem),					
+			/*,
+			"student_list"				=>	$this->get_student_enrolled($class_rec_id, $sem)*/
+			
+		);
+
+		return $data;
+
+		// $this->load->view('faculty/_header', $data);
+		// $this->load->view('faculty/_css', $data);
+		// $this->load->view('pre_loader', $data);
+		// $this->load->view('faculty/manage_grades_view', $data);
+		// $this->load->view('faculty/_footer', $data);
+		// $this->load->view('faculty/_js', $data);
+	}
+
+	public function manage_grades_old($subject = '', $sem = '')
+	{
+		$subject_data = '
+				<blockquote class="quote-success bg-warning animate__animated  animate__flipInX" style="margin: 0 0 10px;">
+					<p class="font-weight-bold" style="font-size: 24px;">'.str_replace('%20', ' ', $subject).'</p>
+				</blockquote>
+			';
+		$data = array(
+			"account_name"  			=> 	$_SESSION['account_name'],
+			"page"         	 			=>  4.1,
+			"activity_subject_info"		=>	$subject_data,
+			"cat_no"					=> 	$subject,
+			"class_rec_id"				=> 	str_replace('%20', ' ', $subject)."|".$sem,
+			"semester"					=> 	$sem
+			
+		);
+
+		return $data;
+
+		// $this->load->view('faculty/_header', $data);
+		// $this->load->view('faculty/_css', $data);
+		// $this->load->view('pre_loader', $data);
+		// $this->load->view('faculty/manage_grades_old_view', $data);
+		// $this->load->view('faculty/_footer', $data);
+		// $this->load->view('faculty/_js', $data);
+	}
+
+	public function get_non_email_user($email)
+    {
+        $this->db->select("user_id");
+        $this->db->from('tbl_profile');
+		$this->db->where('email', $email);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+
+    public function get_subject($user_id, $sem, $email, $non_email, $schedid)
+    {
+        $this->db->select("tbl_teaching_loads.user_id, tbl_teaching_loads.schedid, tbl_class_schedule.cat_no, tbl_class_schedule.units, tbl_class_schedule.day, tbl_class_schedule.time, tbl_class_schedule.room, tbl_class_schedule.section, tbl_class_schedule.class_type");
+        $this->db->from('tbl_teaching_loads');
+        $this->db->join('tbl_class_schedule', 'tbl_teaching_loads.schedid = tbl_class_schedule.schedid', 'inner');
+		$this->db->where('tbl_teaching_loads.semester_id', $sem);
+		$this->db->where('tbl_teaching_loads.schedid', $schedid);
+		$this->db->where_in('tbl_teaching_loads.user_id', $non_email);
+        // $this->db->group_start();
+        //     $this->db->where('tbl_teaching_loads.user_id', $user_id);
+        //     $this->db->or_where('tbl_teaching_loads.user_id', $email);
+        // $this->db->group_end();
+		// $this->db->limit($limit, $start);
+		// $this->db->limit(100, 0);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_grades_old_system($faculty_id, $sem)
+    {
+        $this->db->select("*");
+        $this->db->from('tbl_grades');
+		$this->db->where('tbl_grades.semester_id', $sem);
+		$this->db->where_in('tbl_grades.status', array('approved', 'faculty', 'department head', 'dean'));
+		$this->db->where_in('tbl_grades.faculty_id', $faculty_id);
+        $this->db->group_by(array('tbl_grades.subject'));
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_enrolled($schedid, $sem)
+	{
+		$this->db->select("user_id");
+        $this->db->from('tbl_registration');
+		$this->db->where('semester_id', $sem);
+		$this->db->where('schedid', $schedid);
+        if ($sem == 3) 
+        {
+            $this->db->where_in('status', array(1,2));
+        }else
+        {
+            $this->db->where_in('ra_status', array('approved'));
+        }
+		
+		// $this->db->limit($limit, $start);
+		// $this->db->limit(100, 0);
+        $query = $this->db->get();
+        return $query->result();
+	}
+
+	public function get_profile_id($user_id)
+	{
+		$this->db->select("profile_id");
+        $this->db->from('tbl_profile');
+		$this->db->where('user_id', $user_id);
+		// $this->db->limit($limit, $start);
+		// $this->db->limit(100, 0);
+        $query = $this->db->get();
+        return $query->result();
+	}
+
+	public function get_cps($class_record_id)
+	{
+		$this->db->select("*");
+        $this->db->from('tbl_class_record');
+		$this->db->where('class_record_id', $class_record_id);
+        $query = $this->db->get();
+        return $query->result();
+	}
+
+	public function get_enrolled_student($schedid, $sem)
+    {
+        $this->db->select("tbl_profile.*, tbl_registration.user_id AS reg_id, tbl_class_schedule.cat_no, tbl_class_schedule.schedid, tbl_class_schedule.section");
+        $this->db->from('tbl_registration');
+        $this->db->join('tbl_profile', 'tbl_registration.user_id = tbl_profile.user_id', 'left');
+        $this->db->join('tbl_class_schedule', 'tbl_registration.schedid = tbl_class_schedule.schedid', 'inner');
+		$this->db->where('tbl_registration.semester_id', $sem);
+		$this->db->where('tbl_registration.schedid', $schedid);
+		if ($sem <= 3){
+			$this->db->where('tbl_registration.status', 2);
+		}else
+		{
+			$this->db->where('tbl_registration.ra_status', 'approved');
+		}
+		
+		$this->db->order_by('tbl_profile.lname', 'asc');
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_enrolled_student_old($subject, $sem, $faculty, $status)
+    {
+        $this->db->select("tbl_profile.*, tbl_grades.*");
+        $this->db->from('tbl_grades');
+        $this->db->join('tbl_profile', 'tbl_grades.user_id = tbl_profile.user_id', 'inner');
+		$this->db->where('tbl_grades.semester_id', $sem);
+		$this->db->where('tbl_grades.subject', $subject);
+		$this->db->where_in('tbl_grades.faculty_id', $faculty);
+        if ($status != '*') {
+            $this->db->where('tbl_grades.status', $status);
+        }else{
+            $this->db->where_in('tbl_grades.status', array('faculty', 'department head', 'dean', 'approved', 'pending'));
+        }
+		$this->db->order_by('tbl_profile.lname', 'asc');
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_student_grade($user_id, $schedid, $sem)
+    {
+        $this->db->select("tbl_grades.*");
+        $this->db->from('tbl_grades');
+        $this->db->join('tbl_class_schedule', 'tbl_grades.subject = tbl_class_schedule.cat_no', 'inner');
+		$this->db->where('tbl_class_schedule.schedid', $schedid);
+		$this->db->where('tbl_grades.user_id', $user_id);
+		$this->db->where('tbl_grades.semester_id', $sem);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function get_student_grade_old($user_id, $subject, $sem, $faculty_id)
+    {
+        $this->db->select("tbl_grades.*");
+        $this->db->from('tbl_grades');
+		$this->db->where('subject', $subject);
+		$this->db->where('user_id', $user_id);
+		$this->db->where('semester_id', $sem);
+		$this->db->where_in('faculty_id', $faculty_id);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+
+
+
+
 }
 
 /* End of file Faculty_model.php */
